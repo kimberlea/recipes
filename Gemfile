@@ -33,6 +33,8 @@ gem 'fog-aws'
 
 gem 'redcarpet'
 
+gem 'non-stupid-digest-assets'
+
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 

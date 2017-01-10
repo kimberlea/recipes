@@ -106,6 +106,8 @@ GEM
     multi_json (1.12.1)
     nokogiri (1.6.8.1)
       mini_portile2 (~> 2.1.0)
+    non-stupid-digest-assets (1.0.9)
+      sprockets (>= 2.0)
     pg (0.19.0)
     rack (1.6.5)
     rack-test (0.6.3)
@@ -186,6 +188,7 @@ DEPENDENCIES
   jbuilder (~> 2.0)
   jquery-rails
   mini_magick
+  non-stupid-digest-assets
   pg
   rails (= 4.2.2)
   redcarpet
