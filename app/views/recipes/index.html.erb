@@ -1,0 +1,51 @@
+<div class="container">
+  <div class="recipes-header">
+    <h1> My Recipes </h1>
+  </div>
+
+  <div class="recipes-content">
+
+    <div class="recipes-search">
+      <input class="search-recipe-input" type="text" placeholder="Search Recipe" onkeyup="handleSearchTyping();" />
+    </div>
+
+
+    <div class="recipes-status">
+      <a href="/recipe/create">+ Add new Recipe</a>
+
+      <div class="recipes-status-all">
+        <%= pluralize(@recipes.count, "recipe", "recipes") %>
+      </div>
+    </div>
+
+
+    <div class="recipe-tiles">
+
+      <% @recipes.each do |recipe| %>
+      <a class="recipe-tile" href="<%= recipe.view_path %>">
+        <div class="recipe-tile-image">
+          <img src="<%= recipe.image.url %>"/>
+        </div>
+
+        <div class="recipe-tile-content">
+          <div class="recipe-title">
+            <%= recipe.title %>
+          </div>
+
+          <div class="recipe-description">
+            <%= recipe.description%>
+          </div>
+
+          <div class="recipe-duration">
+            <i class="fa fa-clock-o"></i>
+            <%= recipe.prep_time %>
+          </div>
+
+        </div>
+
+      </a>
+      <% end %>
+    </div>
+
+  </div>
+</div>

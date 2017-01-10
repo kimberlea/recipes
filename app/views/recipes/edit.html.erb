@@ -1,0 +1,60 @@
+<div class="container">
+
+  <div class="page-header">
+    <h1><%= @title %></h1>
+  </div>
+
+  <form class="form">
+
+    <input type="hidden" name="id" value="<%= @recipe.id %>"/>
+
+    <div class="form-group">
+
+      <label>Title</label>
+      <input type="text" name="title" class="form-control input-lg" placeholder="Enter title here." value="<%= @recipe.title %>"/>
+    </div>
+
+    <div class="form-group">
+      <label>Serving Size</label>
+      <input type="text" name="serving_size" class="form-control input-lg" placeholder="e.g. Serves 8 people." value="<%= @recipe.serving_size %>"/>
+    </div>
+
+    <div class="form-group">
+      <label>Description</label>
+      <textarea class="form-control input-lg" name="description" placeholder="Enter description here."><%= @recipe.description %></textarea>
+    </div>
+
+    <div class="form-group">
+      <label>Ingredients</label>
+      <textarea class="form-control input-lg" name="ingredients" placeholder="Enter ingredients." rows="7"><%= @recipe.ingredients %></textarea>
+    </div>
+
+    <div class="form-group">
+      <label>Directions</label>
+      <textarea class="form-control input-lg" name="directions" placeholder="Enter recipe directions." rows="7"><%= @recipe.directions %></textarea>
+    </div>
+
+    <div class="form-group">
+      <label>Preparation Time</label>
+      <input class="form-control input-lg" name="prep_time" placeholder="Enter the recipe preparation time." value="<%= @recipe.prep_time %>"/>
+      <div class="help-block">Enter time like "1 hour" or "30 mins".</div>
+    </div>
+
+    <div class="form-group">
+      <label>Recipe Tags</label>
+      <textarea class="form-control input-lg" name="tags" placeholder="Enter dish type(s)."><%= @recipe.tags_to_str %></textarea>
+    </div>
+
+    <div class="form-group">
+      <label for="exampleInputFile">File input</label>
+      <input type="file" name="image">
+    </div>
+  </form>
+
+  <button type="button" class="btn btn-success btn-lg" onclick="saveRecipe();">Save</button>
+  <button type="button" class="btn btn-danger pull-right" onclick="promptDeleteRecipe();">
+    <i class="fa fa-trash"></i>
+    Delete
+  </button>
+
+</div>

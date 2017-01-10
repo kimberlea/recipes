@@ -1,0 +1,54 @@
+<div class="recipe-container">
+
+  <div class="recipe-image">
+    <img src="<%= @recipe.image.url %>"/>
+  </div>
+
+  <div class="recipe-content">
+    <div class="recipe-title">
+      <h1><%= @recipe.title %></h1>
+    </div>
+
+    <div class="recipe-meta">
+      <%= @recipe.created_at.strftime("%B %-d, %Y") %>
+        |
+       <a href="<%= @recipe.view_path %>/edit">Edit Recipe</a>
+       |
+       <a href="/">Home</a>
+    </div>
+
+    <div class="recipe-description recipe-section text-center">
+      <%= @recipe.description %>
+    </div>
+
+    <div class="recipe-info recipe-section row">
+      <div class="col-sm-6">
+        <h5>Serving Size</h5>
+        <p>Makes <%= @recipe.serving_size %> servings </p>
+      </div>
+      <div class="col-sm-6">
+        <h5><span>Preparation Time</span></h5>
+        <p><%= @recipe.prep_time %></p>
+      </div>
+    </div>
+
+    <div class="recipe-ingredients recipe-section">
+      <h2><span>Ingredients<span></h2>
+      <%= raw @recipe.ingredients_html %>
+    </div>
+
+    <div class="recipe-prep recipe-section">
+      <h2><span>Directions</span></h2>
+      <%= raw @recipe.directions_html %>
+    </div>
+
+    <div class="recipe-tags recipe-section">
+
+      <% @recipe.tags.each do |tag| %>
+        <span><%= tag %></span>
+      <% end if @recipe.tags %>
+    </div>
+
+  </div>
+
+</div>
