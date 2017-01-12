@@ -33,13 +33,17 @@
     </div>
 
     <div class="recipe-ingredients recipe-section">
-      <h2><span>Ingredients<span></h2>
-      <%= raw @recipe.ingredients_html %>
+      <h2><span>Ingredients</span></h2>
+      <div class="recipe-ingredients-body">
+        <%= raw @recipe.ingredients_html %>
+      </div>
     </div>
 
     <div class="recipe-prep recipe-section">
       <h2><span>Directions</span></h2>
-      <%= raw @recipe.directions_html %>
+      <div class="recipe-prep-body">
+        <%= raw @recipe.directions_html %>
+      </div>
     </div>
 
     <div class="recipe-tags recipe-section">

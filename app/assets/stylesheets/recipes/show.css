@@ -38,6 +38,10 @@
   padding: 14px;
 }
 
+.recipe-description {
+  font-size: 16px;
+}
+
 .recipe-ingredients {
   padding: 14px;
 }
@@ -60,6 +64,10 @@
 
 .recipe-ingredients ul {
   list-style-type: square;
+}
+
+.recipe-ingredients-body, .recipe-prep-body {
+  font-size: 16px;
 }
 
 .recipe-tags span {
