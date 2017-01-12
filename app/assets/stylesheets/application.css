@@ -21,6 +21,7 @@
  body {
    background-color: #fff;
    color: white;
+   font-size: 20px;
    margin: 0px;
    font-family: "Lato";
    background-image: url("/assets/wood.jpg");
