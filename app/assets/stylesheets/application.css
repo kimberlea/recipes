@@ -17,6 +17,7 @@
  html {
    -webkit-text-size-adjust: auto;
  }
+
  body {
    background-color: #fff;
    color: white;
@@ -25,6 +26,7 @@
    background-image: url("/assets/wood.jpg");
    background-size: cover;
    background-attachment: fixed;
+   padding-bottom: 50px;
  }
 
  body.bg-white {
