@@ -1,0 +1,53 @@
+.backdrop-tint {
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+  background: rgba(50, 50, 50, 0.75);
+  z-index: -100;
+}
+
+.page-panel {
+  margin-top: 150px;
+}
+
+.panel {
+  color: #555;
+}
+
+.form-control {
+  border-radius: 0px;
+}
+
+.btn-full {
+  width: 100%;
+}
+
+.pos-rel {
+  position: relative;
+}
+
+.btn-clear {
+  color: #d64541;
+  background-color: transparent;
+  border: 1px solid #d64541;
+  padding: 3px 5px;
+}
+
+.btn.btn-default {
+  background: #d64541;
+  color: #fff;
+  border: none;
+}
+
+.logo {
+  display: inline-block;
+  padding: 10px 20px;
+  background: #d64541;
+  color: #eee;
+  border-radius: 5px;
+  font-weight: 100;
+  letter-spacing: 3px;
+  /*text-shadow: 1px 1px 2px #ccc;*/
+}

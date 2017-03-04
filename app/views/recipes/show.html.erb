@@ -9,12 +9,45 @@
       <h1><%= @recipe.title %></h1>
     </div>
 
-    <div class="recipe-meta">
-      <%= @recipe.created_at.strftime("%B %-d, %Y") %>
-        |
-       <a href="<%= @recipe.view_path %>/edit">Edit Recipe</a>
-       |
-       <a href="/">Home</a>
+    <div class="recipe-meta row" style="max-width: 500px; margin: 0px auto;">
+      <div class="col-sm-3">
+        <img src="/assets/default-user.png" class="img-circle" style="width: 80px;"/>
+      </div>
+      <div class="col-sm-9 text-left">
+        <div class="recipe-meta-name" style="color: #555;">
+          <a href="/recipes?creator=<%= @creator.id %>"><%= @creator.full_name %></a>
+          <% if @following.present? %>
+            <button type="button" class="btn btn-clear" style="margin-left: 5px" onclick="deleteFollowing(<%= @following.id %>);">
+              Unfollow
+            </button>
+          <% else %>
+            <button type="button" class="btn btn-clear" style="margin-left: 5px" onclick="followUser(<%= @creator.id %>);">
+              Follow
+            </button>
+          <% end %>
+        </div>
+        <div class="recipe-meta-info">
+          <%= @recipe.created_at.strftime("%B %-d, %Y") %>
+            &bull;
+           <a href="<%= @recipe.view_path %>/edit">Edit Recipe</a>
+           &bull;
+           <a href="/">Home</a>
+        </div>
+
+        <div class="recipe-meta-reaction">
+          <% if @user_reaction.present? && @user_reaction.is_favorite == true %>
+            <button type="button" class="btn btn-clear" onclick="unfavoriteRecipe(<%= @user_reaction.id %>);">
+              <i class="fa fa-heart-o"></i>
+              Unfavorite
+            </button>
+          <% else %>
+            <button type="button" class="btn btn-clear" onclick="favoriteRecipe(<%= @recipe.id %>);">
+              <i class="fa fa-heart"></i>
+              Favorite
+            </button>
+          <% end %>
+        </div>
+      </div>
     </div>
 
     <div class="recipe-description recipe-section text-center">

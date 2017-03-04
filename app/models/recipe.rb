@@ -10,14 +10,22 @@ class Recipe < ActiveRecord::Base
   field :tags, type: String, array: true
   field :prep_time, type: String
   field :image, type: String
+  field :creator_id, type: Integer
+
+  belongs_to :creator, class_name: "User"
 
   timestamps!
+
+  scope :serves_count, lambda {|count|
+    where("serving_size > ?", count)
+  }
 
   validate do
     errors.add(:title, "Please enter a title for this recipe.") if self.title.blank?
     errors.add(:serving_size, "Enter serving size.") if self.serving_size.blank?
     errors.add(:ingredients, "Enter recipe ingredients.") if self.ingredients.blank?
     errors.add(:directions, "Enter recipe directions.") if self.directions.blank?
+    errors.add(:creator, "Enter who created this recipe.") if self.creator_id.blank?
   end
 
   def view_path

@@ -3,24 +3,32 @@ class RecipesController < ApplicationController
   before_action :load_recipe
 
   def index
+    @body_style = "bg-white"
     filter = params[:filter]
-    if filter
-      @recipes = Recipe.where("title ILIKE ?", "%#{filter}%").order(:title)
+    @creator_filter = params[:creator] || "all"
+    if @creator_filter == "me"
+      @recipes = Recipe.where(creator_id: current_user.id)
+    elsif @creator_filter == "friends"
+      @recipes = Recipe.where("creator_id IN (SELECT user_id from followings where followings.follower_id = ?)", current_user.id)
+    elsif @creator_filter.match(/\d/)
+      @recipes = Recipe.where(creator_id: @creator_filter)
     else
-      # load all my recipes
-      @recipes = Recipe.all.order(:title)
+      @recipes = Recipe.all
     end
-  end
 
+    if filter
+      @recipes = @recipes.where("title ILIKE ?", "%#{filter}%")
+    end
+
+    @recipes = @recipes.order(:title)
+  end
 
   def show
     @body_style = "bg-white"
 
-    list_id = params[:id]
-
-    @recipe = Recipe.find(list_id)
-
-
+    @creator = @recipe.creator
+    @following = self.current_user.following_of(@creator)
+    @user_reaction = self.current_user.reaction_to(@recipe)
   end
 
   def create
@@ -44,6 +52,7 @@ class RecipesController < ApplicationController
     @recipe.ingredients = params[:ingredients] if params.key?(:ingredients)
     @recipe.directions = params[:directions] if params.key?(:directions)
     @recipe.prep_time = params[:prep_time] if params.key?(:prep_time)
+    @recipe.creator = self.current_user
     if params.key?(:tags)
       tags = JSON.parse(params[:tags])
       tags = tags.collect {|tag| tag.strip.downcase}
@@ -65,6 +74,13 @@ class RecipesController < ApplicationController
       res = {success: true, data: @recipe.to_api}
     end
     render_result(res)
+  end
+
+  def favorite
+    @reaction = current_user.reaction_to(@recipe, true)
+    @reaction.is_favorite = true
+    @reaction.save
+    render_result({success: true, data: @reaction.to_api})
   end
 
   private

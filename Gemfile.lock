@@ -1,4 +1,11 @@
 GIT
+  remote: git://github.com/agquick/quick_auth.git
+  revision: 57aa7061a73e54f60bca8b4fee41fb14202fd10f
+  ref: 57aa706
+  specs:
+    quick_auth (2.1.0)
+
+GIT
   remote: git://github.com/agquick/schema_sync.git
   revision: 7ec06b3a4c95fe4fac9b8bb13af09b539933b38e
   specs:
@@ -190,6 +197,7 @@ DEPENDENCIES
   mini_magick
   non-stupid-digest-assets
   pg
+  quick_auth!
   rails (= 4.2.2)
   redcarpet
   sass-rails (~> 5.0)

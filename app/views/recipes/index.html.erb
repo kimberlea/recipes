@@ -1,30 +1,24 @@
+<div class="header-space" style="height: 60px"></div>
+
 <div class="container">
-  <div class="recipes-header">
-    <h1> My Recipes </h1>
-  </div>
 
   <div class="recipes-content">
-
-    <div class="recipes-search">
-      <input class="search-recipe-input" type="text" placeholder="Search Recipe" onkeyup="handleSearchTyping();" />
+    <div class="recipes-creator-filter">
+      <a href="/recipes?creator=all" class="<%= "active" if @creator_filter == "all" %>">All Recipes</a>
+      <a href="/recipes?creator=friends" class= "<%= "active" if @creator_filter == "friends" %>">My Friends' Recipes</a>
+      <a href="/recipes?creator=me" class="<%= "active" if @creator_filter == "me" %>">My Recipes</a>
     </div>
-
-
-    <div class="recipes-status">
-      <a href="/recipe/create">+ Add new Recipe</a>
-
-      <div class="recipes-status-all">
-        <%= pluralize(@recipes.count, "recipe", "recipes") %>
-      </div>
-    </div>
-
 
     <div class="recipe-tiles">
 
       <% @recipes.each do |recipe| %>
       <a class="recipe-tile" href="<%= recipe.view_path %>">
-        <div class="recipe-tile-image">
+        <div class="recipe-tile-image pos-rel">
           <img src="<%= recipe.image.url %>"/>
+          <div class="recipe-tile-image-meta">
+              <img src="/assets/default-user.png" class="img-circle" style="width:20px;"/>
+              <span class="recipe-tile-image-meta-name"><%= recipe.creator.full_name %></span>
+          </div>
         </div>
 
         <div class="recipe-tile-content">

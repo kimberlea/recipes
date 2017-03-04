@@ -6,11 +6,24 @@ Rails.application.routes.draw do
   get 'recipe/:id' => 'recipes#show'
   get 'recipe/:id/edit' => 'recipes#edit'
 
+  get '/sign_up' => 'account#sign_up'
+  post '/register' => 'account#register'
 
+  get '/sign_in' => 'account#sign_in'
+  post '/login' => 'account#login'
+
+  get 'account' => 'account#profile'
+
+  post '/following' => 'followings#save'
+  delete '/following' => 'followings#delete'
 
   post '/recipe' => 'recipes#save'
-
   delete '/recipe' => 'recipes#delete'
+  post '/recipe/favorite' => 'recipes#favorite'
+
+  post '/user_reaction' => 'user_reactions#save'
+  delete '/user_reaction' => 'user_reactions#delete'
+
 
   root 'recipes#index'
 

@@ -25,6 +25,8 @@ gem 'sdoc', '~> 0.4.0', group: :doc
 
 gem 'schema_sync', github: 'agquick/schema_sync'
 
+gem 'quick_auth', github: 'agquick/quick_auth', ref: '57aa706'
+
 gem 'carrierwave', '~> 1.0'
 
 gem 'mini_magick'

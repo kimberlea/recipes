@@ -1,0 +1,24 @@
+<div class="view-profile container-row">
+  <div class="users-search">
+    <input class="search-user-input" type="text" placeholder="Search Users" onkeyup="handleSearchTyping();" />
+  </div>
+
+  <div class="profile-content">
+    <div class="row">
+      <div class="user-name">
+        <div class="col-sm-6"><%= current_user.full_name %></div>
+      </div>
+      <div class="following-status">
+        <div class="col-sm-3">25 followers</div>
+      </div>
+      <div class="profile_pic">
+          <div class="col-sm-3">
+            <img src="/assets/default-user.png" class="img-circle" style="width: 90px;"/>
+            <button type="button" class="btn btn-clear" style="margin-left: 5px" onclick="updatePicture">
+              Change Picture
+            </button>
+          </div>
+        </div>
+    </div>
+  </div>
+</div>
