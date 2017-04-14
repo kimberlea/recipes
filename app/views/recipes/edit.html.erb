@@ -42,9 +42,23 @@
 
     <div class="form-group">
       <label>Preparation Time</label>
-      <input class="form-control input-lg" name="prep_time" placeholder="Enter the recipe preparation time." value="<%= @recipe.prep_time %>"/>
-      <div class="help-block">Enter time like "1 hour" or "30 mins".</div>
+      <div class="row">
+        <div class="col-xs-6">
+        <div class="input-group input-group-lg">
+
+          <input type="number" name="prep_time_hours" class="form-control" placeholder="0" value="<%= @recipe.prep_time_details[:hours] %>">
+          <span class="input-group-addon">hours</span>
+        </div>
+        </div>
+        <div class="col-xs-6">
+        <div class="input-group input-group-lg">
+          <input type="number" name="prep_time_minutes" class="form-control" placeholder="30" value="<%= @recipe.prep_time_details[:minutes] %>">
+          <span class="input-group-addon">minutes</span>
+        </div>
+        </div>
+      </div>
     </div>
+
 
     <div class="form-group">
       <label>Recipe Tags</label>
@@ -55,9 +69,17 @@
       <label for="exampleInputFile">File input</label>
       <input type="file" name="image">
     </div>
+    <div class="checkbox">
+      <label>
+        <input type="checkbox" name="is_private" <%= @recipe.is_private ? "checked" : "" %>> Make this recipe private, so only I can see it. 
+      </label>
+    </div>
   </form>
 
-  <button type="button" class="btn btn-success btn-lg" onclick="saveRecipe();">Save</button>
+  <button type="button" class="btn btn-success btn-lg" onclick="saveRecipe();">
+    <i class="fa fa-check"></i>
+    Save Recipe
+  </button>
   <button type="button" class="btn btn-danger pull-right" onclick="promptDeleteRecipe();">
     <i class="fa fa-trash"></i>
     Delete

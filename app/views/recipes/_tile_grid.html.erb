@@ -1,0 +1,54 @@
+<div class="recipe-tiles">
+    <% if recipes.length == 0 %>
+    <div class="placeholder">
+        No recipes found, why don't you <a href="/recipes/create">add one</a>.
+    </div>
+    <% end %>
+
+    <% recipes.each do |recipe| %>
+    <a class="recipe-tile" href="<%= recipe.view_path %>">
+        <div class="recipe-tile-image pos-rel">
+            <img src="<%= recipe.image.url %>"/>
+            <div class="recipe-tile-image-meta">
+                <img src="<%= recipe.creator.picture_url%>" class="img-circle" style="width:20px; height: 20px;"/>
+                <span class="recipe-tile-image-meta-name"><%= recipe.creator.full_name %></span>
+            </div>
+        </div>
+
+        <div class="recipe-tile-content">
+            <div class="recipe-title" style="font-size: 18px;">
+                <%= truncate(recipe.title, length: 40)%>
+            </div>
+
+            <div class="recipe-description">
+                <%= truncate(recipe.description, length: 50)%>
+            </div>
+
+            <div class="recipe-footer">
+                <span class="recipe-favorites-count" style="margin-right: 10px;">
+                    <i class="fa fa-heart"></i>
+                    <%= recipe.favorites_count %>
+                </span>
+                <span class="recipe-duration">
+                    <i class="fa fa-clock-o"></i>
+                    <%= recipe.prep_time_details[:text] %>
+                </span>
+            </div>
+
+
+        </div>
+    </a>
+    <% end %>  
+</div>
+
+<style> 
+
+.recipe-tile .recipe-footer i {
+    color: red;
+}
+
+.recipe-tile .recipe-duration i {
+    color: #ABABAB;
+   
+}
+</style>

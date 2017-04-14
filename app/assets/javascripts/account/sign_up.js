@@ -1,4 +1,4 @@
-function saveAccount() {
+function saveAccount(opts={}) {
   var first_name = $('input[name=first_name]').val();
   var last_name = $('input[name=last_name]').val();
   var email = $('input[name=email]').val();
@@ -16,7 +16,12 @@ function saveAccount() {
     method: "POST",
     data: data,
     success: function(resp) {
-      navigateTo("/recipes");
+      setCurrentUser(resp.data);
+      if (opts.redirect) {
+         navigateTo(opts.redirect);
+      } else if (opts.callback) {
+        opts.callback(resp);
+      }
     },
     error: function(resp) {
       $.alert(resp.error);
@@ -24,4 +29,3 @@ function saveAccount() {
   })
 }
 
-<!--jquery-->

@@ -1,13 +1,20 @@
 class User < ActiveRecord::Base
   include SchemaSync::Model
   include QuickAuth::Authentic
+  mount_uploader :picture, PictureUploader
 
   field :first_name, type: String
   field :last_name, type: String
   field :email, type: String
+  field :picture, type: String
+  field :bio, type: String
+
 
   timestamps!
   quick_auth_authentic!
+
+  has_many :recipes, class_name: "Recipe", foreign_key: :creator_id
+
 
   validate do
     errors.add(:first_name, "Enter your first name.") if self.first_name.blank?
@@ -43,6 +50,8 @@ class User < ActiveRecord::Base
     self.last_name = opts[:last_name] if opts[:last_name]
     self.email = opts[:email] if opts[:email]
     self.password = opts[:password] if opts[:password]
+    self.bio = opts[:bio] if opts[:bio]
+  
 
     # save and return response
     success = self.save
@@ -64,6 +73,14 @@ class User < ActiveRecord::Base
     Following.where(follower_id: user.id, user_id: self.id).first
   end
 
+  def followings_of_me
+    Following.where(user_id: self.id)
+  end
+
+  def followings_by_me
+    Following.where(follower_id: self.id)
+  end
+
   def reaction_to(recipe, build=false)
     r = UserReaction.where(user_id: self.id, recipe_id: recipe.id).first
     if r.nil? && build == true
@@ -72,12 +89,26 @@ class User < ActiveRecord::Base
     return r
   end
 
+  def picture_url
+    if self.picture.nil? || self.picture.url.nil?
+      "/assets/default-user.png"
+    else
+      self.picture.url
+    end
+  end
+
+  def favorites_count
+    UserReaction.where(is_favorite: true).where("recipe_id IN (SELECT id FROM recipes WHERE creator_id=?)", self.id).count
+  end
+
+
   def to_api
     ret = {}
     ret[:id] = self.id.to_s
     ret[:first_name] = self.first_name
     ret[:last_name] = self.last_name
     ret[:email] = self.email
+    ret[:bio] = self.bio
     ret[:errors] = self.errors.to_hash if self.errors.any?
 
     return ret

@@ -4,88 +4,245 @@
     <img src="<%= @recipe.image.url %>"/>
   </div>
 
-  <div class="recipe-content">
-    <div class="recipe-title">
-      <h1><%= @recipe.title %></h1>
-    </div>
-
-    <div class="recipe-meta row" style="max-width: 500px; margin: 0px auto;">
-      <div class="col-sm-3">
-        <img src="/assets/default-user.png" class="img-circle" style="width: 80px;"/>
+  <div class="col-md-9">
+    <div class="recipe-content">
+      <div class="recipe-title">
+        <h1><%= @recipe.title %></h1>
       </div>
-      <div class="col-sm-9 text-left">
-        <div class="recipe-meta-name" style="color: #555;">
-          <a href="/recipes?creator=<%= @creator.id %>"><%= @creator.full_name %></a>
-          <% if @following.present? %>
-            <button type="button" class="btn btn-clear" style="margin-left: 5px" onclick="deleteFollowing(<%= @following.id %>);">
-              Unfollow
-            </button>
-          <% else %>
-            <button type="button" class="btn btn-clear" style="margin-left: 5px" onclick="followUser(<%= @creator.id %>);">
-              Follow
-            </button>
-          <% end %>
+
+      <div class="recipe-meta row" style="max-width: 600px; margin: 0px auto;">
+        <div class="col-sm-3">
+          <img src="<%= @creator.picture_url %>" class="img-circle" style="width: 80px;"/>
         </div>
-        <div class="recipe-meta-info">
-          <%= @recipe.created_at.strftime("%B %-d, %Y") %>
+        <div class="col-sm-9 text-left">
+          <div class="recipe-meta-name" style="color: #555;">
+            <a href="/user/<%= @creator.id %>"><%= @creator.full_name %></a>
+            <% if @following.present? %>
+              <button type="button" class="btn btn-clear" style="margin-left: 5px" onclick="deleteFollowing(<%= @following.id %>, ['.recipe-meta']);">
+                Unfollow
+              </button>
+            <% else %>
+              <button type="button" class="btn btn-clear" style="margin-left: 5px" onclick="followUser(<%= @creator.id %>, ['.recipe-meta']);">
+                Follow
+              </button>
+            <% end %>
+
+            <% if @user_reaction.present? && @user_reaction.is_favorite == true %>
+              <button type="button" class="btn btn-clear" onclick="unfavoriteRecipe(<%= @user_reaction.id %>);">
+                <i class="fa fa-heart-o"></i>
+                Unfavorite
+              </button>
+            <% else %>
+              <button type="button" class="btn btn-clear" onclick="favoriteRecipe(<%= @recipe.id %>);">
+                <i class="fa fa-heart"></i>
+                Favorite
+              </button>
+            <% end %>
+          </div>
+          <div class="recipe-meta-info">
+            <i class="fa fa-heart"></i>
+            <%= @recipe.favorites_count %>
             &bull;
-           <a href="<%= @recipe.view_path %>/edit">Edit Recipe</a>
-           &bull;
-           <a href="/">Home</a>
-        </div>
-
-        <div class="recipe-meta-reaction">
-          <% if @user_reaction.present? && @user_reaction.is_favorite == true %>
-            <button type="button" class="btn btn-clear" onclick="unfavoriteRecipe(<%= @user_reaction.id %>);">
-              <i class="fa fa-heart-o"></i>
-              Unfavorite
-            </button>
-          <% else %>
-            <button type="button" class="btn btn-clear" onclick="favoriteRecipe(<%= @recipe.id %>);">
-              <i class="fa fa-heart"></i>
-              Favorite
-            </button>
-          <% end %>
+            <%= @recipe.created_at.strftime("%B %-d, %Y") %>
+      
+            <% if current_user != nil %>
+              <% if @creator.id == current_user.id %>
+              &bull;          
+                <a href="<%= @recipe.view_path %>/edit">Edit Recipe</a>
+              <% end %>
+            <% end %>
+          </div>
+          <!-- Go to www.addthis.com/dashboard to customize your tools --> 
+          <div class="addthis_inline_share_toolbox" style="margin: 5px;"></div>
         </div>
       </div>
-    </div>
 
-    <div class="recipe-description recipe-section text-center">
-      <%= @recipe.description %>
-    </div>
-
-    <div class="recipe-info recipe-section row">
-      <div class="col-sm-6">
-        <h5>Serving Size</h5>
-        <p>Makes <%= @recipe.serving_size %> servings </p>
+      <div class="recipe-description recipe-section text-center">
+        <%= @recipe.description %>
       </div>
-      <div class="col-sm-6">
-        <h5><span>Preparation Time</span></h5>
-        <p><%= @recipe.prep_time %></p>
+
+      <div class="recipe-info recipe-section row">
+        <div class="col-sm-6">
+          <h5>Serving Size</h5>
+          <p>Makes <%= @recipe.serving_size %> servings </p>
+        </div>
+        <div class="col-sm-6">
+          <h5><span>Preparation Time</span></h5>
+          <p><%= @recipe.prep_time_details[:text] %></p>
+        </div>
+      </div>
+
+      <div class="recipe-ingredients recipe-section">
+        <h2><span>Ingredients</span></h2>
+        <div class="recipe-ingredients-body">
+          <%= raw @recipe.ingredients_html %>
+        </div>
+      </div>
+
+      <div class="recipe-prep recipe-section">
+        <h2><span>Directions</span></h2>
+        <div class="recipe-prep-body">
+          <%= raw @recipe.directions_html %>
+        </div>
+      </div>
+
+      <div class="recipe-tags recipe-section">
+        <% @recipe.tags.each do |tag| %>
+          <span><%= tag %></span>
+        <% end if @recipe.tags %>
       </div>
     </div>
 
-    <div class="recipe-ingredients recipe-section">
-      <h2><span>Ingredients</span></h2>
-      <div class="recipe-ingredients-body">
-        <%= raw @recipe.ingredients_html %>
+    <div class="comments-content text-left">
+      <% if current_user != nil %>
+      <div class="new-comment">
+
+        <div class="new-comment-image">
+          <img src="<%= @creator.picture_url %>" class="img-circle" style="width: 40px; height: 40px;"/>
+        </div>
+        <div class="new-comment-text">
+          <textarea type="text" name="body" placeholder="Add a comment." rows="3"></textarea>  
+        </div> 
+        <div class="new-comment-submit" style="padding: 20px 10px;">
+          <button type="button" class="btn btn-default" onclick="submitComment();">Submit</button>
+        </div>
+
+      </div>
+      <% end %>
+
+      <div class="comments">
+        <% @comments.each do |comment| %>
+        <div class="comment">
+
+          <div class="comment-image">
+            <img src="<%= comment.user.picture_url %>" class="img-circle" style="width: 40px; height: 40px;"/>
+          </div>
+
+          <div class="comment-body">
+
+            <div class="comment-creator">
+              <a href="/user/<%= comment.user_id %>"><%= comment.user.full_name %> </a>
+              <span class="comment-date">
+                <%= time_ago_in_words(comment.created_at) %>
+              </span>
+            </div>
+
+            <div class="comment-text">
+              <%= comment.body %> 
+            </div>
+
+          </div>
+        </div>
+        <% end %>
       </div>
     </div>
-
-    <div class="recipe-prep recipe-section">
-      <h2><span>Directions</span></h2>
-      <div class="recipe-prep-body">
-        <%= raw @recipe.directions_html %>
-      </div>
+  </div>
+  <div class="col-md-3 sidebar-panel" style="background-color: #fafafa;">
+    <div class="sidebar-title" style="text-align: center; padding-top: 20px; text-decoration: underline">
+      Recent Recipes
     </div>
-
-    <div class="recipe-tags recipe-section">
-
-      <% @recipe.tags.each do |tag| %>
-        <span><%= tag %></span>
-      <% end if @recipe.tags %>
-    </div>
-
+    <%= render partial: "tile_grid", locals: {recipes: @recipes} %>
   </div>
 
 </div>
+
+<style>
+.comments-content {
+  padding: 30px;
+  background: #fafafa;
+
+}
+
+.comments-content .new-comment {
+  border: 1px solid #f4f4f4;
+  background: #fff;
+  display: flex;
+}
+
+.comments-content .new-comment .new-comment-text {
+  flex: 1;
+}
+
+.recipe-meta-info i{
+  color: red;
+}
+
+.new-comment-image {
+  padding: 20px;
+}
+
+.new-comment .new-comment-submit {
+  text-align: center;
+}
+
+.new-comment .new-comment-submit button {
+  padding: 15px;
+}
+
+.comments-content .comment {
+  border: 1px solid #f4f4f4;
+  background: #fff;
+  display: flex;
+  margin: 30px 0px;
+  padding: 20px;
+}
+
+.comment .comment-image {
+  padding-right: 20px;
+}
+
+.new-comment-text textarea {
+  width: 100%;
+  padding: 20px;
+  border: none;
+}
+
+.new-comment-text textarea:focus {
+  outline: none;
+}
+
+.comment .comment-creator a {
+  color: black;
+}
+
+.comment .comment-creator .comment-date {
+  color: #808386;
+  font-size: 80%;
+}
+
+
+.comments .comment-text {
+  width: 100%;
+  border: none;
+  flex: 1;
+  color: #505356;
+}
+</style>
+
+<script>
+
+var recipeID = <%= @recipe.id %>;
+
+function submitComment() {
+
+  var body = $('textarea[name=body]').val();
+  var recipe_id = recipeID;
+
+  data = {
+    recipe_id: recipe_id,
+    body: body,
+  }
+
+  apiRequest({
+    url: "/comment",
+    method: "POST",
+    data: data,
+    success: function(resp) {
+      updatePage([".comments-content"]);
+    },
+    error: function(resp) {
+      $.alert(resp.error);
+    }
+  });
+}
+</script>

@@ -7,8 +7,7 @@
         <div class="panel-body">
           <div class="brand text-center" style="padding: 20px 0px 10px;">
             <div class="logo">
-              <i class="fa fa-lemon-o fa-fw"></i>
-              foodlife
+              <img src="/assets/logo_white.png" style="height: 40px;"/>
             </div>
           </div>
           <div class="intro text-center" stlye="margin: 30px 0px;">
@@ -23,10 +22,13 @@
               <input type="password" name="password" class="form-control input-lg" placeholder="Password" value=""/>
             </div>
 
-            <button type="button" class="btn btn-success btn-lg btn-full" onclick="logIn();">
+            <button type="button" class="btn btn-success btn-lg btn-full" onclick="logIn({redirect: '/recipes'});">
               <i class="fa fa-check"></i>
               Log In
             </button>
+            <div style="font-size: 16px; text-center; padding-top: 10px;"> Don't have an account?
+              <a href="/sign_up" class="form-group text-center" style="padding: 0px 30px; font-size: 16px; text-decoration: underline;">Sign Up</a>
+            </div>
           </form>
         </div>
       </div>

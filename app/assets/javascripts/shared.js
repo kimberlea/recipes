@@ -1,4 +1,47 @@
+function handleRecipeTyping() {
+  // get text in the input now
+  var text = $('input.recipe-search-input').val();
+  //console.log(text);
+  updatePage([".recipe-tiles"], {params: {q: text}});
+}
+
 /* HELPER METHODS */
+
+function isSignedIn() {
+  return window.currentUser != null;
+}
+
+function setCurrentUser(user) {
+  window.currentUser = user;
+}
+
+var openModals = {};
+
+function showModalFromURL(id, url, opts={}) {
+  if (opts.overlap == false) {
+    closeModals();
+  }
+  var m = $.dialog({
+    title: null,
+    content: "URL:" + url
+  });
+  openModals[id] = m;
+  return m;
+}
+
+function closeModal(id) {
+  var m = openModals[id];
+  if (m) {
+    m.close();
+  }
+}
+
+function closeModals() {
+  for (var m in openModals) {
+    openModals[m].close();
+  }
+  openModals = {};
+}
 
 function apiRequest(opts) {
   opts.dataType = opts.dataType || 'json';
@@ -40,9 +83,8 @@ function apiRequest(opts) {
   $.ajax(aopts);
 }
 
-function updatePage(element_classes, opts) {
+function updatePage(element_classes, opts={}) {
   var url = location.pathname;
-  opts = opts || {};
   var data = opts.params || {};
   apiRequest({
     data: data,
@@ -62,7 +104,7 @@ function updatePage(element_classes, opts) {
 }
 
 
-
 function navigateTo(url) {
   window.location.href = url;
 }
+

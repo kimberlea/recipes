@@ -4,20 +4,24 @@ class RecipesController < ApplicationController
 
   def index
     @body_style = "bg-white"
-    filter = params[:filter]
+    @q = params[:q]
+    @filter_favorite = params[:favorite] == "true"
     @creator_filter = params[:creator] || "all"
+
     if @creator_filter == "me"
       @recipes = Recipe.where(creator_id: current_user.id)
     elsif @creator_filter == "friends"
-      @recipes = Recipe.where("creator_id IN (SELECT user_id from followings where followings.follower_id = ?)", current_user.id)
-    elsif @creator_filter.match(/\d/)
-      @recipes = Recipe.where(creator_id: @creator_filter)
+      @recipes = Recipe.is_public.where("creator_id IN (SELECT user_id from followings where followings.follower_id = ?)", current_user.id)
     else
-      @recipes = Recipe.all
+      @recipes = Recipe.is_public
     end
 
-    if filter
-      @recipes = @recipes.where("title ILIKE ?", "%#{filter}%")
+    if @filter_favorite && current_user
+      @recipes = @recipes.joins(:user_reactions).where("user_reactions.is_favorite = true and user_reactions.user_id = ?", current_user.id)
+    end
+
+    if @q.present?
+      @recipes = @recipes.where("title ILIKE ?", "%#{@q}%")
     end
 
     @recipes = @recipes.order(:title)
@@ -26,9 +30,22 @@ class RecipesController < ApplicationController
   def show
     @body_style = "bg-white"
 
+    @recipe = Recipe.find(params[:id])
     @creator = @recipe.creator
-    @following = self.current_user.following_of(@creator)
-    @user_reaction = self.current_user.reaction_to(@recipe)
+    if self.current_user
+      @following = self.current_user.following_of(@creator)
+      @user_reaction = self.current_user.reaction_to(@recipe)
+    else
+      @following = nil
+      @user_reaction = nil
+    end
+    # load comments
+    @comments = Comment.where(recipe_id: @recipe.id).order("created_at desc")
+
+    # load 5 most recent recipes
+    @recipes = Recipe.is_public.limit(5).order("created_at desc")
+  
+   
   end
 
   def create
@@ -51,7 +68,8 @@ class RecipesController < ApplicationController
     @recipe.description = params[:description] if params.key?(:description)
     @recipe.ingredients = params[:ingredients] if params.key?(:ingredients)
     @recipe.directions = params[:directions] if params.key?(:directions)
-    @recipe.prep_time = params[:prep_time] if params.key?(:prep_time)
+    @recipe.prep_time_mins = params[:prep_time_mins] if params.key?(:prep_time_mins)
+    @recipe.is_private = (params[:is_private]=="true") if params.key?(:is_private)
     @recipe.creator = self.current_user
     if params.key?(:tags)
       tags = JSON.parse(params[:tags])

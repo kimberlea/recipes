@@ -10,7 +10,7 @@
 
 .recipe-image img {
   width: 100%;
-  height: 500px;
+  height: 350px;
   object-fit: cover;
 }
 
@@ -70,4 +70,8 @@
   padding: 10px 15px;
   margin: 10px;
   text-transform: uppercase;
+}
+
+.form-group .col-sm-2 {
+  font-size: 14px;
 }

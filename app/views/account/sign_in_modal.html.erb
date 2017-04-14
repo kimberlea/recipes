@@ -1,0 +1,40 @@
+ <div class="panel-body">
+   <div class="brand text-center" style="padding: 20px 0px 10px;">
+     <div class="logo">
+       <img src="/assets/logo_white.png" style="height: 40px;"/>
+     </div>
+     <div class="intro text-center" stlye="margin: 30px 0px;">
+       <h3 style="margin-bottom: 10px"> Welcome Back</h3><div class="text-muted small" style="font-size: 12px;">Log In</div>
+     </div>
+     <form>
+       <div class="form-group">
+         <input type="text" name="email" class="form-control input-lg" placeholder="Enter your email address." value=""/>
+       </div>
+
+       <div class="form-group">
+         <input type="password" name="password" class="form-control input-lg" placeholder="Password" value=""/>
+       </div>
+
+       <button type="button" class="btn btn-success btn-lg btn-full" onclick="modalLogin();">
+         <i class="fa fa-check"></i>
+           Log In
+       </button>
+       <div style="font-size: 16px; text-align: center; padding-top: 10px;"> Don't have an account?
+         <a href="/sign_up" class="form-group text-center" style="padding: 0px 30px; font-size: 16px; text-decoration: underline;">Sign Up</a>
+       </div>
+     </form>
+   </div>
+ </div>
+
+<script>
+function modalLogin() {
+  logIn({
+    callback: function() {
+      // close modal
+      closeModal('sign_in');
+      // update navbar
+      updatePage(['.navbar']);
+    }
+  });
+}
+</script>

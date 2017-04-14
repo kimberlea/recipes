@@ -1,15 +1,23 @@
 
 function saveRecipe() {
+  if (!isSignedIn()) {
+    showModalFromURL("sign_up", "/modal/sign_up");
+    return
+  }
   var title = $('input[name=title]').val();
   var serving_size = $('input[name=serving_size]').val();
   var description = $('textarea[name=description]').val();
   var ingredients = $('textarea[name=ingredients]').val();
   var directions = $('textarea[name=directions]').val();
-  var prep_time = $('input[name=prep_time]').val();
+  var prep_time_hours = $('input[name=prep_time_hours]').val();
+  var prep_time_minutes = $('input[name=prep_time_minutes]').val();
   var tags_str = $('textarea[name=tags]').val();
   var tags = tags_str.split(",");
   var image = $('input[name=image]')[0].files[0];
+  var is_private = $('input[name=is_private]').is(':checked');
   var id = getRecipeId();
+
+  var prep_time_mins = parseInt(prep_time_hours) * 60 + parseInt(prep_time_minutes)
 
   data = {
     id: id,
@@ -17,9 +25,11 @@ function saveRecipe() {
     serving_size: serving_size,
     description: description,
     ingredients: ingredients,
-    directions: directions,
-    prep_time: prep_time,
+    directions: directions, 
+    prep_time_mins: prep_time_mins,
+    is_private: is_private,
     tags: JSON.stringify(tags),
+ 
   };
 
   if (image != null) {

@@ -51,3 +51,13 @@
   letter-spacing: 3px;
   /*text-shadow: 1px 1px 2px #ccc;*/
 }
+
+.img-circle {
+  object-fit: cover;
+}
+
+.placeholder {
+  padding: 20px;
+  text-align: center;
+  color: #ccc;
+}

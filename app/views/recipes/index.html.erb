@@ -3,43 +3,16 @@
 <div class="container">
 
   <div class="recipes-content">
-    <div class="recipes-creator-filter">
-      <a href="/recipes?creator=all" class="<%= "active" if @creator_filter == "all" %>">All Recipes</a>
-      <a href="/recipes?creator=friends" class= "<%= "active" if @creator_filter == "friends" %>">My Friends' Recipes</a>
-      <a href="/recipes?creator=me" class="<%= "active" if @creator_filter == "me" %>">My Recipes</a>
-    </div>
+    <% if current_user != nil %>
+     <div class="recipes-creator-filter">
+        <a href="/recipes?creator=all" class="<%= "active" if @creator_filter == "all" %>">All Recipes</a>
+       <a href="/recipes?creator=friends" class= "<%= "active" if @creator_filter == "friends" %>">My Friends' Recipes</a>
+       <a href="/recipes?creator=me" class="<%= "active" if @creator_filter == "me" %>">My Recipes</a>
+       <a href="/recipes?creator=all&favorite=true" class="<%= "active" if @filter_favorite == true %>">My Favorites</a>
+     </div>
+    <% end %>
 
-    <div class="recipe-tiles">
-
-      <% @recipes.each do |recipe| %>
-      <a class="recipe-tile" href="<%= recipe.view_path %>">
-        <div class="recipe-tile-image pos-rel">
-          <img src="<%= recipe.image.url %>"/>
-          <div class="recipe-tile-image-meta">
-              <img src="/assets/default-user.png" class="img-circle" style="width:20px;"/>
-              <span class="recipe-tile-image-meta-name"><%= recipe.creator.full_name %></span>
-          </div>
-        </div>
-
-        <div class="recipe-tile-content">
-          <div class="recipe-title">
-            <%= recipe.title %>
-          </div>
-
-          <div class="recipe-description">
-            <%= truncate(recipe.description, length: 50)%>
-          </div>
-
-          <div class="recipe-duration">
-            <i class="fa fa-clock-o"></i>
-            <%= recipe.prep_time %>
-          </div>
-
-        </div>
-
-      </a>
-      <% end %>
-    </div>
+    <%= render partial: "tile_grid", locals: {recipes: @recipes} %>
 
   </div>
 </div>

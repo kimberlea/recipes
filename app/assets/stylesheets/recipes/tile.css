@@ -58,6 +58,7 @@
 .recipes-creator-filter a.active {
   text-decoration: underline;
 }
+
 .recipes-content .recipes-status a {
   float: right;
   margin: 5px;

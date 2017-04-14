@@ -1,0 +1,44 @@
+.profile-page {
+  background-color: #FFFFFF;
+
+  .profile-header {
+    .profile-full-name {
+      font-size: 24px;
+    }
+  }
+  .profile-picture {
+    padding: 30px;
+  }
+
+  .profile-content {
+    border: 1px solid #CFCCC4;
+  }
+
+  .profile-name {
+    border-right: 1px solid #ddd;
+  }
+
+}
+
+.status-info {
+  display: inline-block;
+
+  .status-info-number {
+    color: #D64541;
+  }
+}
+
+
+
+.my-recipes {
+  border: 1px solid #CFCCC4;
+}
+
+.favorite-recipes {
+  border: 1px solid #CFCCC4;
+
+}
+
+
+
+

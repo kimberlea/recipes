@@ -1,48 +1,82 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Recipes</title>
-  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" media="all" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-  <link href="https://fonts.googleapis.com/css?family=Lato:300,400" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.0.1/jquery-confirm.min.css" />
-  <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
-  <link href="https://fonts.googleapis.com/css?family=Roboto:400,500" rel="stylesheet">
+    <title>Recipes</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" media="all" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Lato:300,400" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.0.1/jquery-confirm.min.css" />
+    <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,500" rel="stylesheet">
 
-  <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.0.1/jquery-confirm.min.js"></script>
-  <%= csrf_meta_tags %>
-  <meta name="viewport" content="initial-scale=0.7">
+    <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.0.1/jquery-confirm.min.js"></script>
+    <%= csrf_meta_tags %>
+    <meta name="viewport" content="initial-scale=0.7">
+    <!-- Go to www.addthis.com/dashboard to customize your tools -->
+    <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-58d925bf20945d90"></script>
+
 </head>
+
 <body class="<%= @body_style %>">
-<nav class="navbar navbar-default navbar-fixed-top">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="/">
-      iCook
-    </a>
-    <div class="navbar-text navbar-right" style="margin: 10px 5px;">
-      <a href="/account" class="navbar-link">
-        <img class="img-circle" src="/assets/default-user.png" style="width: 30px;"/>
-      </a>
-    </div>
+  <% if @show_header == true %>
+    <nav class="navbar navbar-default navbar-fixed-top" style="background-color: #d64541; border: #d64541;">
+      <div class="container-fluid">
+        <a class="navbar-logo" href="/">
+          <img src="/assets/logo_white.png" style="height: 40px;"/>
+        </a>
 
-    <div class="navbar-form navbar-right navbar-search" role="search">
-      <div class="form-group">
-        <input type="text" class="form-control" placeholder="Search">
+        <div class="navbar-primary-link" style="font-size: 16px; padding: 14px; display: inline-block;">
+        
+          <a href="/recipes" class="navbar-link" style="color: #fff">
+            <i class="fa fa-cutlery" aria-hidden="true"></i> 
+            Recipes
+          </a>
+          
+          <a href="/users" class="navbar-link" style="padding: 10px; color: #fff">
+            <i class="fa fa-user-circle-o" aria-hidden="true"></i>
+            Members
+          </a>
+        </div>
+
+      
+
+        <div class="navbar-text navbar-right" style="margin: 10px 5px; padding: 5px 5px;">
+          <% if current_user != nil %>
+            <a href="/user/<%= current_user.id %>" class="navbar-link">
+              <img class="img-circle" src="<%= current_user.picture_url %>" style="width: 30px; height: 30px;"/>
+            </a>
+          <% else %>
+            <a href="/sign_in" class="navbar-link">Sign In</a>
+          <% end %>
+        </div>
+
+        <div class="navbar-form navbar-right navbar-search" role="search">
+          <div class="form-group">
+            <input type="text" class="form-control recipe-search-input" placeholder="Search" onkeyup="handleRecipeTyping();"/>
+          </div>
+        </div>
+
+        <div class="navbar-text navbar-right">
+
+          <a href="/recipe/create" class="navbar-link btn btn-default" style="padding-top: 1px;">
+            <i class="fa fa-plus-circle"></i>
+            New Recipe
+          </a>  
+        </div>
       </div>
-    </div>
+    </nav>
+  <%end%>
 
-    <div class="navbar-text navbar-right" style="margin: 9px 5px;">
-      <a href="/recipe/create" class="navbar-link btn btn-default">
-        <i class="fa fa-plus-circle"></i>
-        New Recipe
-      </a>
-    </div>
+  <%= yield %>
 
-  </div>
-</nav>
-
-<%= yield %>
+  <script>
+  <% if current_user %>
+    var currentUser = <%= raw current_user.to_api.to_json %>;
+  <% else %>
+    var currentUser = null;
+  <% end %>
+  </script>
 
 </body>
 </html>

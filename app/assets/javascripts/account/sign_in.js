@@ -1,4 +1,4 @@
-function logIn() {
+function logIn(opts={}) {
   var email = $('input[name=email]').val();
   var password = $('input[name=password]').val();
 
@@ -13,10 +13,16 @@ function logIn() {
     method: "POST",
     data: data,
     success: function(resp) {
-      navigateTo("/recipes");
+      setCurrentUser(resp.data);
+      if (opts.redirect) {
+        navigateTo(opts.redirect);
+      } else if (opts.callback) {
+        opts.callback(resp);
+      }
     },
     error: function(resp) {
       $.alert(resp.error);
     }
   })
 }
+

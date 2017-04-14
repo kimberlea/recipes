@@ -1,0 +1,78 @@
+.view-profile {
+  background-color: white;
+}
+
+.profile-container {
+  vertical-align: middle;
+  width: 60%;
+  margin: 0px auto;
+}
+
+.profile-container .img-circle {
+  border: 1px solid #ccc;
+  padding: 5px;
+}
+
+.profile-container h1 {
+  padding: 5px;
+  font-size: 17px;
+  color: #AEB4BF;
+
+}
+
+.profile-container .col-md-12 {
+  text-align:center;
+}
+
+.profile-container .btn {
+  margin: 10px;
+  background-color: #D64541;
+  border: none;
+  width: 40% ;
+}
+
+.form-horizontal {
+  margin: 5px;
+}
+
+.form-horizontal .col-sm-10 {
+  width: 60%;
+}
+
+.profile-name {
+  font-size: 16px;
+  font-weight: bold;
+  padding: 25px;
+}
+
+.status-info {
+  font-size: 16px;
+  display: inline-block;
+  padding: 0px 20px;
+  margin: 20px 0px;
+  border-right: 1px solid #ddd;
+  &:last-child {
+    border-right: none;
+  }
+
+  .status-info-number {
+    font-size: 30px;
+  }
+
+  .status-info-title {
+    color: #aaa;
+  }
+}
+
+.personal-settings {
+  padding: 20px;
+  margin: 30px 0px;
+  border-bottom: 1px solid #ddd;
+}
+
+.logout .btn {
+  background-color: #aaa;
+  color: black;
+  border: none;
+  font-size: 16px;
+}

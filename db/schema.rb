@@ -11,10 +11,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170228004952) do
+ActiveRecord::Schema.define(version: 20170403163152) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "comments", force: :cascade do |t|
+    t.integer  "user_id"
+    t.string   "body"
+    t.integer  "recipe_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "followings", force: :cascade do |t|
     t.integer  "follower_id"
@@ -28,13 +36,15 @@ ActiveRecord::Schema.define(version: 20170228004952) do
     t.string   "description"
     t.string   "ingredients"
     t.string   "directions"
-    t.string   "tags",         array: true
+    t.string   "tags",                           array: true
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "serving_size"
     t.string   "image"
     t.string   "prep_time"
     t.integer  "creator_id"
+    t.integer  "prep_time_mins"
+    t.boolean  "is_private",     default: false
   end
 
   create_table "user_reactions", force: :cascade do |t|
@@ -56,6 +66,8 @@ ActiveRecord::Schema.define(version: 20170228004952) do
     t.string   "persistent_token"
     t.string   "perishable_token"
     t.datetime "perishable_token_exp"
+    t.string   "picture"
+    t.string   "bio"
   end
 
 end

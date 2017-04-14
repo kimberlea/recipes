@@ -9,11 +9,16 @@ Rails.application.routes.draw do
   get '/sign_up' => 'account#sign_up'
   post '/register' => 'account#register'
 
+  get 'user/:id' => 'users#show'
+  get '/users' => 'users#index'
+
   get '/sign_in' => 'account#sign_in'
   post '/login' => 'account#login'
+  get '/logout' => 'account#logout'
 
   get 'account' => 'account#profile'
-
+  post '/account' => 'account#save'
+ 
   post '/following' => 'followings#save'
   delete '/following' => 'followings#delete'
 
@@ -24,6 +29,10 @@ Rails.application.routes.draw do
   post '/user_reaction' => 'user_reactions#save'
   delete '/user_reaction' => 'user_reactions#delete'
 
+  post '/comment' => 'comments#save'
+
+  get '/modal/sign_up' => 'account#sign_up_modal'
+  get '/modal/sign_in' => 'account#sign_in_modal'
 
   root 'recipes#index'
 

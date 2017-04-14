@@ -36,10 +36,15 @@
 
  }
 
+ a {
+  cursor: pointer;
+ }
+
  .navbar {
    background-color: rgba(255, 255, 255, 0.9);
    height: 52px;
  }
+
 
  .navbar .navbar-text {
    /*padding: 0px 15px;*/
@@ -54,21 +59,31 @@
    color: #fff;
    font-weight: 100;
    letter-spacing: 1px;
-   height: 52px
+   height: 51px;
  }
 
- .navbar-text a {
-   color: #d64541;
- }
+.navbar-logo {
+  margin-right: 20px;
+  padding: 5px;
+  display: inline-block;
+}
 
- .navbar-text {
-   font-size: 15px;
- }
+.navbar-text a {
+  color: #d64541;
+}
 
- .jconfirm-box {
-   color: #555;
- }
+.navbar-text {
+  font-size: 15px;
+}
 
- .header-space {
-   height: 60px;
- }
+.jconfirm-box {
+  color: #555;
+}
+
+.header-space {
+  height: 60px;
+}
+
+.navbar-text .navbar-link {
+  color: #fff;
+}

@@ -3,15 +3,27 @@ class AccountController < ApplicationController
   # views/pages
 
   def sign_up
+    @show_header = false
     @body_style = "bg-wood"
+  end
+
+  def sign_up_modal
+    render layout: nil
   end
 
   def sign_in
+    @show_header = false
     @body_style = "bg-wood"
   end
 
-  def profile
+  def sign_in_modal
+    render layout: nil
   end
+
+  def profile
+
+  end
+
 
   # api calls
 
@@ -38,13 +50,24 @@ class AccountController < ApplicationController
   end
 
   def logout
-    self.current_user = nil
+    reset_session
+    redirect_to "/"
   end
 
   def save
+    self.current_user.first_name = params[:first_name] if params.key?(:first_name)
+    self.current_user.last_name = params[:last_name] if params.key?(:last_name)
+    self.current_user.email = params[:email] if params.key?(:email)
+    self.current_user.bio = params[:bio] if params.key?(:bio)
+
+    if params.key?(:picture)
+      self.current_user.picture = params[:picture]
+    end
+
+    saved = self.current_user.save
+    res = {success: saved, data: self.current_user.to_api}
+    render_result(res)
   end
-
-
-
-
 end
+
+user = User.all
