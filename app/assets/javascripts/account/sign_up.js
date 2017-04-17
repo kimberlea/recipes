@@ -17,7 +17,9 @@ function saveAccount(opts={}) {
     data: data,
     success: function(resp) {
       setCurrentUser(resp.data);
+      //console.log("Got here 1");
       if (opts.redirect) {
+         //console.log("Got here 2");
          navigateTo(opts.redirect);
       } else if (opts.callback) {
         opts.callback(resp);
