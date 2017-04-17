@@ -14,6 +14,8 @@ class Recipe < ActiveRecord::Base
   field :creator_id, type: Integer
   field :is_private, type: :boolean, default: false
 
+  field :search_vector, type: :tsvector
+
   belongs_to :creator, class_name: "User"
 
   has_many :user_reactions
@@ -26,6 +28,8 @@ class Recipe < ActiveRecord::Base
   scope :is_public, lambda {
     where(is_private: false)
   }
+
+  after_save :update_search_vector
 
   validate do
     errors.add(:title, "Please enter a title for this recipe.") if self.title.blank?
@@ -74,7 +78,12 @@ class Recipe < ActiveRecord::Base
     return {hours: hrs, minutes: mins, text: str}
   end
 
-
+  def update_search_vector
+    v = "#{title} #{description} #{tags.join(" ")}"
+    conn = self.class.connection
+    sql = Recipe.send(:sanitize_sql, ["UPDATE recipes SET search_vector = to_tsvector(?) WHERE id=?", v, id])
+    conn.execute(sql)
+  end
 
   def to_api
     ret = {}

@@ -5,7 +5,7 @@
   <div class="recipes-content">
     <% if current_user != nil %>
      <div class="recipes-creator-filter">
-        <a href="/recipes?creator=all" class="<%= "active" if @creator_filter == "all" %>">All Recipes</a>
+        <a href="/recipes?creator=all" class="<%= "active" if @creator_filter == "all" %>">Newest Recipes</a>
        <a href="/recipes?creator=friends" class= "<%= "active" if @creator_filter == "friends" %>">My Friends' Recipes</a>
        <a href="/recipes?creator=me" class="<%= "active" if @creator_filter == "me" %>">My Recipes</a>
        <a href="/recipes?creator=all&favorite=true" class="<%= "active" if @filter_favorite == true %>">My Favorites</a>

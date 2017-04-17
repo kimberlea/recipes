@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170403163152) do
+ActiveRecord::Schema.define(version: 20170417212120) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -45,6 +45,7 @@ ActiveRecord::Schema.define(version: 20170403163152) do
     t.integer  "creator_id"
     t.integer  "prep_time_mins"
     t.boolean  "is_private",     default: false
+    t.tsvector "search_vector"
   end
 
   create_table "user_reactions", force: :cascade do |t|

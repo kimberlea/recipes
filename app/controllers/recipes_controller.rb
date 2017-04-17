@@ -21,10 +21,10 @@ class RecipesController < ApplicationController
     end
 
     if @q.present?
-      @recipes = @recipes.where("title ILIKE ?", "%#{@q}%")
+      @recipes = @recipes.where("search_vector @@ to_tsquery(?)", @q)
     end
 
-    @recipes = @recipes.order(:title)
+    @recipes = @recipes.order("created_at desc")
   end
 
   def show
