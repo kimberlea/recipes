@@ -39,6 +39,7 @@ class Recipe < ActiveRecord::Base
     errors.add(:creator, "Enter who created this recipe.") if self.creator_id.blank?
     errors.add(:prep_time_mins, "Enter how long this recipe takes.") if self.prep_time_mins.blank?
     errors.add(:image, "Please add a image for your recipe.") if self.image.blank? || self.image.url.blank?
+    errors.add(:description, "Please enter a description for this recipe.") if self.description.blank?
   end
 
   def view_path

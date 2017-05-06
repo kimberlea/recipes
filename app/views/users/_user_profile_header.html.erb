@@ -7,18 +7,20 @@
       <%= @user.full_name %>
 
       <% if @following.present? %>
-        <button type="button" class="btn btn-clear" style="margin-right: 5px;" onclick="deleteFollowing(<%= @following.id %>, ['.profile-header']);">
+        <button type="button" class="btn btn-clear" style="margin-right: 5px;" onclick="deleteFollowing(<%= @following.id %>, ['.profile-name']);">
           Unfollow
         </button>
       <% else %>
-        <button type="button" class="btn btn-clear" style="margin-right: 5px;" onclick="followUser(<%= @user.id %>, ['.profile-header']);">
+        <button type="button" class="btn btn-clear" style="margin-right: 5px;" onclick="followUser(<%= @user.id %>, ['.profile-name']);">
           Follow
         </button>
       <% end %>
-      <a  type="button" class="btn btn-clear" style="margin-right: 5px;" href="/account";>
-        <i class="fa fa-cog" aria-hidden="true"></i>
-        Settings
-      </a>
+      <% if current_user.id == @user.id %>
+        <a  type="button" class="btn btn-clear" style="margin-right: 5px;" href="/account";>
+          <i class="fa fa-cog" aria-hidden="true"></i>
+          Settings
+        </a>
+      <% end %>
     </div>
 
     <div class="user-bio">
