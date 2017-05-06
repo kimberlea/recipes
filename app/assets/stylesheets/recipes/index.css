@@ -65,12 +65,6 @@
 }
 
 
-.recipe-tiles {
-  text-align: center;
-  padding: 14px;
-  margin: 3px;
-}
-
 .recipe-tile {
   position:relative;
   display: inline-block;
