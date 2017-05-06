@@ -4,6 +4,9 @@ class Following < ActiveRecord::Base
   field :follower_id, type: Integer
   field :user_id, type: Integer
 
+  belongs_to :user
+  belongs_to :follower, class_name: "User"
+
   timestamps!
 
   validate do

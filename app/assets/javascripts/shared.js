@@ -1,8 +1,10 @@
-function handleRecipeTyping() {
-  // get text in the input now
-  var text = $('input.recipe-search-input').val();
-  //console.log(text);
-  updatePage([".recipe-tiles"], {params: {q: text}});
+function handleRecipeTyping(e) {
+  if (e.keyCode == 13) {
+    // get text in the input now
+    var text = $('input.recipe-search-input').val();
+    //console.log(text);
+    updatePage([".recipe-tiles"], {params: {q: text}});
+  }
 }
 
 /* HELPER METHODS */

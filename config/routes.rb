@@ -9,6 +9,9 @@ Rails.application.routes.draw do
   get '/sign_up' => 'account#sign_up'
   post '/register' => 'account#register'
 
+  get 'user/:id/followers' => 'users#followers'
+  get 'user/:id/following' => 'users#following'
+
   get 'user/:id' => 'users#show'
   get '/users' => 'users#index'
 

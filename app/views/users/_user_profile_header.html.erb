@@ -1,0 +1,133 @@
+<div class="profile-picture col-xs-12 col-sm-2 text-center">
+    <img src="<%= @user.picture_url %>" class="img-circle" style="width: 80px; height: 80px;"/>
+  </div>
+
+  <div class="profile-name col-xs-12 col-sm-5" style="border-right: 1px solid #ccc;">
+    <div class="profile-full-name">
+      <%= @user.full_name %>
+
+      <% if @following.present? %>
+        <button type="button" class="btn btn-clear" style="margin-right: 5px;" onclick="deleteFollowing(<%= @following.id %>, ['.profile-header']);">
+          Unfollow
+        </button>
+      <% else %>
+        <button type="button" class="btn btn-clear" style="margin-right: 5px;" onclick="followUser(<%= @user.id %>, ['.profile-header']);">
+          Follow
+        </button>
+      <% end %>
+      <a  type="button" class="btn btn-clear" style="margin-right: 5px;" href="/account";>
+        <i class="fa fa-cog" aria-hidden="true"></i>
+        Settings
+      </a>
+    </div>
+
+    <div class="user-bio">
+      <div class="status-bio">
+        <span class="bio-text"><%= @user.bio %></span>
+        <% if current_user.id == @user.id %>
+          <a onclick="showStatusEditor()" style="padding-left: 10px;">Edit Bio</a>
+          <% end %>
+      </div>
+      
+      <div class="status-editor" style="display: none;">
+        <textarea class="form-control" name="bio"> </textarea>
+        <a onclick="saveStatus()">save</a> <a onclick="hideStatusEditor()" style="padding-left: 5px;">cancel</a>
+      </div>
+    </div>
+
+
+
+  </div>
+
+  <div class="profile-status row" style="border-bottom: 1px solid #ccc;">
+
+    <div class="status-info col-xs-12 col-sm-2">
+      <div class="status-info-number">
+        <%= @user.recipes.count %>
+      </div>
+      <div class="status-info-title">
+        recipes
+      </div>
+    </div>
+
+    <div class="status-info col-xs-12 col-sm-2">
+      <a href="/user/<%= @user.id %>/followers">
+        <div class="status-info-number">
+          <%= @user.followings_of_me.count %>
+        </div>
+        <div class="status-info-title">
+          followers
+        </div>
+      </a>
+    </div>
+
+    <div class="status-info col-xs-12 col-sm-1">
+      <a href="/user/<%= @user.id %>/following">
+        <div class="status-info-number">
+          <%= @user.followings_by_me.count %>
+        </div>
+        <div class="status-info-title">
+          following
+        </div>
+      </a>
+    </div>
+  </div>
+</div>
+
+
+<style>
+
+
+.btn-success {
+  margin: 10px;
+  
+}
+
+.status-info {
+  text-align: center;
+}
+
+.status-info-title {
+  font: oblique;
+}
+
+</style>
+
+<script>
+
+function showStatusEditor() {
+  var $editor = $('.status-editor');
+  var $bio = $('.status-bio');
+  $editor.show();
+  $editor.find("textarea").val($bio.find(".bio-text").text());
+  $bio.hide();
+
+}
+
+function hideStatusEditor() {
+  var $editor = $('.status-editor');
+  var $bio = $('.status-bio');
+  $editor.hide();
+  $bio.show();
+}
+
+function saveStatus() {
+  var bio = $('textarea[name=bio]').val();
+
+  data = {
+    bio: bio,
+  };
+
+  apiRequest({
+    url: "/account",
+    method: "POST",
+    data: data,
+    success: function(resp) {
+      updatePage([".user-bio"]);
+    }
+  });
+
+
+}
+
+</script>

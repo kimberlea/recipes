@@ -28,5 +28,27 @@ class UsersController < ApplicationController
   end
 
 
+  def following
+    #load followings
+    @user = User.find(params[:id])
+
+    @followings = Following.where(follower_id: @user.id)
+    @users = @followings.collect {|f| f.user}
+    
+   
+  end
+
+  def followers
+    #load followers
+     
+    @user = User.find(params[:id])
+
+    #followings where :user_id = params[:id]
+
+    @followings = Following.where(user_id: @user.id)
+    @users = @followings.collect {|f| f.follower}
+    
+  end
+
 end
 

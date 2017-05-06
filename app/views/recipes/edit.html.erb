@@ -80,9 +80,12 @@
     <i class="fa fa-check"></i>
     Save Recipe
   </button>
-  <button type="button" class="btn btn-danger pull-right" onclick="promptDeleteRecipe();">
-    <i class="fa fa-trash"></i>
-    Delete
-  </button>
+
+  <% if @recipe.id != nil %>
+    <button type="button" class="btn btn-danger pull-right" onclick="promptDeleteRecipe();">
+      <i class="fa fa-trash"></i>
+       Delete
+    </button>
+  <% end %>
 
 </div>

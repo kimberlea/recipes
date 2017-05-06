@@ -2,71 +2,12 @@
 
   <div class="header-space"></div>
 
-  <div class="profile-header row" style="margin: 15px;">
-
-    <div class="profile-picture col-xs-12 col-sm-2 text-center">
-      <img src="<%= @user.picture_url %>" class="img-circle" style="width: 80px; height: 80px;"/>
-    </div>
-
-    <div class="profile-name col-xs-12 col-sm-5">
-      <div class="profile-full-name">
-        <%= @user.full_name %>
-
-        <% if @following.present? %>
-          <button type="button" class="btn btn-clear" style="margin-right: 5px;" onclick="deleteFollowing(<%= @following.id %>, ['.profile-header']);">
-            Unfollow
-          </button>
-        <% else %>
-          <button type="button" class="btn btn-clear" style="margin-right: 5px;" onclick="followUser(<%= @user.id %>, ['.profile-header']);">
-            Follow
-          </button>
-        <% end %>
-        <a  type="button" class="btn btn-clear" style="margin-right: 5px;" href="/account";>
-         <i class="fa fa-cog" aria-hidden="true"></i>
-          Settings
-        </a>
-      </div>
-      <div>
-        <%= @user.bio %>
-
-      </div>
-    </div>
- 
-    <div class="profile-status row">
-
-      <div class="status-info col-xs-12 col-sm-2">
-        <div class="status-info-number">
-          <%= @user.recipes.count %>
-        </div>
-        <div class="status-info-title">
-          recipes
-        </div>
-      </div>
-
-      <div class="status-info col-xs-12 col-sm-2">
-        <div class="status-info-number">
-          <%= @user.followings_of_me.count %>
-        </div>
-        <div class="status-info-title">
-          followers
-        </div>
-      </div>
-
-      <div class="status-info col-xs-12 col-sm-1">
-        <div class="status-info-number">
-          <%= @user.followings_by_me.count %>
-        </div>
-        <div class="status-info-title">
-          following
-        </div>
-      </div>
-    </div>
-  </div>
+  <%= render partial: "users/user_profile_header", locals: {users: @users} %>
   
   <div class="page-tabs row " style="border-top: 1px solid #ccc;">
 
     <div class="col-xs-6 page-tab <%= "page-tab-active" if @filter == "all" %>"  style="border-right: 1px solid #ccc;">
-      <a href="?filter=all" class="<%= "active" if @filter == "all"%>;" >
+      <a href="?filter=all" class="<%= "active" if @filter == "all"%>;">
         <i class="fa fa-list"></i>
         My Recipes
       </a>
@@ -81,8 +22,6 @@
   </div>
 
   <%= render partial: "recipes/tile_grid", locals: {recipes: @recipes} %>
-    
-  </div>
 </div>
 
 <style>

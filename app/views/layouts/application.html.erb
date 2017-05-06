@@ -53,7 +53,7 @@
 
         <div class="navbar-form navbar-right navbar-search" role="search">
           <div class="form-group">
-            <input type="text" class="form-control recipe-search-input" placeholder="Search" onkeyup="handleRecipeTyping();"/>
+            <input type="text" class="form-control recipe-search-input" placeholder="Search" onkeyup="handleRecipeTyping(event);"/>
           </div>
         </div>
 
@@ -66,7 +66,7 @@
         </div>
       </div>
     </nav>
-  <%end%>
+  <% end %>
 
   <%= yield %>
 

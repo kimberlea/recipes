@@ -1,0 +1,43 @@
+<div class="user-tiles" style="padding: 20px; margin: 20px;">
+
+  <% @users.each do |user| %>
+  <a class="user-tile" href="/user/<%= user.id %>">
+    <div class="user-tile-body" style="padding: 10px;">
+      <div class="user-picture-section pos-rel" style="text-align: center; margin-top: 20px;">
+        <img src="<%= user.picture_url %>" class="img-circle" style="width: 80px; height: 80px;" style="padding: 20px 40px;"/>
+      </div>
+      <div class="user-name-section" style="text-align: center; padding: 10px; font-size: 16px;">
+        <%= user.full_name %>
+      </div>
+      <div class="user-bio-section" style="font-size: 14px; text-align: center; height: 45px;">
+        <%= user.bio %>
+      </div>
+    </div>
+    <div class="user-tile-footer" style="background-color: #E2E8F1; font-size: 16px; padding: 5px;">
+
+      <div class="user-stats-section">
+        <div class="title">
+          Recipes
+        </div>
+        <%= user.recipes.count %>
+      </div>
+
+      <div class="user-stats-section">
+        <div class="title">
+          Followers
+        </div>
+        <%= user.followings_of_me.count %>
+      </div>    
+
+      <div class="user-stats-section">
+        <div class="title">
+        Likes
+        </div>
+        <%= user.favorites_count %>
+      </div>
+      
+    </div>
+  </a>
+  <% end %>
+
+</div>
