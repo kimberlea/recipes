@@ -5,6 +5,7 @@ class ApplicationController < ActionController::Base
   # protect_from_forgery with: :exception
 
   before_action :setup_vars
+  helper_method :page_title, :page_info
 
   def render_result(res)
     status = res[:success] == true ? 200 : 500
@@ -18,6 +19,18 @@ class ApplicationController < ActionController::Base
 
   def setup_vars
     @show_header = true
+  end
+
+  def page_title
+    if page_info[:title].present?
+      "#{page_info[:title]} - Dishfave"
+    else
+      "Dishfave"
+    end
+  end
+
+  def page_info
+    return @page_info || {}
   end
 
   #def current_user

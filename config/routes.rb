@@ -4,16 +4,18 @@ Rails.application.routes.draw do
 
   get 'recipe/create' => 'recipes#create'
   get 'recipe/:id' => 'recipes#show'
+  get 'recipe/:id/:slug' => 'recipes#show'
   get 'recipe/:id/edit' => 'recipes#edit'
+  get 'recipe/:id/:slug/edit' => 'recipes#edit'
 
   get '/sign_up' => 'account#sign_up'
   post '/register' => 'account#register'
 
-  get 'user/:id/followers' => 'users#followers'
-  get 'user/:id/following' => 'users#following'
+  get 'member/:id/followers' => 'users#followers'
+  get 'member/:id/following' => 'users#following'
 
-  get 'user/:id' => 'users#show'
-  get '/users' => 'users#index'
+  get 'member/:id' => 'users#show'
+  get '/members' => 'users#index'
 
   get '/sign_in' => 'account#sign_in'
   post '/login' => 'account#login'

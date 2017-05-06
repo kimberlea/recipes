@@ -10,7 +10,7 @@
         <h1><%= @recipe.title %></h1>
       </div>
 
-      <div class="recipe-meta row" style="max-width: 600px; margin: 0px auto;">
+      <div class="recipe-meta row" style="max-width: 600px; margin: 0px auto; padding-bottom: 10px;">
         <div class="col-sm-3">
           <img src="<%= @creator.picture_url %>" class="img-circle" style="width: 80px; height: 80px;"/>
         </div>
@@ -53,11 +53,11 @@
             <% end %>
           </div>
           <!-- Go to www.addthis.com/dashboard to customize your tools --> 
-          <div class="addthis_inline_share_toolbox" style="margin: 5px;"></div>
 
         
         </div>
       </div>
+      <div class="addthis_inline_share_toolbox" style="margin: 5px; text-align: center;"></div>
 
       <div class="recipe-description recipe-section text-center">
         <%= @recipe.description %>

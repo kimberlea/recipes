@@ -41,8 +41,15 @@ class Recipe < ActiveRecord::Base
     errors.add(:image, "Please add a image for your recipe.") if self.image.blank? || self.image.url.blank?
   end
 
-  def view_path
-    return "/recipe/#{id}"
+  def view_path(opts={})
+    str = "/recipe/#{id}"
+    if title.present?
+      str += "/#{title.parameterize}"
+    end
+    if opts[:full] == true
+      str = "http://dishfave.com#{str}"
+    end
+    return str
   end
 
   def tags_to_str

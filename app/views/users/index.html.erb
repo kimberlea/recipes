@@ -3,7 +3,7 @@
   <div class="user-tiles" style="padding: 20px; margin: 20px;">
 
     <% @users.each do |user| %>
-    <a class="user-tile" href="/user/<%= user.id %>">
+    <a class="user-tile" href="/member/<%= user.id %>">
       <div class="user-tile-body" style="padding: 10px;">
         <div class="user-picture-section pos-rel" style="text-align: center; margin-top: 20px;">
           <img src="<%= user.picture_url %>" class="img-circle" style="width: 80px; height: 80px;" style="padding: 20px 40px;"/>
