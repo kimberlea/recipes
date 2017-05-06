@@ -16,7 +16,7 @@
         </div>
         <div class="col-sm-9 text-left">
           <div class="recipe-meta-name" style="color: #555;">
-            <a href="/user/<%= @creator.id %>"><%= @creator.full_name %></a>
+            <a href="<%= @creator.view_path %>"><%= @creator.full_name %></a>
             <% if @following.present? %>
               <button type="button" class="btn btn-clear" style="margin-left: 5px" onclick="deleteFollowing(<%= @following.id %>, ['.recipe-meta']);">
                 Unfollow

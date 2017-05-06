@@ -65,6 +65,11 @@ class User < ActiveRecord::Base
     return "#{self.first_name} #{self.last_name}"
   end
 
+  def view_path
+    str = "/member/#{id}"
+    return str
+  end
+
   def following_of(user)
     Following.where(follower_id: self.id, user_id: user.id).first
   end
