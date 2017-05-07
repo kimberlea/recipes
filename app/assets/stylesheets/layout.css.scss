@@ -1,0 +1,95 @@
+html {
+ -webkit-text-size-adjust: auto;
+}
+
+body {
+ background-color: #fff;
+ color: #555;
+ padding-bottom: 50px;
+ font-size: 20px;
+ margin: 0px;
+ font-family: "Lato";
+}
+
+body.bg-wood {
+ color: white;
+
+ background-image: url("/assets/wood.jpg");
+ background-size: cover;
+ background-attachment: fixed;
+
+}
+
+a {
+cursor: pointer;
+}
+
+.navbar {
+ background-color: rgba(255, 255, 255, 0.9);
+ height: 52px;
+}
+
+
+.navbar .navbar-text {
+ /*padding: 0px 15px;*/
+}
+
+.navbar .navbar-search input {
+ background: #efefef;
+}
+
+.navbar-default .navbar-brand {
+ background-color: #d64541;
+ color: #fff;
+ font-weight: 100;
+ letter-spacing: 1px;
+ height: 51px;
+}
+
+.navbar-logo {
+  margin-right: 30px;
+  padding: 5px;
+  display: inline-block;
+}
+
+.navbar-text a {
+  color: #d64541;
+}
+
+.navbar-text {
+  font-size: 15px;
+}
+
+.jconfirm-box {
+  color: #555;
+}
+
+.header-space {
+  height: 60px;
+}
+
+.navbar-default .navbar-link {
+  color: #fff;
+}
+.navbar-default {
+  .navbox {
+    float: left;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    height: 52px;
+  }
+
+  .navbox-search {
+    input {
+      background: rgba(255,255,255,0.9);
+    }
+  }
+}
+
+.layout-mobile-phone {
+  .navbar-default {
+    .link-title { display: none; }
+    .navbox-search input { width: 100px; }
+  }
+}
