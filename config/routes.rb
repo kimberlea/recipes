@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
 
   get '/recipes' => 'recipes#index'
+  get '/discover' => 'recipes#index'
 
   get 'recipe/create' => 'recipes#create'
   get 'recipe/:id' => 'recipes#show'
@@ -11,11 +12,12 @@ Rails.application.routes.draw do
   get '/sign_up' => 'account#sign_up'
   post '/register' => 'account#register'
 
+  get '/members' => 'users#index'
+
+  get 'member/:id' => 'users#show'
   get 'member/:id/followers' => 'users#followers'
   get 'member/:id/following' => 'users#following'
 
-  get 'member/:id' => 'users#show'
-  get '/members' => 'users#index'
 
   get '/sign_in' => 'account#sign_in'
   post '/login' => 'account#login'
