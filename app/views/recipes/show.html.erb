@@ -11,10 +11,10 @@
       </div>
 
       <div class="recipe-meta row" style="max-width: 600px; margin: 0px auto; padding-bottom: 10px;">
-        <div class="col-sm-3">
+        <div class="col-xs-3">
           <img src="<%= @creator.picture_url %>" class="img-circle" style="width: 80px; height: 80px;"/>
         </div>
-        <div class="col-sm-9 text-left">
+        <div class="col-xs-9 text-left">
           <div class="recipe-meta-name" style="color: #555;">
             <a href="<%= @creator.view_path %>"><%= @creator.full_name %></a>
             <% if @following.present? %>

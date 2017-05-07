@@ -70,16 +70,21 @@ cursor: pointer;
 
 .navbar-default .navbar-link {
   color: #fff;
+  font-size: 16px;
 }
 .navbar-default {
+  .container-fluid-flex {
+    display: flex;
+    padding: 0px 10px;
+  }
   .navbox {
-    float: left;
-    display: inline-flex;
-    justify-content: center;
+    display: flex;
+    //justify-content: center;
     align-items: center;
     height: 52px;
   }
 
+  .navbox-primary-links { flex: 1;}
   .navbox-search {
     input {
       background: rgba(255,255,255,0.9);
@@ -89,7 +94,10 @@ cursor: pointer;
 
 .layout-mobile-phone {
   .navbar-default {
+    .navbar-link { font-size: 22px; padding: 10px; }
     .link-title { display: none; }
-    .navbox-search input { width: 100px; }
+    .navbox-search { flex: 1; }
+    .navbox-primary-links { flex: 0; }
   }
 }
+
