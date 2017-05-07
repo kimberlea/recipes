@@ -12,5 +12,6 @@
 !/log/.keep
 /tmp
 /public/assets
+/public/uploads
 
 .DS_Store

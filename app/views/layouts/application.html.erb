@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Recipes</title>
+    <title><%= page_title %></title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" media="all" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link href="https://fonts.googleapis.com/css?family=Lato:300,400" rel="stylesheet">
@@ -9,12 +9,16 @@
     <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
     <link href="https://fonts.googleapis.com/css?family=Roboto:400,500" rel="stylesheet">
 
-    <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
+    <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.0.1/jquery-confirm.min.js"></script>
+    <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
     <%= csrf_meta_tags %>
     <meta name="viewport" content="initial-scale=0.7">
     <!-- Go to www.addthis.com/dashboard to customize your tools -->
     <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-58d925bf20945d90"></script>
+
+    <!-- Social media tags -->
+    <%= render partial: "shared/socialtags" %>
 
 </head>
 
@@ -33,7 +37,7 @@
             Recipes
           </a>
           
-          <a href="/users" class="navbar-link" style="padding: 10px; color: #fff">
+          <a href="/members" class="navbar-link" style="padding: 10px; color: #fff">
             <i class="fa fa-user-circle-o" aria-hidden="true"></i>
             Members
           </a>
@@ -43,7 +47,7 @@
 
         <div class="navbar-text navbar-right" style="margin: 6px 5px; padding: 5px 5px;">
           <% if current_user != nil %>
-            <a href="/user/<%= current_user.id %>" class="navbar-link">
+            <a href="<%= current_user.view_path %>" class="navbar-link">
               <img class="img-circle" src="<%= current_user.picture_url %>" style="width: 30px; height: 30px;"/>
             </a>
           <% else %>

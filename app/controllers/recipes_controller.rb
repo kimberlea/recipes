@@ -45,6 +45,12 @@ class RecipesController < ApplicationController
     # load 5 most recent recipes
     @recipes = Recipe.is_public.limit(5).order("created_at desc")
   
+    @page_info = {
+      title: @recipe.title,
+      description: @recipe.description,
+      url: @recipe.view_path(full: true),
+      image: @recipe.image.url,
+    }
    
   end
 

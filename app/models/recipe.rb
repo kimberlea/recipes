@@ -42,8 +42,15 @@ class Recipe < ActiveRecord::Base
     errors.add(:description, "Please enter a description for this recipe.") if self.description.blank?
   end
 
-  def view_path
-    return "/recipe/#{id}"
+  def view_path(opts={})
+    str = "/recipe/#{id}"
+    if title.present?
+      str += "/#{title.parameterize}"
+    end
+    if opts[:full] == true
+      str = "http://dishfave.com#{str}"
+    end
+    return str
   end
 
   def tags_to_str
