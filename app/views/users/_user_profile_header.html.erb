@@ -8,11 +8,11 @@
       <%= @user.full_name %>
 
       <% if @following.present? %>
-        <button type="button" class="btn btn-clear" style="margin-right: 5px;" onclick="deleteFollowing(<%= @following.id %>, ['.profile-full-name']);">
+        <button type="button" class="btn btn-clear" style="margin-right: 5px;" onclick="deleteFollowing(<%= @following.id %>, ['.profile-full-name', '.profile-status']);">
           Unfollow
         </button>
       <% else %>
-        <button type="button" class="btn btn-clear" style="margin-right: 5px;" onclick="followUser(<%= @user.id %>, ['.profile-full-name']);">
+        <button type="button" class="btn btn-clear" style="margin-right: 5px;" onclick="followUser(<%= @user.id %>, ['.profile-full-name', '.profile-status']);">
           Follow
         </button>
       <% end %>

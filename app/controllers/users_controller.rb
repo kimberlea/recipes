@@ -16,6 +16,14 @@ class UsersController < ApplicationController
     else
       @following = nil
     end
+
+    @page_info = {
+      title: @user.full_name,
+      description: "Check out my recipes on Dishfave.com!",
+      url: @user.view_path,
+      image: @user.picture_url,
+    }
+   
     
   end
 
