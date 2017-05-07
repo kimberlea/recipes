@@ -7,11 +7,11 @@
       <%= @user.full_name %>
 
       <% if @following.present? %>
-        <button type="button" class="btn btn-clear" style="margin-right: 5px;" onclick="deleteFollowing(<%= @following.id %>, ['.profile-name']);">
+        <button type="button" class="btn btn-clear" style="margin-right: 5px;" onclick="deleteFollowing(<%= @following.id %>, ['.profile-full-name']);">
           Unfollow
         </button>
       <% else %>
-        <button type="button" class="btn btn-clear" style="margin-right: 5px;" onclick="followUser(<%= @user.id %>, ['.profile-name']);">
+        <button type="button" class="btn btn-clear" style="margin-right: 5px;" onclick="followUser(<%= @user.id %>, ['.profile-full-name']);">
           Follow
         </button>
       <% end %>
@@ -28,7 +28,7 @@
         <span class="bio-text"><%= @user.bio %></span>
         <% if current_user.id == @user.id %>
           <a onclick="showStatusEditor()" style="padding-left: 10px;">Edit Bio</a>
-          <% end %>
+        <% end %>
       </div>
       
       <div class="status-editor" style="display: none;">
@@ -36,11 +36,10 @@
         <a onclick="saveStatus()">save</a> <a onclick="hideStatusEditor()" style="padding-left: 5px;">cancel</a>
       </div>
     </div>
-
-
-
+      <!-- Go to www.addthis.com/dashboard to customize your tools --> 
+    <div class="addthis_inline_share_toolbox" style="margin: 5px;"></div>
   </div>
-
+  
   <div class="profile-status row" style="border-bottom: 1px solid #ccc;">
 
     <div class="status-info col-xs-12 col-sm-1">
