@@ -45,7 +45,7 @@ function saveRecipe() {
       navigateTo(resp.data.view_path);
     },
     error: function(resp) {
-      alert(resp.error);
+      $.alert(resp.error);
     }
   });
 }

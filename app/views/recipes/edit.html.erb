@@ -67,7 +67,11 @@
 
     <div class="form-group">
       <label for="exampleInputFile">File input</label>
-      <input type="file" name="image">
+      <input type="file" name="image"> 
+      <% if @recipe.image.url != nil %>
+        <img src="<%= @recipe.image.url %>" style="width: 90;"/>
+      <% end %>
+    
     </div>
     <div class="checkbox">
       <label>

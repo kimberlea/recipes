@@ -2,7 +2,7 @@
     <img src="<%= @user.picture_url %>" class="img-circle" style="width: 80px; height: 80px;"/>
   </div>
 
-  <div class="profile-name col-xs-12 col-sm-5" style="border-right: 1px solid #ccc;">
+  <div class="profile-name col-xs-12 col-sm-6" style="border-right: 1px solid #ccc;">
     <div class="profile-full-name">
       <%= @user.full_name %>
 
@@ -43,7 +43,7 @@
 
   <div class="profile-status row" style="border-bottom: 1px solid #ccc;">
 
-    <div class="status-info col-xs-12 col-sm-2">
+    <div class="status-info col-xs-12 col-sm-1">
       <div class="status-info-number">
         <%= @user.recipes.count %>
       </div>
@@ -52,7 +52,16 @@
       </div>
     </div>
 
-    <div class="status-info col-xs-12 col-sm-2">
+    <div class="status-info col-xs-12 col-sm-1">
+      <div class="status-info-number">
+        <%= @user.favorites_count %>
+      </div>
+      <div class="status-info-title">
+        likes
+      </div>
+    </div>
+
+    <div class="status-info col-xs-12 col-sm-1">
       <a href="/user/<%= @user.id %>/followers">
         <div class="status-info-number">
           <%= @user.followings_of_me.count %>
@@ -87,6 +96,8 @@
 
 .status-info {
   text-align: center;
+ padding: 5px;
+
 }
 
 .status-info-title {
