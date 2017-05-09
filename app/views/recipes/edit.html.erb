@@ -3,7 +3,12 @@
 <div class="container">
 
   <div class="page-header">
-    <h1><%= @title %></h1>
+    <h1>
+      <%= @title %>
+      <% if @recipe.new_record? %>
+      <small>It only takes a minute</small>
+      <% end %>
+    </h1>
   </div>
 
   <form class="form">
