@@ -19,55 +19,61 @@
 
     <!-- Social media tags -->
     <%= render partial: "shared/socialtags" %>
-
+    <link id="favicon" rel="icon" type="image/png" sizes="64x64" href="/favicon.png">
 </head>
 
 <body class="<%= @body_style %>">
   <% if @show_header == true %>
     <nav class="navbar navbar-default navbar-fixed-top" style="background-color: #d64541; border: #d64541;">
-      <div class="container-fluid">
-        <a class="navbar-logo" href="/">
+      <div class="container-fluid-flex">
+        <a class="navbar-logo navbox" href="/">
           <img src="/assets/logo_white.png" style="height: 40px;"/>
         </a>
 
-        <div class="navbar-primary-link" style="font-size: 16px; padding: 14px; display: inline-block;">
+        <div class="navbar-primary-link navbox navbox-primary-links" style="">
         
           <a href="/recipes" class="navbar-link" style="color: #fff">
             <i class="fa fa-cutlery" aria-hidden="true"></i> 
-            Recipes
+            <span class="link-title">Recipes</span>
           </a>
           
-          <a href="/members" class="navbar-link" style="padding: 10px; color: #fff">
+          <a href="/members" class="navbar-link" style="margin-left: 10px; color: #fff">
             <i class="fa fa-user-circle-o" aria-hidden="true"></i>
-            Members
+            <span class="link-title">Members</span>
           </a>
         </div>
 
       
 
-        <div class="navbar-text navbar-right" style="margin: 6px 5px; padding: 5px 5px;">
+
+        <div class="navbox" style="padding: 0px 10px;">
+          <a href="/recipe/create" class="navbar-link" style="">
+            <i class="fa fa-plus-circle"></i>
+            <span class="link-title">New Recipe</span>
+          </a>  
+        </div>
+
+        <div class="navbox navbox-search" role="search">
+          <div class="form-group" style="margin-bottom: 0px; width: 100%;">
+            <input type="text" class="form-control recipe-search-input" placeholder="Search" onkeyup="handleRecipeTyping(event);"/>
+          </div>
+        </div>
+
+        <div class="navbox" style="padding-left: 10px;">
           <% if current_user != nil %>
             <a href="<%= current_user.view_path %>" class="navbar-link">
               <img class="img-circle" src="<%= current_user.picture_url %>" style="width: 30px; height: 30px;"/>
             </a>
           <% else %>
-            <a href="/sign_in" class="navbar-link">Sign In</a>
+            <a href="/sign_in" class="navbar-link" style="">
+              <i class="fa fa-sign-in"></i>
+              <span class="link-title">Sign In</span>
+            </a>
           <% end %>
         </div>
 
-        <div class="navbar-form navbar-right navbar-search" role="search">
-          <div class="form-group">
-            <input type="text" class="form-control recipe-search-input" placeholder="Search" onkeyup="handleRecipeTyping(event);"/>
-          </div>
-        </div>
 
-        <div class="navbar-text navbar-right">
 
-          <a href="/recipe/create" class="navbar-link btn btn-default" style="padding-top: 1px;">
-            <i class="fa fa-plus-circle"></i>
-            New Recipe
-          </a>  
-        </div>
       </div>
     </nav>
   <% end %>
