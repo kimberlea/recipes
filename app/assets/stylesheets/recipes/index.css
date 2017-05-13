@@ -48,14 +48,14 @@
   text-align: right;
 }
 
-.recipes-creator-filter a {
+.recipes-filter a {
   font-size: 15px;
   color: #555555;
   padding: 5px 5px;
   font-weight: 100;
 }
 
-.recipes-creator-filter a.active {
+.recipes-filter a.active {
   text-decoration: underline;
 }
 .recipes-content .recipes-status a {

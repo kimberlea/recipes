@@ -6,14 +6,20 @@ class RecipesController < ApplicationController
     @body_style = "bg-white"
     @q = params[:q]
     @filter_favorite = params[:favorite] == "true"
-    @creator_filter = params[:creator] || "all"
+    @filter_creator = params[:creator] || "all"
+    @filter_tag = params[:tag] || "all"
+    @order = params[:order] || "newest"
 
-    if @creator_filter == "me"
+    if @filter_creator == "me"
       @recipes = Recipe.where(creator_id: current_user.id)
-    elsif @creator_filter == "friends"
+    elsif @filter_creator == "friends"
       @recipes = Recipe.is_public.where("creator_id IN (SELECT user_id from followings where followings.follower_id = ?)", current_user.id)
     else
       @recipes = Recipe.is_public
+    end
+
+    if @filter_tag.present? && @filter_tag != "all"
+      @recipes = @recipes.with_tag(@filter_tag)
     end
 
     if @filter_favorite && current_user
@@ -24,7 +30,15 @@ class RecipesController < ApplicationController
       @recipes = @recipes.where("search_vector @@ to_tsquery(?)", @q)
     end
 
-    @recipes = @recipes.order("created_at desc")
+    sort = case @order
+      when "popular"
+        "cached_favorites_count desc"
+      when "quickest"
+        "prep_time_mins asc"
+      else
+        "created_at desc"
+      end
+    @recipes = @recipes.order(sort)
   end
 
   def show

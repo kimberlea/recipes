@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170417212120) do
+ActiveRecord::Schema.define(version: 20170512005619) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -36,7 +36,7 @@ ActiveRecord::Schema.define(version: 20170417212120) do
     t.string   "description"
     t.string   "ingredients"
     t.string   "directions"
-    t.string   "tags",                           array: true
+    t.string   "tags",                                   array: true
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "serving_size"
@@ -44,8 +44,9 @@ ActiveRecord::Schema.define(version: 20170417212120) do
     t.string   "prep_time"
     t.integer  "creator_id"
     t.integer  "prep_time_mins"
-    t.boolean  "is_private",     default: false
+    t.boolean  "is_private",             default: false
     t.tsvector "search_vector"
+    t.integer  "cached_favorites_count"
   end
 
   create_table "user_reactions", force: :cascade do |t|

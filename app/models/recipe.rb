@@ -11,10 +11,13 @@ class Recipe < ActiveRecord::Base
   #field :prep_time, type: String
   field :prep_time_mins, type: Integer
   field :image, type: String
-  field :creator_id, type: Integer
   field :is_private, type: :boolean, default: false
 
   field :search_vector, type: :tsvector
+
+  field :cached_favorites_count, type: Integer
+
+  field :creator_id, type: Integer
 
   belongs_to :creator, class_name: "User"
 
@@ -27,6 +30,9 @@ class Recipe < ActiveRecord::Base
   }
   scope :is_public, lambda {
     where(is_private: false)
+  }
+  scope :with_tag, lambda {|tag|
+    where("? = ANY(tags)", tag)
   }
 
   after_save :update_search_vector
@@ -93,6 +99,15 @@ class Recipe < ActiveRecord::Base
     conn = self.class.connection
     sql = Recipe.send(:sanitize_sql, ["UPDATE recipes SET search_vector = to_tsvector(?) WHERE id=?", v, id])
     conn.execute(sql)
+  end
+
+  def update_meta
+    # compute likes count
+    self.cached_favorites_count = self.favorites_count
+    self.save(validate: false)
+  rescue => ex
+    Rails.logger.info ex.message
+    Rails.logger.info ex.backtrace.join("\n\t")
   end
 
   def to_api
