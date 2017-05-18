@@ -1,13 +1,15 @@
 module DBRepair
 
   def self.create_events
-    Recipe.all.each do |r|
-      ev = AppEvent.publish("recipe.created", r.creator, {recipe: r})
-      ev.created_at = r.created_at; ev.save;
-    end
-    Comment.all.each do |c|
-      ev = AppEvent.publish("recipe.commented", c.user, {recipe: c.recipe, comment: c})
-      ev.created_at = c.created_at; ev.save;
+    if false
+      Recipe.all.each do |r|
+        ev = AppEvent.publish("recipe.created", r.creator, {recipe: r})
+        ev.created_at = r.created_at; ev.save;
+      end
+      Comment.all.each do |c|
+        ev = AppEvent.publish("recipe.commented", c.user, {recipe: c.recipe, comment: c})
+        ev.created_at = c.created_at; ev.save;
+      end
     end
     UserReaction.all.each do |m|
       next if m.is_favorite != true

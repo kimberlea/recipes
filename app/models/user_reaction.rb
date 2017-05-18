@@ -7,6 +7,7 @@ class UserReaction < ActiveRecord::Base
   field :is_favorite, type: :boolean
 
   belongs_to :recipe
+  belongs_to :user
 
   timestamps!
 
