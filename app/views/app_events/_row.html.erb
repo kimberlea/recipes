@@ -1,0 +1,25 @@
+<div class="app-event-row media">
+  <div class="media-left">
+    <a href="<%= event.actor.view_path %>">
+      <img class="img-circle user-avatar" src="<%= event.actor.picture_url %>"/>
+    </a>
+  </div>
+  <div class="media-body">
+    <h4 class="media-heading">
+      <a href="<%= event.subject_view_path %>">
+        <%= event.title(viewer: current_user) %>
+      </a>
+    </h4>
+    <%= event.body %>
+    <div class="event-time">
+      <%= time_ago_in_words(event.created_at) %> ago
+    </div>
+  </div>
+  <% if event.subject_image_url.present? %>
+  <div class="media-right">
+    <a href="<%= event.subject_view_path %>">
+      <img class="img-cover subject-image" src="<%= event.subject_image_url %>"/>
+    </a>
+  </div>
+  <% end %>
+</div>

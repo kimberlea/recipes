@@ -26,7 +26,7 @@
 
     <div class="user-bio">
       <div class="status-bio">
-        <span class="bio-text"><%= @user.bio %></span>
+        <span class="bio-text" style="font-weight: 200;"><%= @user.bio %></span>
         <% if is_me?(@user) %>
           <a onclick="showStatusEditor()" style="padding-left: 10px;">Edit Bio</a>
         <% end %>

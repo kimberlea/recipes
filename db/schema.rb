@@ -11,10 +11,21 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170512005619) do
+ActiveRecord::Schema.define(version: 20170518035649) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "app_events", force: :cascade do |t|
+    t.string   "action"
+    t.integer  "actor_id"
+    t.integer  "recipe_id"
+    t.integer  "comment_id"
+    t.integer  "user_id"
+    t.jsonb    "meta",       default: {}
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "comments", force: :cascade do |t|
     t.integer  "user_id"
@@ -41,7 +52,6 @@ ActiveRecord::Schema.define(version: 20170512005619) do
     t.datetime "updated_at"
     t.integer  "serving_size"
     t.string   "image"
-    t.string   "prep_time"
     t.integer  "creator_id"
     t.integer  "prep_time_mins"
     t.boolean  "is_private",             default: false

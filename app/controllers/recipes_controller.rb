@@ -83,6 +83,7 @@ class RecipesController < ApplicationController
 
   def save
     @recipe ||= Recipe.new
+    new_record = @recipe.new_record?
     @recipe.title = params[:title] if params.key?(:title)
     @recipe.serving_size = params[:serving_size] if params.key?(:serving_size)
     @recipe.description = params[:description] if params.key?(:description)
@@ -100,6 +101,9 @@ class RecipesController < ApplicationController
       @recipe.image = params[:image]
     end
     saved = @recipe.save
+    if saved && new_record
+      AppEvent.publish("recipe.created", current_user, {recipe: @recipe})
+    end
     res = {success: saved, data: @recipe.to_api}
     render_result(res)
   end
@@ -117,7 +121,10 @@ class RecipesController < ApplicationController
   def favorite
     @reaction = current_user.reaction_to(@recipe, true)
     @reaction.is_favorite = true
-    @reaction.save
+    saved = @reaction.save
+    if saved
+      AppEvent.publish("recipe.favorited", current_user, recipe: @reaction.recipe)
+    end
     render_result({success: true, data: @reaction.to_api})
   end
 

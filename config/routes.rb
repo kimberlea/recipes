@@ -18,6 +18,7 @@ Rails.application.routes.draw do
   get 'member/:id/followers' => 'users#followers'
   get 'member/:id/following' => 'users#following'
 
+  get '/activity' => 'app_events#activity'
 
   get '/sign_in' => 'account#sign_in'
   post '/login' => 'account#login'

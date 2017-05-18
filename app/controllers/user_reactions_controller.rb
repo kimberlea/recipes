@@ -13,9 +13,11 @@ class UserReactionsController < ApplicationController
     @user_reaction.is_favorite = params[:is_favorite] == "true" if params[:is_favorite].present?
 
     saved = @user_reaction.save
-    # update recipe
-    if (recipe = @user_reaction.recipe)
-      recipe.update_meta
+    if saved
+      # update recipe
+      if (recipe = @user_reaction.recipe)
+        recipe.update_meta
+      end
     end
     res = { success: saved, data: @user_reaction.to_api}
     render_result(res)
