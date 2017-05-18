@@ -6,6 +6,7 @@
   </div>
   <div class="media-body">
     <h4 class="media-heading">
+      <i class="event-icon <%= event.icon_class %>"></i>
       <a href="<%= event.subject_view_path %>">
         <%= event.title(viewer: current_user) %>
       </a>

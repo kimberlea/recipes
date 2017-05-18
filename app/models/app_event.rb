@@ -89,4 +89,19 @@ class AppEvent < ActiveRecord::Base
     return url
   end
 
+  def icon_class
+    url = case self.action
+    when "recipe.created"
+      "fa fa-cutlery"
+    when "recipe.favorited"
+      "fa fa-heart"
+    when "recipe.commented"
+      "fa fa-comment"
+    when "user.followed"
+      "fa fa-rss"
+    end
+    return url
+
+  end
+
 end
