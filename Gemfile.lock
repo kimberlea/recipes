@@ -6,6 +6,13 @@ GIT
     quick_auth (2.1.0)
 
 GIT
+  remote: git://github.com/agquick/quick_notify.git
+  revision: 854d6a4cb9e410740aa2e531d4398612123b19bf
+  ref: 854d6a4
+  specs:
+    quick_notify (1.3.0)
+
+GIT
   remote: git://github.com/agquick/schema_sync.git
   revision: 7ec06b3a4c95fe4fac9b8bb13af09b539933b38e
   specs:
@@ -232,6 +239,7 @@ DEPENDENCIES
   non-stupid-digest-assets
   pg
   quick_auth!
+  quick_notify!
   rails (= 4.2.2)
   redcarpet
   rspec-rails (~> 3.5)

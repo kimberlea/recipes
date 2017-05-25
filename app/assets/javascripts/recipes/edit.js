@@ -9,15 +9,15 @@ function saveRecipe() {
   var description = $('textarea[name=description]').val();
   var ingredients = $('textarea[name=ingredients]').val();
   var directions = $('textarea[name=directions]').val();
-  var prep_time_hours = $('input[name=prep_time_hours]').val();
-  var prep_time_minutes = $('input[name=prep_time_minutes]').val();
+  var prep_time_hours = parseInt($('input[name=prep_time_hours]').val()) || 0;
+  var prep_time_minutes = parseInt($('input[name=prep_time_minutes]').val()) || 0;
   var tags_str = $('textarea[name=tags]').val();
   var tags = tags_str.split(",");
   var image = $('input[name=image]')[0].files[0];
   var is_private = $('input[name=is_private]').is(':checked');
   var id = getRecipeId();
 
-  var prep_time_mins = parseInt(prep_time_hours) * 60 + parseInt(prep_time_minutes)
+  var prep_time_mins = prep_time_hours * 60 + prep_time_minutes;
 
   data = {
     id: id,

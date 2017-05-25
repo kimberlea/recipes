@@ -67,18 +67,29 @@ class Recipe < ActiveRecord::Base
   end
 
   def markdown_render(text)
+    return "" if text.blank?
     renderer = Redcarpet::Render::HTML.new(hard_wrap: true)
     markdown = Redcarpet::Markdown.new(renderer, autolink: true, tables: true)
     markdown.render(text)
   end
 
+  def description_html
+    return markdown_render(self.description)
+  end
+
   def ingredients_html
-    return "" if self.ingredients.blank?
-    return markdown_render(self.ingredients)
+    str = self.ingredients
+    str = str.split("\n").collect { |l|
+      if !(l.strip.start_with?("-") || l.strip.start_with?("*"))
+        "- #{l}"
+      else
+        l
+      end
+    }.join
+    return markdown_render(str)
   end
 
   def directions_html
-    return "" if self.directions.blank?
     return markdown_render(self.directions)
   end
 

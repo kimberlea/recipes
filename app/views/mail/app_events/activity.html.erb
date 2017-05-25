@@ -1,0 +1,7 @@
+<% block_wrap class: "h2" do %>
+  Recent Activity
+<% end %>
+
+<% @events.each do |ev| %>
+<%= media_block image_url: ev.subject_image_url || ev.actor.picture_url, title: ev.title(viewer: @user), body: ev.body %>
+<% end %>

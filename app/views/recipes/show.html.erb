@@ -59,7 +59,7 @@
       <div class="addthis_inline_share_toolbox" style="margin: 5px; text-align: center;"></div>
 
       <div class="recipe-description recipe-section text-center">
-        <%= @recipe.description %>
+        <%= raw @recipe.description_html %>
       </div>
 
       <div class="recipe-info recipe-section row">
@@ -99,7 +99,7 @@
       <div class="new-comment">
 
         <div class="new-comment-image">
-          <img src="<%= @creator.picture_url %>" class="img-circle" style="width: 40px; height: 40px;"/>
+          <img src="<%= current_user.picture_url %>" class="img-circle" style="width: 40px; height: 40px;"/>
         </div>
         <div class="new-comment-text">
           <textarea type="text" name="body" placeholder="Add a comment." rows="3"></textarea>  

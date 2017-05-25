@@ -32,25 +32,33 @@
 - Eggs
 - Flour
 - . . ." rows="10"><%= @recipe.ingredients %></textarea>
+      <div class="help-block small text-muted">
+        <i class="fa fa-question-circle"></i>
+        Enter each ingredient on a new line.
+      </div>
     </div>
 
     <div class="form-group">
       <label>Directions</label>
       <textarea class="form-control input-lg" name="directions" placeholder="1. Preheat oven to 350.
 2. And then . . ." rows="10"><%= @recipe.directions %></textarea>
+      <div class="help-block small text-muted">
+        <i class="fa fa-question-circle"></i>
+        Enter each step on a new line with a number in front.
+      </div>
     </div>
 
     <div class="form-group">
       <label>Preparation Time</label>
       <div class="row">
-        <div class="col-xs-6">
+        <div class="col-xs-6 col-sm-4">
         <div class="input-group input-group-lg">
 
           <input type="number" name="prep_time_hours" class="form-control" placeholder="0" value="<%= @recipe.prep_time_details[:hours] %>">
           <span class="input-group-addon">hours</span>
         </div>
         </div>
-        <div class="col-xs-6">
+        <div class="col-xs-6 col-sm-4">
         <div class="input-group input-group-lg">
           <input type="number" name="prep_time_minutes" class="form-control" placeholder="30" value="<%= @recipe.prep_time_details[:minutes] %>">
           <span class="input-group-addon">minutes</span>
@@ -60,7 +68,7 @@
     </div>
 
     <div class="row">
-      <div class="col-xs-6">
+      <div class="col-xs-6 col-sm-4">
         <div class="form-group">
           <label>Serving Size</label>
           <div class="input-group input-group-lg">
@@ -73,7 +81,11 @@
 
     <div class="form-group">
       <label>Recipe Tags</label>
-      <textarea class="form-control input-lg" name="tags" placeholder="Enter tags separated by a comma, like: dinner, italian, healthy"><%= @recipe.tags_to_str %></textarea>
+      <textarea class="form-control input-lg" name="tags" placeholder="dinner, italian, healthy, ..."><%= @recipe.tags_to_str %></textarea>
+      <div class="help-block small text-muted">
+        <i class="fa fa-question-circle"></i>
+        Enter tags separated by a comma, like: dinner, italian, healthy.
+      </div>
     </div>
 
     <div class="form-group">

@@ -21,6 +21,12 @@ class AppEvent < ActiveRecord::Base
   scope :relevant_for_user, lambda {|user|
     where("action IN (?)", ["recipe.created", "recipe.commented", "recipe.favorited", "user.followed"]).where("(actor_id = ?) OR (user_id = ?) OR (recipe_id IN (SELECT id FROM recipes WHERE recipes.creator_id=?)) OR (actor_id IN (SELECT user_id FROM followings WHERE followings.follower_id = ?))", user.id, user.id, user.id, user.id)
   }
+  scope :not_with_actor, lambda {|user|
+    where("actor_id != ?", user.id)
+  }
+  scope :created_after, lambda {|t|
+    where("created_at > ?", t)
+  }
 
   def self.publish(action, actor, models, opts={})
     ev = self.new
