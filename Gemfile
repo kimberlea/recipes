@@ -26,6 +26,10 @@ gem 'schema_sync', github: 'agquick/schema_sync'
 
 gem 'quick_auth', github: 'agquick/quick_auth', ref: '57aa706'
 
+gem 'quick_notify', github: 'agquick/quick_notify', ref: '854d6a4'
+
+#gem 'quick_script', github: 'agquick/quick_script', ref: '90dd8d4'
+
 gem 'carrierwave', '~> 1.0'
 
 gem 'mini_magick'

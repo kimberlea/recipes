@@ -4,10 +4,14 @@ class FollowingsController < ApplicationController
 
   def save
     @following ||= Following.new
+    new_record = @following.new_record?
     @following.follower_id = current_user.id
     @following.user_id = params[:user_id]
 
     saved = @following.save
+    if saved && new_record
+      AppEvent.publish("user.followed", current_user, {user: @following.user})
+    end
     res = {success: saved, data: @following.to_api}
     render_result(res)
   end

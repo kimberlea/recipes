@@ -1,0 +1,38 @@
+.app-event-row {
+  box-shadow: 1px 2px 8px #aaa;
+  border-radius: 3px;
+  padding: 10px;
+
+  .media-body {
+    font-weight: 200;
+  }
+
+  .user-avatar {
+    width: 80px;
+    height: 80px;
+    border: 3px solid #eee;
+    padding: 2px;
+  }
+
+  .media-heading a {
+    color: inherit;
+  }
+
+  .subject-image {
+    width: 100px;
+    height: 100px;
+    border: 1px solid #eee;
+    padding: 2px;
+  }
+
+  .event-time {
+    color: #aaa;
+    font-size: 80%;
+  }
+
+  .event-icon {
+    color: #ccc;
+    margin-right: 10px;
+  }
+
+}

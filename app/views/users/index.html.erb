@@ -13,7 +13,7 @@
           <%= user.full_name %>
         </div>
         <div class="user-bio-section" style="font-size: 14px; text-align: center; height: 45px;">
-          <%= user.bio %>
+          <%= truncate(user.bio, length: 50) %>
         </div>
       </div>
       <div class="user-tile-footer" style="background-color: #E2E8F1; font-size: 16px; padding: 5px;">

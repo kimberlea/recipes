@@ -6,6 +6,9 @@ class UserReaction < ActiveRecord::Base
   field :recipe_id, type: Integer
   field :is_favorite, type: :boolean
 
+  belongs_to :recipe
+  belongs_to :user
+
   timestamps!
 
   validate do

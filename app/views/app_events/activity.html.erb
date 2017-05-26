@@ -1,0 +1,12 @@
+<div class="header-space" style="height: 60px"></div>
+
+<div class="container">
+  <div class="page-header" style="margin-top: 0px;">
+    <h1>Recent Activity</h1>
+  </div>
+  <div class="app-events">
+    <% @events.each do |event| %>
+      <%= render partial: "app_events/row", locals: {event: event} %>
+    <% end %>
+  </div>
+</div>

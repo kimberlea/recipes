@@ -1,0 +1,24 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>Dishfave</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+</head>
+<body style="padding: 0px; margin: 0px; text-align: center; background-color: #fff; color: #222; font-family: avenir, segoe ui, helvetica neue, helvetica, arial, sans-serif; font-size: 17px; line-height: 1.5em;">
+  <table style="max-width: 600px !important; margin: 0px auto; text-align: left;">
+    <% block_wrap({padding: 10, background: "#d64541", align: 'center'}) do %>
+      <%= img "http://dishfave.com/assets/logo_white.png", width: 130 %>
+    <% end %>
+    <%= yield_content %>
+    <tr>
+      <td>
+        Thanks,<br/>
+        <strong>The Dishfave Team</strong><br/>
+        <strong>dishfave.com</strong>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

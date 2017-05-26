@@ -1,0 +1,36 @@
+development:
+  classes:
+    user: User
+  email:
+    from: 'Dishfave <postmaster@mailer.dishfave.com>'
+    authentication: 'plain'
+    address: 'smtp.mailgun.org'
+    port: 587
+    domain: 'mailer.dishfave.com'
+    user_name: 'postmaster@mailer.dishfave.com'
+    password: 'test'
+
+test:
+  classes:
+    user: User
+  email:
+    from: 'Dishfave <postmaster@mailer.dishfave.com>'
+    authentication: 'plain'
+    address: 'smtp.mailgun.org'
+    port: 587
+    domain: 'mailer.dishfave.com'
+    user_name: 'postmaster@mailer.dishfave.com'
+    password: 'test'
+
+production:
+  classes:
+    user: User
+  email:
+    from: 'Dishfave <postmaster@mailer.dishfave.com>'
+    authentication: 'plain'
+    address: 'smtp.mailgun.org'
+    port: 587
+    domain: 'mailer.dishfave.com'
+    user_name: 'postmaster@mailer.dishfave.com'
+    password: 'test'
+

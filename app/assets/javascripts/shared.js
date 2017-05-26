@@ -2,8 +2,9 @@ function handleRecipeTyping(e) {
   if (e.keyCode == 13) {
     // get text in the input now
     var text = $('input.recipe-search-input').val();
+    navigateTo("/recipes?q=" + text);
     //console.log(text);
-    updatePage([".recipe-tiles"], {params: {q: text}});
+    //updatePage([".recipe-tiles"], {params: {q: text}});
   }
 }
 
@@ -110,3 +111,19 @@ function navigateTo(url) {
   window.location.href = url;
 }
 
+function getURLParams() {
+  var url = window.location.href;
+  var query = url.split("?")[1];
+  ret = {};
+  if (query) {
+    //console.log(query);
+    var qps = query.split("&");
+    //console.log(qps);
+    for (const qp of qps) {
+      //console.log(qp);
+      qpfs = qp.split("=");
+      ret[qpfs[0]] = unescape(qpfs[1]);
+    }
+  }
+  return ret;
+}

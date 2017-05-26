@@ -6,14 +6,20 @@ class RecipesController < ApplicationController
     @body_style = "bg-white"
     @q = params[:q]
     @filter_favorite = params[:favorite] == "true"
-    @creator_filter = params[:creator] || "all"
+    @filter_creator = params[:creator] || "all"
+    @filter_tag = params[:tag] || "all"
+    @order = params[:order] || "newest"
 
-    if @creator_filter == "me"
+    if @filter_creator == "me"
       @recipes = Recipe.where(creator_id: current_user.id)
-    elsif @creator_filter == "friends"
+    elsif @filter_creator == "friends"
       @recipes = Recipe.is_public.where("creator_id IN (SELECT user_id from followings where followings.follower_id = ?)", current_user.id)
     else
       @recipes = Recipe.is_public
+    end
+
+    if @filter_tag.present? && @filter_tag != "all"
+      @recipes = @recipes.with_tag(@filter_tag)
     end
 
     if @filter_favorite && current_user
@@ -24,7 +30,15 @@ class RecipesController < ApplicationController
       @recipes = @recipes.where("search_vector @@ to_tsquery(?)", @q)
     end
 
-    @recipes = @recipes.order("created_at desc")
+    sort = case @order
+      when "popular"
+        "cached_favorites_count desc"
+      when "quickest"
+        "prep_time_mins asc"
+      else
+        "created_at desc"
+      end
+    @recipes = @recipes.order(sort)
   end
 
   def show
@@ -69,12 +83,13 @@ class RecipesController < ApplicationController
 
   def save
     @recipe ||= Recipe.new
+    new_record = @recipe.new_record?
     @recipe.title = params[:title] if params.key?(:title)
     @recipe.serving_size = params[:serving_size] if params.key?(:serving_size)
     @recipe.description = params[:description] if params.key?(:description)
     @recipe.ingredients = params[:ingredients] if params.key?(:ingredients)
     @recipe.directions = params[:directions] if params.key?(:directions)
-    @recipe.prep_time_mins = params[:prep_time_mins] if params.key?(:prep_time_mins)
+    @recipe.prep_time_mins = params[:prep_time_mins].to_i if params.key?(:prep_time_mins)
     @recipe.is_private = (params[:is_private]=="true") if params.key?(:is_private)
     @recipe.creator = self.current_user
     if params.key?(:tags)
@@ -86,6 +101,9 @@ class RecipesController < ApplicationController
       @recipe.image = params[:image]
     end
     saved = @recipe.save
+    if saved && new_record
+      AppEvent.publish("recipe.created", current_user, {recipe: @recipe})
+    end
     res = {success: saved, data: @recipe.to_api}
     render_result(res)
   end
@@ -103,7 +121,10 @@ class RecipesController < ApplicationController
   def favorite
     @reaction = current_user.reaction_to(@recipe, true)
     @reaction.is_favorite = true
-    @reaction.save
+    saved = @reaction.save
+    if saved
+      AppEvent.publish("recipe.favorited", current_user, recipe: @reaction.recipe)
+    end
     render_result({success: true, data: @reaction.to_api})
   end
 
