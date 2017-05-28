@@ -82,8 +82,8 @@ class MailMaker
       return ret
     end
 
-    def media_block(opts)
-      ropts = {padding: [0, 0, 20, 0]}.merge(opts[:block] || {})
+    def media_row(opts)
+      ropts = {padding: [0, 0, 20, 0]}.merge(opts[:container] || {})
       ret = "<tr><td #{build_style(ropts)}>"
       ret += "<table style='width: 100%;'><tr>"
       ret += "<td style=\"width: 160px;\">"
@@ -96,6 +96,34 @@ class MailMaker
       ret += "</tr></table>"
       ret += "</td></tr>"
       return ret
+    end
+
+    def media_block(opts)
+      ropts = {padding: [0, 0, 20, 0]}.merge(opts[:container] || {})
+      url = opts[:url]
+      ret = %{
+      <tr><td #{build_style(ropts)}>
+        <table style='width: 100%;'>
+          <tr><td style='text-align: center;'>
+            <a href="#{url}">
+              #{img(opts[:image_url], width: 150, style: 'border: 1px solid #ddd; padding: 2px;')}
+            </a>
+          </td></tr>
+          <tr><td style='font-weight: bold; padding-bottom: 10px;'>
+            #{opts[:title]}
+          </td></tr>
+          <tr><td>
+            #{opts[:body]}
+            <a href="#{url}" style="font-size: 12px; color: #aaa;">view more</a>
+          </td></tr>
+        </table>
+      </td></tr>
+      }
+      return ret
+    end
+
+    def td(opts)
+      return "td #{build_style(opts)}"
     end
 
     def build_style(opts)
@@ -131,6 +159,9 @@ class MailMaker
       if va = opts[:vertical_align]
         ret += "vertical-align: #{va}; "
       end
+      if val = opts[:line_height]
+        ret += "line-height: #{val}; "
+      end
       if style = opts[:style]
         style += ";" if !style.strip.end_with?(";")
         ret += "#{style} "
@@ -138,6 +169,15 @@ class MailMaker
       ret = ret.strip
       ret += "\""
       return ret
+    end
+
+    def truncate(str, opts)
+      return "" if str.blank?
+      if str.length > opts[:length]
+        "#{str[0..opts[:length]]} ..."
+      else
+        str
+      end
     end
 
   end

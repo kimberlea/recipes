@@ -85,12 +85,12 @@ class AppEvent < ActiveRecord::Base
     return img
   end
 
-  def subject_view_path
+  def subject_view_path(opts={})
     url = case self.action
     when "recipe.created", "recipe.favorited", "recipe.commented"
-      recipe.view_path
+      recipe.view_path(opts)
     when "user.followed"
-      user.view_path
+      user.view_path(opts)
     end
     return url
   end

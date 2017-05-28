@@ -21,7 +21,7 @@ module SiteNotification
     events = AppEvent.relevant_for_user(user).not_with_actor(user).created_after(since).limit(50).to_a
     return nil if events.empty?
     html = MailMaker.parse_template("app_events/activity", user: user, events: events)
-    #puts html
+    #return html
     mail = QuickNotify::Mailer.app_email(to: user.email, subject: "Here's what you missed on Dishfave.", html_body: html)
     mail.deliver_now
     user.last_notification_at = Time.now
