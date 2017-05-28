@@ -16,7 +16,13 @@
         </div>
         <div class="col-xs-9 text-left">
           <div class="recipe-meta-name" style="color: #555;">
-            <a href="<%= @creator.view_path %>"><%= @creator.full_name %></a>
+            <a href="<%= @creator.view_path %>">
+              <%= @creator.full_name %>
+            </a>
+            <span class="badge chefscore-badge" title="ChefScore is the total number of favorites on all recipes">
+              <i class="fa fa-fire"></i>
+              <%= @creator.favorites_count %>
+            </span>
             <% if @following.present? %>
               <button type="button" class="btn btn-clear" style="margin-left: 5px" onclick="deleteFollowing(<%= @following.id %>, ['.recipe-meta']);">
                 Unfollow
@@ -246,6 +252,12 @@ function submitComment() {
     }
   });
 }
+
+$(function() {
+  <% if @recipe.created_by?(current_user) && !current_user.has_flag?(1) %>
+  showModalFromURL("shareYourRecipe", "/modal/share_your_recipe", {closeIcon: false});
+  <% end %>
+});
 
 
 </script>

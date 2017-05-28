@@ -69,6 +69,14 @@ class AccountController < ApplicationController
     res = {success: saved, data: self.current_user.to_api}
     render_result(res)
   end
+
+  def update_flags
+    flags = JSON.parse(params[:flags])
+    flags.each {|f|
+      current_user.set_flag!(f)
+    }
+    render_result(success: true, data: current_user)
+  end
 end
 
 user = User.all

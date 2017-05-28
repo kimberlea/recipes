@@ -81,6 +81,10 @@ class RecipesController < ApplicationController
     render "recipes/edit"
   end
 
+  def share_your_recipe_modal
+    render layout: nil
+  end
+
   def save
     @recipe ||= Recipe.new
     new_record = @recipe.new_record?

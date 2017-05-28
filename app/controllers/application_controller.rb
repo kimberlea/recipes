@@ -23,7 +23,7 @@ class ApplicationController < ActionController::Base
 
   def page_title
     if page_info[:title].present?
-      "#{page_info[:title]} - Dishfave"
+      "#{page_info[:title]} on Dishfave"
     else
       "Dishfave"
     end

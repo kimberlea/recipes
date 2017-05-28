@@ -116,7 +116,7 @@ function saveChanges() {
     method: "POST",
     data: data,
     success: function(resp) {
-      $.alert(" Your changes have been saved!");
+      $.alert("Your changes have been saved!");
     }
   });
 
@@ -140,6 +140,7 @@ function updatePicture() {
     hasFile: true,
     success: function(resp) {
       updatePage([".navbar", ".profile-picture"]);
+      $.alert("Your picture has been updated!");
     },
     error: function(resp) {
       alert(resp.error);

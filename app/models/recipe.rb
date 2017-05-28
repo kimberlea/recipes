@@ -105,6 +105,11 @@ class Recipe < ActiveRecord::Base
     return {hours: hrs, minutes: mins, text: str}
   end
 
+  def created_by?(user)
+    return false if user.nil?
+    return self.creator_id == user.id
+  end
+
   def update_search_vector
     v = "#{title} #{description} #{(tags || []).join(" ")}"
     conn = self.class.connection

@@ -44,21 +44,24 @@
   <div class="profile-status col-xs-12 text-center" style="">
 
     <div class="row">
+
       <div class="status-info col-xs-3">
         <div class="status-info-number">
-          <%= @user.recipes.count %>
+          <i class="fa fa-fire"></i>
+          <%= @user.favorites_count %>
         </div>
         <div class="status-info-title">
-          recipes
+          ChefScore
+          <i class="fa fa-question-circle" data-toggle="tooltip" title="Your ChefScore is the total number of favorites you have on all your recipes."></i>
         </div>
       </div>
 
       <div class="status-info col-xs-3">
         <div class="status-info-number">
-          <%= @user.favorites_count %>
+          <%= @user.recipes.count %>
         </div>
         <div class="status-info-title">
-          likes
+          Recipes
         </div>
       </div>
 
@@ -68,7 +71,7 @@
             <%= @user.followings_of_me.count %>
           </div>
           <div class="status-info-title">
-            followers
+            Followers
           </div>
         </a>
       </div>
@@ -79,7 +82,7 @@
             <%= @user.followings_by_me.count %>
           </div>
           <div class="status-info-title">
-            following
+            Following
           </div>
         </a>
       </div>

@@ -23,4 +23,5 @@ function updateResponsiveSettings() {
 $(document).ready(function() {
   updateResponsiveSettings();
   $(window).resize(updateResponsiveSettings);
+  $('[data-toggle="tooltip"]').tooltip()
 });

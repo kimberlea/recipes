@@ -26,7 +26,8 @@ function showModalFromURL(id, url, opts={}) {
   }
   var m = $.dialog({
     title: null,
-    content: "URL:" + url
+    content: "URL:" + url,
+    closeIcon: (opts.closeIcon != false),
   });
   openModals[id] = m;
   return m;
@@ -37,6 +38,16 @@ function closeModal(id) {
   if (m) {
     m.close();
   }
+}
+
+function updateFlagAndCloseModal(flag, id) {
+  apiRequest({
+    url: "/account/update_flags",
+    data: {flags: JSON.stringify([flag])},
+    success: function(resp) {
+      closeModal(id);
+    }
+  });
 }
 
 function closeModals() {

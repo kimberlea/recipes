@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170528024837) do
+ActiveRecord::Schema.define(version: 20170528202543) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -82,6 +82,7 @@ ActiveRecord::Schema.define(version: 20170528024837) do
     t.string   "bio"
     t.integer  "notification_frequency", default: 1
     t.datetime "last_notification_at"
+    t.integer  "flags",                  default: [], array: true
   end
 
 end

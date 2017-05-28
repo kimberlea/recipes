@@ -10,6 +10,7 @@ class User < ActiveRecord::Base
   field :bio, type: String
   field :notification_frequency, type: Integer, default: 1
   field :last_notification_at, type: Time
+  field :flags, type: Integer, array: true, default: []
 
   timestamps!
   quick_auth_authentic!
@@ -17,6 +18,7 @@ class User < ActiveRecord::Base
   has_many :recipes, class_name: "Recipe", foreign_key: :creator_id
 
   NOTIFICATION_FREQUENCIES = {none: 0, daily: 1, weekly: 2}
+  FLAGS = {share_your_recipe: 1}
 
   validate do
     errors.add(:first_name, "Enter your first name.") if self.first_name.blank?
@@ -31,7 +33,7 @@ class User < ActiveRecord::Base
   ## CLASS METHODS(User, viewing all users)
 
   def self.authenticate(email, password)
-    if (user = User.find_by_email(email)) && user.authenticated?(password)
+    if (user = User.find_by_email(email.strip.downcase)) && user.authenticated?(password)
       return user
     else
       return nil
@@ -49,7 +51,7 @@ class User < ActiveRecord::Base
     # things for create or update
     self.first_name = opts[:first_name] if opts[:first_name]
     self.last_name = opts[:last_name] if opts[:last_name]
-    self.email = opts[:email] if opts[:email]
+    self.email = opts[:email].strip.downcase if opts[:email]
     self.password = opts[:password] if opts[:password]
     self.bio = opts[:bio] if opts[:bio]
   
@@ -119,6 +121,17 @@ class User < ActiveRecord::Base
     else
       0
     end
+  end
+
+  def has_flag?(val)
+    (self.flags || []).include?(val)
+  end
+
+  def set_flag!(val)
+    return if val.nil?
+    self.flags << val.to_i if !self.has_flag?(val)
+    self.save(validate: false)
+    return val
   end
 
 
