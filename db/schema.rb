@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170518035649) do
+ActiveRecord::Schema.define(version: 20170528024837) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -80,6 +80,8 @@ ActiveRecord::Schema.define(version: 20170518035649) do
     t.datetime "perishable_token_exp"
     t.string   "picture"
     t.string   "bio"
+    t.integer  "notification_frequency", default: 1
+    t.datetime "last_notification_at"
   end
 
 end

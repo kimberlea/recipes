@@ -20,4 +20,7 @@ test -s "$PID" && kill -QUIT `cat $PID`
 echo "Starting app"
 bundle exec unicorn -c config/unicorn.rb -E production -D
 
+echo "Restarting services"
+bundle exec script/app_cron -E production restart
+
 echo "Done"

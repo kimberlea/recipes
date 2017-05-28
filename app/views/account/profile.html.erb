@@ -77,6 +77,15 @@
         
       </div>
 
+      <div class="form-group">
+        <label>Notification Frequency</label><br/>
+        <select name="notification_frequency">
+          <option value="1">Daily</option>
+          <option value="2">Weekly</option>
+          <option value="3">None</option>
+        </select>
+      </div>
+
       <button type="button" class="btn btn-success btn-lg btn-full" onclick="saveChanges();">
         <i class="fa fa-check"></i>
         Save Changes
@@ -91,6 +100,7 @@ function saveChanges() {
   var last_name = $('input[name=last_name]').val();
   var email = $('input[name=email]').val();
   var bio = $('textarea[name=bio]').val();
+  var nf = $('select[name=notification_frequency]').val();
 
 
   data = {
@@ -98,6 +108,7 @@ function saveChanges() {
     last_name: last_name,
     email: email,
     bio: bio,
+    notification_frequency: nf,
   };
 
   apiRequest({

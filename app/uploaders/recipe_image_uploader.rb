@@ -10,6 +10,9 @@ class RecipeImageUploader < CarrierWave::Uploader::Base
   storage :fog
 
   process resize_to_limit: [1000, 1000]
+  version :thumb do
+    process resize_to_fill: [200, 200]
+  end
 
   # Override the directory where uploaded files will be stored.
   # This is a sensible default for uploaders that are meant to be mounted:

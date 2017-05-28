@@ -59,6 +59,7 @@ class AccountController < ApplicationController
     self.current_user.last_name = params[:last_name] if params.key?(:last_name)
     self.current_user.email = params[:email] if params.key?(:email)
     self.current_user.bio = params[:bio] if params.key?(:bio)
+    self.current_user.notification_frequency = params[:notification_frequency].to_i if params.key?(:notification_frequency)
 
     if params.key?(:picture)
       self.current_user.picture = params[:picture]

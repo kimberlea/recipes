@@ -8,13 +8,15 @@ class User < ActiveRecord::Base
   field :email, type: String
   field :picture, type: String
   field :bio, type: String
-
+  field :notification_frequency, type: Integer, default: 1
+  field :last_notification_at, type: Time
 
   timestamps!
   quick_auth_authentic!
 
   has_many :recipes, class_name: "Recipe", foreign_key: :creator_id
 
+  NOTIFICATION_FREQUENCIES = {none: 0, daily: 1, weekly: 2}
 
   validate do
     errors.add(:first_name, "Enter your first name.") if self.first_name.blank?
@@ -34,7 +36,6 @@ class User < ActiveRecord::Base
     else
       return nil
     end
-
   end
 
   ## MEMBER/INSTANCE METHODS(@user, user, single user)
@@ -98,12 +99,23 @@ class User < ActiveRecord::Base
     if self.picture.nil? || self.picture.url.nil?
       "http://dishfave.com/assets/default-user.png"
     else
-      self.picture.url
+      self.picture.thumb.url
     end
   end
 
   def favorites_count
     UserReaction.where(is_favorite: true).where("recipe_id IN (SELECT id FROM recipes WHERE creator_id=?)", self.id).count
+  end
+
+  def notification_period
+    case self.notification_frequency
+    when 1
+      1.day
+    when 2
+      1.week
+    else
+      0
+    end
   end
 
 

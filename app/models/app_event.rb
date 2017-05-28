@@ -78,7 +78,7 @@ class AppEvent < ActiveRecord::Base
   def subject_image_url
     img = case self.action
     when "recipe.created", "recipe.favorited", "recipe.commented"
-      recipe.image.url
+      recipe.image.thumb.url
     when "user.followed"
       user.picture_url
     end

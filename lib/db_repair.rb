@@ -22,4 +22,31 @@ module DBRepair
     end
   end
 
+  def self.reprocess_uploads
+    Recipe.find_each do |r|
+      next if r.image.url.nil?
+      begin
+        r.image.cache_stored_file!
+        r.image.retrieve_from_cache!(r.image.cache_name)
+        r.image.recreate_versions!(:thumb)
+      rescue => ex
+        puts "ERROR: Recipe #{r.id}"
+        puts ex.message
+        puts ex.backtrace.join("\n\t")
+      end
+    end
+    User.find_each do |r|
+      next if r.picture.url.nil?
+      begin
+        r.picture.cache_stored_file!
+        r.picture.retrieve_from_cache!(r.picture.cache_name)
+        r.picture.recreate_versions!(:thumb)
+      rescue => ex
+        puts "ERROR: User #{r.id}"
+        puts ex.message
+        puts ex.backtrace.join("\n\t")
+      end
+    end
+  end
+
 end

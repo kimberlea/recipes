@@ -1,0 +1,13 @@
+#!/usr/bin/env ruby
+
+require 'quick_utils'
+
+QuickUtils::TaskManager.run("app_cron") do |config|
+  config.root_dir = Dir.pwd
+  config.load_rails = true
+
+  config.add_task 1, :day do |mgr|
+    SiteNotification.send_activity
+  end
+
+end

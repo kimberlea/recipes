@@ -8,7 +8,7 @@ development:
     port: 587
     domain: 'mailer.dishfave.com'
     user_name: 'postmaster@mailer.dishfave.com'
-    password: 'test'
+    password: 'a261b4d7e6b3a8b2010d119613d3e28d'
 
 test:
   classes:
@@ -20,7 +20,7 @@ test:
     port: 587
     domain: 'mailer.dishfave.com'
     user_name: 'postmaster@mailer.dishfave.com'
-    password: 'test'
+    password: 'a261b4d7e6b3a8b2010d119613d3e28d'
 
 production:
   classes:
@@ -32,5 +32,5 @@ production:
     port: 587
     domain: 'mailer.dishfave.com'
     user_name: 'postmaster@mailer.dishfave.com'
-    password: 'test'
+    password: 'a261b4d7e6b3a8b2010d119613d3e28d'
 
