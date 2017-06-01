@@ -58,7 +58,16 @@ class User < ActiveRecord::Base
 
     # save and return response
     success = self.save
-    if success == false
+    if success == true
+      if new_record
+        begin
+          # start following featured people
+          self.follow_featured_users!
+        rescue => ex
+          Rails.logger.info ex.message
+        end
+      end
+    else
       error = self.errors.values.flatten.first
     end
     return {success: success, data: self, error: error, new_record: new_record}
@@ -132,6 +141,17 @@ class User < ActiveRecord::Base
     self.flags << val.to_i if !self.has_flag?(val)
     self.save(validate: false)
     return val
+  end
+
+  def follow_featured_users!
+    return if !Rails.env.production?
+    fuids = [1]
+    fuids.each do |uid|
+      f = Following.new
+      f.follower_id = self.id
+      f.user_id = uid
+      f.save
+    end
   end
 
 
