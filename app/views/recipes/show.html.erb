@@ -1,8 +1,12 @@
 <div class="recipe-container">
 
-  <div class="recipe-image">
+  <a class="recipe-image" href="<%= @recipe.image.url %>" data-lightbox="recipe-image-full" data-title="<%= @recipe.title %>">
     <img src="<%= @recipe.image.url %>"/>
-  </div>
+    <div class="expand">
+      <i class="fa fa-camera" style="margin-right: 5px;"></i>
+      Click to expand photo
+    </div>
+  </a>
 
   <div class="col-md-9">
     <div class="recipe-content">
