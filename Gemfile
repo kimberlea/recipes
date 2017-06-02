@@ -26,7 +26,7 @@ gem 'schema_sync', github: 'agquick/schema_sync'
 
 gem 'quick_auth', github: 'agquick/quick_auth', ref: '57aa706'
 
-gem 'quick_notify', github: 'agquick/quick_notify', ref: 'e193dc7'
+gem 'quick_notify', github: 'agquick/quick_notify', ref: '02bf591'
 
 gem 'quick_utils', github: 'agquick/quick_utils'
 
