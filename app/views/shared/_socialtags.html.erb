@@ -1,22 +1,24 @@
+<meta name="twitter:card" content="summary_large_image" />
+
 <% if page_info[:title] %>
-  <meta name="title" content="<%= @page_info[:title] %>" />
-  <meta name="og:title" content="<%= @page_info[:title] %>" />
-  <meta name="og:type" content="article" />
-  <meta name="og:site_name" content="Dishfave.com" />
+  <meta property="title" content="<%= @page_info[:title] %>" />
+  <meta name="twitter:title" content="<%= @page_info[:title] %>" />
+  <meta property="og:title" content="<%= @page_info[:title] %>" />
+  <meta property="og:type" content="article" />
+  <meta property="og:site_name" content="Dishfave.com" />
 <% end %>
 
 <% if page_info[:description] %>
-  <meta name="description" content="<%= page_info[:description] %>" />
+  <meta property="description" content="<%= page_info[:description] %>" />
   <meta name="twitter:description" content="<%= page_info[:description] %>" />
-  <meta name="twitter:card" content="<%= page_info[:description] %>" />
-  <meta name="og:description" content="<%= page_info[:description] %>" />
+  <meta property="og:description" content="<%= page_info[:description] %>" />
 <% end %>
 
 <% if page_info[:url] %>
-  <meta name="og:url" content="<%= page_info[:url] %>" />
+  <meta property="og:url" content="<%= page_info[:url] %>" />
 <% end %>
 
 <% if page_info[:image] %>
   <meta name="twitter:image" content="<%= page_info[:image] %>" />
-  <meta name="og:image" content="<%= page_info[:image] %>" />
+  <meta property="og:image" content="<%= page_info[:image] %>" />
 <% end %>
