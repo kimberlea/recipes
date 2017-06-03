@@ -11,7 +11,7 @@
         <%= event.title(viewer: current_user) %>
       </a>
     </h4>
-    <%= event.body %>
+    <%= truncate(event.body, length: 250) %>
     <div class="event-time">
       <%= time_ago_in_words(event.created_at) %> ago
     </div>

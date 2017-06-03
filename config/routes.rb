@@ -23,10 +23,12 @@ Rails.application.routes.draw do
   get '/sign_in' => 'account#sign_in'
   post '/login' => 'account#login'
   get '/logout' => 'account#logout'
+  get '/forgot' => 'account#forgot_password'
 
   get 'account' => 'account#profile'
   post '/account' => 'account#save'
   post '/account/update_flags' => 'account#update_flags'
+  post '/account/reset_password' => 'account#reset_password'
  
   post '/following' => 'followings#save'
   delete '/following' => 'followings#delete'

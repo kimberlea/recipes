@@ -20,10 +20,16 @@ class AccountController < ApplicationController
     render layout: nil
   end
 
-  def profile
-
+  def forgot_password
+    @show_header = false
+    @body_style = "bg-wood"
   end
 
+  def profile
+    if current_user.nil?
+      redirect_to "/sign_in"
+    end
+  end
 
   # api calls
 
@@ -65,6 +71,10 @@ class AccountController < ApplicationController
       self.current_user.picture = params[:picture]
     end
 
+    if params.key?(:password)
+      self.current_user.password = params[:password]
+    end
+
     saved = self.current_user.save
     res = {success: saved, data: self.current_user.to_api}
     render_result(res)
@@ -76,6 +86,16 @@ class AccountController < ApplicationController
       current_user.set_flag!(f)
     }
     render_result(success: true, data: current_user)
+  end
+
+  def reset_password
+    user = User.find_by_email(params[:email])
+    if user.nil?
+      render_result(success: false, error: "Could not find this user.")
+      return
+    end
+    user.send_reset_password_email!
+    render_result(success: true, data: user)
   end
 end
 

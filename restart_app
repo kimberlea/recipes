@@ -6,7 +6,7 @@ PID="./tmp/pids/unicorn.pid"
 export RAILS_ENV=production
 
 echo "Updating gems"
-bundle install
+bundle install --deployment
 
 echo "Building assets"
 bundle exec rake assets:clean assets:precompile

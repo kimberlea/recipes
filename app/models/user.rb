@@ -28,9 +28,17 @@ class User < ActiveRecord::Base
       errors.add(:email, "This email address already exists!")
     end
     errors.add(:password, "Enter your password.") if self.password_required?
+    if self.password.present? && self.password.length < 4
+      errors.add(:password, "Your password must be at least 4 characters.")
+    end
   end
 
   ## CLASS METHODS(User, viewing all users)
+
+  def self.find_by_email(email)
+    return nil if email.nil?
+    User.where(email: email.strip.downcase).first
+  end
 
   def self.authenticate(email, password)
     if (user = User.find_by_email(email.strip.downcase)) && user.authenticated?(password)
@@ -154,6 +162,12 @@ class User < ActiveRecord::Base
     end
   end
 
+  def send_reset_password_email!
+    self.reset_perishable_token!
+    html = MailMaker.parse_template("account/reset_password", user: self)
+    mail = QuickNotify::Mailer.app_email(to: self.email, subject: "Reset your password on Dishfave", html_body: html)
+    mail.deliver_now
+  end
 
   def to_api
     ret = {}

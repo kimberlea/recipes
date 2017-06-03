@@ -45,17 +45,19 @@
   </div>
 
   <div class="personal-settings">
-    <h3> Edit Your Personal Settings</h3>
-  </div>
-  <div>
+    <h3>Change Your Picture</h3>
     <form class="form-horizontal">
       <div class="img-change">
         <input type="file" name="picture">
-        <button type="button" class="btn btn-success" onclick="updatePicture();">
+        <button type="button" class="btn btn-success btn-lg btn-full" onclick="updatePicture();">
+          <i class="fa fa-check"></i>
           Update Picture
         </button>
       </div>
+    </form>
 
+    <h3>Edit Your Personal Settings</h3>
+    <div class="form-horizontal">
       <div class="form-group">
         <label for="inputFirst" class="control-label">First Name</label>
         <input type="text" name="first_name" class="form-control input-lg" value="<%= current_user.first_name %>"/>
@@ -90,7 +92,23 @@
         <i class="fa fa-check"></i>
         Save Changes
       </button>
-    </form>
+    </div>
+
+    <h3>Change Password</h3>
+    <div class="form-horizontal">
+      <div class="form-group">
+        <label class="control-label">New Password</label>
+        <input type="password" name="password" class="form-control input-lg"/>
+      </div>
+      <div class="form-group">
+        <label class="control-label">Confirm New Password</label>
+        <input type="password" name="password_confirm" class="form-control input-lg"/>
+      </div>
+      <button class="btn btn-success btn-lg btn-full" onclick="updatePassword();">
+        <i class="fa fa-check"></i>
+        Update Password
+      </button>
+    </div>
   </div>
 </div>
 
@@ -143,9 +161,33 @@ function updatePicture() {
       $.alert("Your picture has been updated!");
     },
     error: function(resp) {
-      alert(resp.error);
+      $.alert(resp.error);
+    }
+  });
+}
+
+function updatePassword() {
+  var pw = $('input[name=password]').val();
+  var pw_conf = $('input[name=password_confirm]').val();
+  if (pw != pw_conf) {
+    $.alert("Your passwords don't match.");
+    return;
+  }
+  var data = {
+    password: pw
+  };
+  apiRequest({
+    url: "/account",
+    method: "POST",
+    data: data,
+    success: function(resp) {
+      $.alert("Your password has been updated!");
+    },
+    error: function(resp) {
+      $.alert(resp.error);
     }
   });
 }
 
 </script>
+
