@@ -80,7 +80,7 @@ Flour
     </div>
 
     <div class="form-group">
-      <label>Recipe Tags</label>
+      <label>Dish Tags</label>
       <textarea class="form-control input-lg" name="tags" placeholder="dinner, italian, healthy, ..."><%= @recipe.tags_to_str %></textarea>
       <div class="help-block small text-muted">
         <i class="fa fa-question-circle"></i>
@@ -98,14 +98,14 @@ Flour
     </div>
     <div class="checkbox">
       <label>
-        <input type="checkbox" name="is_private" <%= @recipe.is_private ? "checked" : "" %>> Make this recipe private, so only I can see it. 
+        <input type="checkbox" name="is_private" <%= @recipe.is_private ? "checked" : "" %>> Make this dish private, so only I can see it. 
       </label>
     </div>
   </form>
 
   <button type="button" class="btn btn-success btn-lg" onclick="saveRecipe();">
     <i class="fa fa-check"></i>
-    Save Recipe
+    Save Dish
   </button>
 
   <% if @recipe.id != nil %>

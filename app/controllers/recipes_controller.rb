@@ -70,14 +70,14 @@ class RecipesController < ApplicationController
 
   def create
     @body_style = "bg-image"
-    @title = "Create New Recipe."
+    @title = "Create New Dish."
     @recipe = Recipe.new
     render "recipes/edit"
   end
 
   def edit
     @body_style = "bg-image"
-    @title = "Edit This Recipe."
+    @title = "Edit This Dish."
     render "recipes/edit"
   end
 

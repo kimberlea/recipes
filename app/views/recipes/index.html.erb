@@ -5,17 +5,17 @@
   <div class="recipes-content">
     <div class="recipes-filter">
       <div class="links">
-        <a href="/recipes?order=newest" class="<%= "active" if @order == "newest" %>">Newest Recipes</a>
-        <a href="/recipes?order=popular" class="<%= "active" if @order == "popular" %>">Popular Recipes</a>
+        <a href="/dishes?order=newest" class="<%= "active" if @order == "newest" %>">Newest Dishes</a>
+        <a href="/dishes?order=popular" class="<%= "active" if @order == "popular" %>">Popular Dishes</a>
         <% if signed_in? %>
-        <a href="/recipes?creator=friends" class= "<%= "active" if @filter_creator == "friends" %>">My Friends' Recipes</a>
-        <a href="/recipes?creator=me" class="<%= "active" if @filter_creator == "me" %>">My Recipes</a>
-        <a href="/recipes?favorite=true" class="<%= "active" if @filter_favorite == true %>">My Favorites</a>
+        <a href="/dishes?creator=friends" class= "<%= "active" if @filter_creator == "friends" %>">My Friends' Dishes</a>
+        <a href="/dishes?creator=me" class="<%= "active" if @filter_creator == "me" %>">My Dishes</a>
+        <a href="/dishes?favorite=true" class="<%= "active" if @filter_favorite == true %>">My Favorites</a>
         <% end %>
       </div>
 
       <div class="dropdown inline">
-        <a class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-filter" style="margin-right: 5px; opacity: 0.5;"></i>Filter Recipes<span class="caret"></span></a>
+        <a class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-filter" style="margin-right: 5px; opacity: 0.5;"></i>Filter Dishes<span class="caret"></span></a>
         <ul class="dropdown-menu dropdown-menu-right" style="width: 250px;">
           <div class="col-xs-6">
             <div class="dropdown-section-header">
@@ -121,7 +121,7 @@ function updateFilter(scope) {
   var cf = getURLParams();
   $.extend(cf, scope);
   var nu = $.param(cf);
-  window.location.href = "/recipes?" + nu;
+  window.location.href = "/dishes?" + nu;
 }
 $(function() {
   $('.dropdown a.menu-option').click(function() {

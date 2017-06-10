@@ -12,6 +12,9 @@
       <div class="expand text-center">
         <i class="fa fa-camera" style="margin-right: 5px;"></i>
         Click to expand photo
+        <span style="margin: 0px 5px; color: #777;">&bull;</span>
+        <i class="fa fa-chevron-down" style="margin-right: 5px;"></i>
+        Scroll down for details
       </div>
     </a>
 
@@ -29,7 +32,7 @@
             <a href="<%= @creator.view_path %>">
               <%= @creator.full_name %>
             </a>
-            <span class="badge chefscore-badge" title="ChefScore is the total number of favorites on all recipes">
+            <span class="badge chefscore-badge" title="ChefScore is the total number of favorites on all dishes">
               <i class="fa fa-fire"></i>
               <%= @creator.favorites_count %>
             </span>
@@ -64,7 +67,7 @@
             <% if current_user != nil %>
               <% if @creator.id == current_user.id %>
               &bull;          
-                <a href="<%= @recipe.view_path %>/edit">Edit Recipe</a>
+                <a href="<%= @recipe.view_path %>/edit">Edit Dish</a>
               <% end %>
             <% end %>
           </div>
@@ -157,7 +160,7 @@
   <div class="col-md-3">
     <div class="sidebar-panel df-card">
       <div class="sidebar-title">
-        Recent Recipes
+        Recent Dishes
       </div>
       <%= render partial: "tile_grid", locals: {recipes: @recipes} %>
     </div>

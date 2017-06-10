@@ -51,7 +51,7 @@ class Recipe < ActiveRecord::Base
   end
 
   def view_path(opts={})
-    str = "/recipe/#{id}"
+    str = "/dish/#{id}"
     if title.present?
       str += "/#{title.parameterize}"
     end

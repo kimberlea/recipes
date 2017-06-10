@@ -1,13 +1,17 @@
 Rails.application.routes.draw do
 
   get '/recipes' => 'recipes#index'
+  get '/dishes' => 'recipes#index'
   get '/discover' => 'recipes#index'
 
-  get 'recipe/create' => 'recipes#create'
+  get 'dish/create' => 'recipes#create'
+  get 'dish/:id' => 'recipes#show'
+  get 'dish/:id/:slug' => 'recipes#show'
+  get 'dish/:id/edit' => 'recipes#edit'
+  get 'dish/:id/:slug/edit' => 'recipes#edit'
+
   get 'recipe/:id' => 'recipes#show'
   get 'recipe/:id/:slug' => 'recipes#show'
-  get 'recipe/:id/edit' => 'recipes#edit'
-  get 'recipe/:id/:slug/edit' => 'recipes#edit'
 
   get '/sign_up' => 'account#sign_up'
   post '/register' => 'account#register'
@@ -34,8 +38,11 @@ Rails.application.routes.draw do
   delete '/following' => 'followings#delete'
 
   post '/recipe' => 'recipes#save'
+  post '/dish' => 'recipes#save'
   delete '/recipe' => 'recipes#delete'
+  delete '/dish' => 'recipes#delete'
   post '/recipe/favorite' => 'recipes#favorite'
+  post '/dish/favorite' => 'recipes#favorite'
 
   post '/user_reaction' => 'user_reactions#save'
   delete '/user_reaction' => 'user_reactions#delete'
