@@ -9,7 +9,7 @@ class RecipeImageUploader < CarrierWave::Uploader::Base
   #storage :file
   storage :fog
 
-  process resize_to_limit: [1000, 1000]
+  process resize_to_limit: [1500, 1500]
   version :thumb do
     process resize_to_fill: [200, 200]
   end

@@ -87,7 +87,8 @@ cursor: pointer;
   .navbox-primary-links { flex: 1;}
   .navbox-search {
     input {
-      background: rgba(255,255,255,0.9);
+      background: rgba(255,255,255,0.95);
+      border-radius: 5px;
     }
   }
 }

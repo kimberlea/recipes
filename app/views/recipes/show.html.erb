@@ -1,15 +1,21 @@
 <div class="recipe-container">
-
-  <a class="recipe-image" href="<%= @recipe.image.url %>" data-lightbox="recipe-image-full" data-title="<%= @recipe.title %>">
+  <div class="recipe-image-backdrop">
     <img src="<%= @recipe.image.url %>"/>
-    <div class="expand">
-      <i class="fa fa-camera" style="margin-right: 5px;"></i>
-      Click to expand photo
-    </div>
-  </a>
+  </div>
+
+  <div class="header-space"></div>
 
   <div class="col-md-9">
-    <div class="recipe-content">
+
+    <a class="recipe-image df-card" href="<%= @recipe.image.url %>" data-lightbox="recipe-image-full" data-title="<%= @recipe.title %>">
+      <img src="<%= @recipe.image.url %>"/>
+      <div class="expand text-center">
+        <i class="fa fa-camera" style="margin-right: 5px;"></i>
+        Click to expand photo
+      </div>
+    </a>
+
+    <div class="recipe-content df-card">
       <div class="recipe-title">
         <h1><%= @recipe.title %></h1>
       </div>
@@ -104,7 +110,7 @@
       </div>
     </div>
 
-    <div class="comments-content text-left">
+    <div class="comments-content text-left df-card" style="margin-top: 20px;">
       <% if current_user != nil %>
       <div class="new-comment">
 
@@ -148,11 +154,13 @@
       </div>
     </div>
   </div>
-  <div class="col-md-3 sidebar-panel" style="background-color: #fafafa;">
-    <div class="sidebar-title" style="text-align: center; padding-top: 20px; text-decoration: underline">
-      Recent Recipes
+  <div class="col-md-3">
+    <div class="sidebar-panel df-card">
+      <div class="sidebar-title">
+        Recent Recipes
+      </div>
+      <%= render partial: "tile_grid", locals: {recipes: @recipes} %>
     </div>
-    <%= render partial: "tile_grid", locals: {recipes: @recipes} %>
   </div>
 
 </div>
