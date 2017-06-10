@@ -7,8 +7,8 @@
 
   <div class="col-md-9">
 
-    <a class="recipe-image df-card" href="<%= @recipe.image.url %>" data-lightbox="recipe-image-full" data-title="<%= @recipe.title %>">
-      <img src="<%= @recipe.image.url %>"/>
+    <a class="recipe-image" href="<%= @recipe.image.url %>" data-lightbox="recipe-image-full" data-title="<%= @recipe.title %>">
+      <img class="df-card" src="<%= @recipe.image.url %>"/>
       <div class="expand text-center">
         <i class="fa fa-camera" style="margin-right: 5px;"></i>
         Click to expand photo
@@ -110,7 +110,7 @@
       </div>
     </div>
 
-    <div class="comments-content text-left df-card" style="margin-top: 20px;">
+    <div class="comments-content text-left df-card" style="margin-top: 20px; margin-bottom: 20px;">
       <% if current_user != nil %>
       <div class="new-comment">
 
