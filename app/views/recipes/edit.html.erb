@@ -89,24 +89,35 @@ Flour
     </div>
 
     <div class="form-group">
-      <label for="exampleInputFile">File input</label>
+      <label for="exampleInputFile">Image Upload</label>
       <input type="file" name="image"> 
       <% if @recipe.image.url != nil %>
         <img src="<%= @recipe.image.url %>" style="width: 150px;"/>
+      <% else %>
+        <div class="help-block small text-muted">
+          <i class="fa fa-question-circle"></i>
+          Don't have an image yet? Find a good one on <a href="https://images.google.com" target="_blank">Google Images</a> for now.
+        </div>
       <% end %>
     
     </div>
-    <div class="checkbox">
+    <div class="form-group">
+      <label>Other Options</label>
+      <div class="checkbox">
       <label>
         <input type="checkbox" name="is_private" <%= @recipe.is_private ? "checked" : "" %>> Make this dish private, so only I can see it. 
       </label>
+      </div>
     </div>
-  </form>
 
-  <button type="button" class="btn btn-success btn-lg" onclick="saveRecipe();">
-    <i class="fa fa-check"></i>
-    Save Dish
-  </button>
+    <div class="form-group">
+      <button type="button" class="btn btn-success btn-lg" onclick="saveRecipe();">
+        <i class="fa fa-check"></i>
+        Save Dish
+      </button>
+    </div>
+
+  </form>
 
   <% if @recipe.id != nil %>
     <button type="button" class="btn btn-danger pull-right" onclick="promptDeleteRecipe();">

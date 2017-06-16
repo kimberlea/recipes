@@ -6,7 +6,7 @@ QuickUtils::TaskManager.run("app_cron") do |config|
   config.root_dir = Dir.pwd
   config.load_rails = true
 
-  config.add_task 1, :day do |mgr|
+  config.add_task 1, :hour do |mgr|
     SiteNotification.send_activity
   end
 
