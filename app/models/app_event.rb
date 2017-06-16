@@ -51,11 +51,11 @@ class AppEvent < ActiveRecord::Base
     end
     action_str = case self.action 
     when "recipe.created"
-      "created a new recipe, \"#{recipe.title}\"."
+      "created a new dish, \"#{recipe.title}\"."
     when "recipe.favorited"
-      "favorited the recipe, \"#{recipe.title}\"."
+      "favorited the dish, \"#{recipe.title}\"."
     when "recipe.commented"
-      "commented on the recipe, \"#{recipe.title}\"."
+      "commented on the dish, \"#{recipe.title}\"."
     when "user.followed"
       user_str = viewer == user ? "you" : user.full_name
       "started following #{user_str}."

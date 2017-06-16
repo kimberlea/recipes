@@ -5,7 +5,7 @@
 
   <div class="header-space"></div>
 
-  <div class="col-md-9">
+  <div class="row" style="margin: 0px;"><div class="col-md-9">
 
     <a class="recipe-image" href="<%= @recipe.image.url %>" data-lightbox="recipe-image-full" data-title="<%= @recipe.title %>">
       <img class="df-card" src="<%= @recipe.image.url %>"/>
@@ -169,7 +169,7 @@
       </div>
       <%= render partial: "tile_grid", locals: {recipes: @recipes} %>
     </div>
-  </div>
+  </div></div>
 
 </div>
 
