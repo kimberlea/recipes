@@ -75,7 +75,12 @@
 
         </div>
       </div>
-      <div class="addthis_inline_share_toolbox" style="margin: 5px; text-align: center;"></div>
+      <div class="addthis_inline_share_toolbox" style="margin: 5px; text-align: center;" 
+        data-url="<%= @recipe.view_path(full: true) %>"
+        data-title="<%= @recipe.title %>"
+        data-media="<%= @recipe.image.url %>"
+        >
+      </div>
 
       <div class="recipe-description recipe-section text-center">
         <%= raw @recipe.description_html %>
