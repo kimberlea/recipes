@@ -7,6 +7,7 @@ class Recipe < ActiveRecord::Base
   field :description, type: String
   field :ingredients, type: String
   field :directions, type: String
+  field :purchase_info, type: String
   field :tags, type: String, array: true
   #field :prep_time, type: String
   field :prep_time_mins, type: Integer
@@ -39,12 +40,17 @@ class Recipe < ActiveRecord::Base
 
   validate do
     errors.add(:title, "Please enter a title for this recipe.") if self.title.blank?
-    errors.add(:serving_size, "Enter serving size.") if self.serving_size.blank?
-    errors.add(:ingredients, "Enter recipe ingredients.") if self.ingredients.blank?
-    errors.add(:directions, "Enter recipe directions.") if self.directions.blank?
-    errors.add(:creator, "Enter who created this recipe.") if self.creator_id.blank?
-    errors.add(:prep_time_mins, "Enter how long this recipe takes.") if self.prep_time_mins.blank?
     errors.add(:description, "Please enter a description for this recipe.") if self.description.blank?
+    if self.purchase_info.blank? && self.directions.blank?
+      errors.add(:purchase_info, "You must at least enter purchase info if you don't enter directions.")
+      errors.add(:directions, "You must enter directions if you don't enter how to purchase.")
+    end
+    if self.directions.present?
+      errors.add(:ingredients, "Enter recipe ingredients.") if self.ingredients.blank?
+      errors.add(:prep_time_mins, "Enter how long this recipe takes.") if self.prep_time_mins.blank?
+    end
+    errors.add(:serving_size, "Enter serving size.") if self.serving_size.blank?
+    errors.add(:creator, "Enter who created this recipe.") if self.creator_id.blank?
     if !Rails.env.test?
       errors.add(:image, "Please add a image for your recipe.") if self.image.blank? || self.image.url.blank?
     end
@@ -93,6 +99,10 @@ class Recipe < ActiveRecord::Base
     return markdown_render(self.directions)
   end
 
+  def purchase_info_html
+    return markdown_render(self.purchase_info)
+  end
+
   def favorites_count
     UserReaction.where(recipe_id: self.id, is_favorite: true).count
   end
@@ -134,6 +144,7 @@ class Recipe < ActiveRecord::Base
     ret[:errors] = self.errors.to_hash if self.errors.any?
     ret[:ingredients] = self.ingredients
     ret[:directions] = self.directions
+    ret[:purchase_info] = self.purchase_info
     ret[:tags] = self.tags
     ret[:description] = self.description
     ret[:serving_size] = self.serving_size

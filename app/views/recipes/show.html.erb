@@ -91,23 +91,42 @@
         </div>
         <div class="col-sm-6">
           <h5><span>Preparation Time</span></h5>
-          <p><%= @recipe.prep_time_details[:text] %></p>
+          <p>
+            <% if @recipe.prep_time_mins.blank? || @recipe.prep_time_mins == 0 %>
+              See Below
+            <% else %>
+            <%= @recipe.prep_time_details[:text] %>
+            <% end %>
+          </p>
         </div>
       </div>
 
+      <% if @recipe.ingredients.present? %>
       <div class="recipe-ingredients recipe-section">
         <h2><span>Ingredients</span></h2>
         <div class="recipe-ingredients-body">
           <%= raw @recipe.ingredients_html %>
         </div>
       </div>
+      <% end %>
 
+      <% if @recipe.directions.present? %>
       <div class="recipe-prep recipe-section">
         <h2><span>Directions</span></h2>
         <div class="recipe-prep-body">
           <%= raw @recipe.directions_html %>
         </div>
       </div>
+      <% end %>
+
+      <% if @recipe.purchase_info.present? %>
+      <div class="recipe-purchase recipe-section">
+        <h2><span>How To Purchase</span></h2>
+        <div class="recipe-purchase-body">
+          <%= raw @recipe.purchase_info_html %>
+        </div>
+      </div>
+      <% end %>
 
       <div class="recipe-tags recipe-section">
         <% @recipe.tags.each do |tag| %>

@@ -15,6 +15,7 @@
 
     <input type="hidden" name="id" value="<%= @recipe.id %>"/>
 
+
     <div class="form-group">
 
       <label>Title</label>
@@ -23,9 +24,23 @@
 
     <div class="form-group">
       <label>Description</label>
-      <textarea class="form-control input-lg" name="description" placeholder="Enter description here."><%= @recipe.description %></textarea>
+      <textarea class="form-control input-lg" rows="5" name="description" placeholder="Enter description here."><%= @recipe.description %></textarea>
     </div>
 
+    <hr>
+
+    <h2><i class="fa fa-list-ol"></i>How to Make</h2>
+
+    <div class="well well-slim">
+    <div class="checkbox">
+      <label style="font-weight: 200;">
+        <input type="checkbox" onclick="toggleHowToMakeVisible(this);">
+        I don't have the directions, or would prefer not to enter.
+      </label>
+    </div>
+    </div>
+
+    <div class="howtomake-fields">
     <div class="form-group">
       <label>Ingredients</label>
       <textarea class="form-control input-lg" name="ingredients" placeholder="Butter
@@ -66,6 +81,18 @@ Flour
         </div>
       </div>
     </div>
+    </div>
+
+    <hr>
+
+    <h2><i class="fa fa-shopping-cart"></i>How To Purchase</h2>
+    <div class="form-group">
+      <textarea class="form-control input-lg" name="purchase_info" placeholder="(Optional) Enter instructions for how to purchase this dish pre-made. Website links, store names, and locations are all helpful."><%= @recipe.purchase_info %></textarea>
+    </div>
+
+    <hr>
+
+    <h2><i class="fa fa-info-circle"></i>More Info</h2>
 
     <div class="row">
       <div class="col-xs-6 col-sm-4">
@@ -102,13 +129,15 @@ Flour
     
     </div>
     <div class="form-group">
-      <label>Other Options</label>
+      <label>Privacy</label>
       <div class="checkbox">
       <label>
         <input type="checkbox" name="is_private" <%= @recipe.is_private ? "checked" : "" %>> Make this dish private, so only I can see it. 
       </label>
       </div>
     </div>
+
+    <hr>
 
     <div class="form-group">
       <button type="button" class="btn btn-success btn-lg" onclick="saveRecipe();">

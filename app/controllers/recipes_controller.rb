@@ -93,6 +93,7 @@ class RecipesController < ApplicationController
     @recipe.description = params[:description] if params.key?(:description)
     @recipe.ingredients = params[:ingredients] if params.key?(:ingredients)
     @recipe.directions = params[:directions] if params.key?(:directions)
+    @recipe.purchase_info = params[:purchase_info] if params.key?(:purchase_info)
     @recipe.prep_time_mins = params[:prep_time_mins].to_i if params.key?(:prep_time_mins)
     @recipe.is_private = (params[:is_private]=="true") if params.key?(:is_private)
     @recipe.creator = self.current_user

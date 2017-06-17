@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170528202543) do
+ActiveRecord::Schema.define(version: 20170617210759) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -57,6 +57,7 @@ ActiveRecord::Schema.define(version: 20170528202543) do
     t.boolean  "is_private",             default: false
     t.tsvector "search_vector"
     t.integer  "cached_favorites_count"
+    t.string   "purchase_info"
   end
 
   create_table "user_reactions", force: :cascade do |t|

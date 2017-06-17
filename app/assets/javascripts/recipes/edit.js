@@ -9,6 +9,7 @@ function saveRecipe() {
   var description = $('textarea[name=description]').val();
   var ingredients = $('textarea[name=ingredients]').val();
   var directions = $('textarea[name=directions]').val();
+  var purchase_info = $('textarea[name=purchase_info]').val();
   var prep_time_hours = parseInt($('input[name=prep_time_hours]').val()) || 0;
   var prep_time_minutes = parseInt($('input[name=prep_time_minutes]').val()) || 0;
   var tags_str = $('textarea[name=tags]').val();
@@ -26,6 +27,7 @@ function saveRecipe() {
     description: description,
     ingredients: ingredients,
     directions: directions, 
+    purchase_info: purchase_info, 
     prep_time_mins: prep_time_mins,
     is_private: is_private,
     tags: JSON.stringify(tags),
@@ -77,4 +79,14 @@ function deleteRecipe() {
 
 function getRecipeId() {
   return $('input[name=id]').val();
+}
+
+function toggleHowToMakeVisible(el) {
+  var do_hide = $(el).is(":checked");
+  var $htm = $('.howtomake-fields');
+  if (do_hide) {
+    $htm.hide();
+  } else { 
+    $htm.show();
+  }
 }

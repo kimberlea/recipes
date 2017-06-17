@@ -24,6 +24,12 @@ deb http://apt.postgresql.org/pub/repos/apt/ trusty-pgdg main
 
 > sudo apt-get install postgresql-9.5
 
+# add user
+
+> sudo su - postgres
+> psql
+> CREATE USER kimberlea WITH CREATEDB PASSWORD 'pancakes';
+
 Nginx
 =====
 
