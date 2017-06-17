@@ -53,7 +53,7 @@
       
 
 
-        <div class="navbox" style="padding: 0px 10px;">
+        <div class="navbox">
           <a href="/dish/create" class="navbar-link" style="">
             <i class="fa fa-plus-circle"></i>
             <span class="link-title">New Dish</span>
@@ -67,13 +67,13 @@
         </div>
 
         <div class="navbox navbox-chefscore">
-          <a class="navbar-link" href="/activity?filter=favorites" style="margin-left: 10px;" title="Your ChefScore is the total number of favorites you have on all your recipes. Share your recipes to get more favorites!" data-toggle="tooltip" data-placement="bottom">
+          <a class="navbar-link" href="/activity?filter=favorites" title="Your ChefScore is the total number of favorites you have on all your recipes. Share your recipes to get more favorites!" data-toggle="tooltip" data-placement="bottom">
             <i class="fa fa-fire"></i>
             <%= current_user.favorites_count %>
           </a>
         </div>
 
-        <div class="navbox" style="padding-left: 10px;">
+        <div class="navbox navbox-avatar">
           <% if current_user != nil %>
             <a href="<%= current_user.view_path %>" class="navbar-link">
               <img class="img-circle" src="<%= current_user.picture_url %>" style="width: 30px; height: 30px;"/>

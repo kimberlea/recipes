@@ -82,6 +82,7 @@ cursor: pointer;
     //justify-content: center;
     align-items: center;
     height: 52px;
+    padding: 0px 10px;
   }
 
   .navbox-primary-links { flex: 1;}
@@ -106,10 +107,13 @@ cursor: pointer;
 
 .layout-mobile-phone {
   .navbar-default {
+    .navbox {padding-left: 0px; padding-right: 0px;};
+    .navbar-logo { margin-right: 15px; }
     .navbar-link { font-size: 22px; padding: 10px; }
     .link-title { display: none; }
-    .navbox-search { flex: 1; display: none; }
-    .navbox-primary-links { flex: 0; }
+    .navbox-search { display: none; }
+    .navbox-chefscore { margin-left: 0px; }
+    .navbox-primary-links { flex: 1; }
   }
 }
 
