@@ -66,15 +66,17 @@
           </div>
         </div>
 
+        <% if signed_in? %>
         <div class="navbox navbox-chefscore">
           <a class="navbar-link" href="/activity?filter=favorites" title="Your ChefScore is the total number of favorites you have on all your recipes. Share your recipes to get more favorites!" data-toggle="tooltip" data-placement="bottom">
             <i class="fa fa-fire"></i>
             <%= current_user.favorites_count %>
           </a>
         </div>
+        <% end %>
 
         <div class="navbox navbox-avatar">
-          <% if current_user != nil %>
+          <% if signed_in? %>
             <a href="<%= current_user.view_path %>" class="navbar-link">
               <img class="img-circle" src="<%= current_user.picture_url %>" style="width: 30px; height: 30px;"/>
             </a>
