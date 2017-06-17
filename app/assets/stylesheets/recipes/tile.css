@@ -124,14 +124,15 @@
 }
 
 .recipe-tile .chefscore-badge-clear {
-  color: rgba(255, 255, 255, 0.8);
+  color: #d64541;
   font-size: 12px;
   font-weight: 200;
   margin-left: 5px;
-  border: 1px solid rgba(255, 255, 255, 0.5);
+  /*border: 1px solid rgba(255, 255, 255, 0.5); */
   border-radius: 6px;
   padding: 0px 5px;
   line-height: 1;
+  background: rgba(255, 255, 255, 0.7);
 }
 
 .recipe-tile-content {
