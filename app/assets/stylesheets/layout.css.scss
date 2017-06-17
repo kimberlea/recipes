@@ -108,8 +108,7 @@ cursor: pointer;
   .navbar-default {
     .navbar-link { font-size: 22px; padding: 10px; }
     .link-title { display: none; }
-    .navbox-search { flex: 1; }
-    .navbox-chefscore { display: none; }
+    .navbox-search { flex: 1; display: none; }
     .navbox-primary-links { flex: 0; }
   }
 }
