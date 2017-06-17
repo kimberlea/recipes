@@ -27,6 +27,9 @@ class AppEvent < ActiveRecord::Base
   scope :created_after, lambda {|t|
     where("created_at > ?", t)
   }
+  scope :with_any_action, lambda {|*val|
+    where("action IN (?)", val)
+  }
 
   def self.publish(action, actor, models, opts={})
     ev = self.new

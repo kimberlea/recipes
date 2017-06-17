@@ -30,7 +30,7 @@ class ApplicationController < ActionController::Base
   end
 
   def page_info
-    return @page_info || {}
+    return @page_info ||= {}
   end
 
   def is_me?(user)

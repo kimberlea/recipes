@@ -29,10 +29,8 @@
         </div>
         <div class="col-xs-9 text-left">
           <div class="recipe-meta-name" style="color: #555;">
-            <a href="<%= @creator.view_path %>">
-              <%= @creator.full_name %>
-            </a>
-            <span class="badge chefscore-badge" title="ChefScore is the total number of favorites on all dishes">
+            <a href="<%= @creator.view_path %>"><%= @creator.full_name %></a>
+            <span class="badge chefscore-badge" title="ChefScore is the total number of favorites on all dishes"data-toggle="tooltip">
               <i class="fa fa-fire"></i>
               <%= @creator.favorites_count %>
             </span>

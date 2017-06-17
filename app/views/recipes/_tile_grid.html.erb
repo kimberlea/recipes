@@ -12,6 +12,10 @@
             <div class="recipe-tile-image-meta">
                 <img src="<%= recipe.creator.picture_url%>" class="img-circle" style="width:20px; height: 20px;"/>
                 <span class="recipe-tile-image-meta-name"><%= recipe.creator.full_name %></span>
+                <span class="chefscore-badge-clear">
+                  <i class="fa fa-fire"></i>
+                  <%= recipe.creator.favorites_count %>
+                </span>
             </div>
         </div>
 

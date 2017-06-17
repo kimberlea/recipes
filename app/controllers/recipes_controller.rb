@@ -57,7 +57,7 @@ class RecipesController < ApplicationController
     @comments = Comment.where(recipe_id: @recipe.id).order("created_at desc")
 
     # load 5 most recent recipes
-    @recipes = Recipe.is_public.limit(5).order("created_at desc")
+    @recipes = Recipe.is_public.limit(8).order("created_at desc")
   
     @page_info = {
       title: @recipe.title,

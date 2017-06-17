@@ -87,8 +87,10 @@ cursor: pointer;
   .navbox-primary-links { flex: 1;}
   .navbox-search {
     input {
-      background: rgba(255,255,255,0.95);
+      background: rgba(255,255,255,0.5);
       border-radius: 5px;
+      border: none;
+      font-weight: 200;
     }
   }
 }
@@ -107,6 +109,7 @@ cursor: pointer;
     .navbar-link { font-size: 22px; padding: 10px; }
     .link-title { display: none; }
     .navbox-search { flex: 1; }
+    .navbox-chefscore { display: none; }
     .navbox-primary-links { flex: 0; }
   }
 }

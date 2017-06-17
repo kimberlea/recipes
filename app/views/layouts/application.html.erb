@@ -6,7 +6,7 @@
     <link rel="stylesheet" media="all" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link href="https://fonts.googleapis.com/css?family=Lato:300,400" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.0.1/jquery-confirm.min.css" />
-    <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
+    <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track' => true %>
     <link href="https://fonts.googleapis.com/css?family=Roboto:400,500" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.9.0/css/lightbox.min.css" />
 
@@ -15,7 +15,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.0.1/jquery-confirm.min.js"></script>
     <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
     <%= csrf_meta_tags %>
-    <meta name="viewport" content="initial-scale=0.7">
+    <meta name="viewport" content="initial-scale=0.8">
     <!-- Go to www.addthis.com/dashboard to customize your tools -->
     <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-58d925bf20945d90"></script>
 
@@ -64,6 +64,13 @@
           <div class="form-group" style="margin-bottom: 0px; width: 100%;">
             <input type="text" class="form-control recipe-search-input" placeholder="Search" onkeyup="handleRecipeTyping(event);"/>
           </div>
+        </div>
+
+        <div class="navbox navbox-chefscore">
+          <a class="navbar-link" href="/activity?filter=favorites" style="margin-left: 10px;" title="Your ChefScore is the total number of favorites you have on all your recipes. Share your recipes to get more favorites!" data-toggle="tooltip" data-placement="bottom">
+            <i class="fa fa-fire"></i>
+            <%= current_user.favorites_count %>
+          </a>
         </div>
 
         <div class="navbox" style="padding-left: 10px;">
