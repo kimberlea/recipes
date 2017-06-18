@@ -6,10 +6,10 @@
   <div class="page-header">
     <h1>
       <%= @title %>
-      <% if @recipe.new_record? %>
-      <small>It only takes a minute.</small>
-      <% end %>
     </h1>
+    <% if @recipe.new_record? %>
+    <p class="lead">A dish can be anything, including an entree, dessert, or event a drink!</p>
+    <% end %>
   </div>
 
   <form class="form">
