@@ -92,7 +92,7 @@
         <div class="col-sm-6">
           <h5><span>Preparation Time</span></h5>
           <p>
-            <% if @recipe.prep_time_mins.blank? || @recipe.prep_time_mins == 0 %>
+            <% if !@recipe.has_prep_time? %>
               See Below
             <% else %>
             <%= @recipe.prep_time_details[:text] %>
@@ -121,7 +121,7 @@
 
       <% if @recipe.purchase_info.present? %>
       <div class="recipe-purchase recipe-section">
-        <h2><span>How To Purchase</span></h2>
+        <h2><span>Purchase</span></h2>
         <div class="recipe-purchase-body">
           <%= raw @recipe.purchase_info_html %>
         </div>

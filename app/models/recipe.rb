@@ -115,6 +115,18 @@ class Recipe < ActiveRecord::Base
     return {hours: hrs, minutes: mins, text: str}
   end
 
+  def has_directions?
+    self.directions.present?
+  end
+
+  def has_purchase_info?
+    self.purchase_info.present?
+  end
+
+  def has_prep_time?
+    self.prep_time_mins.present? && self.prep_time_mins > 0
+  end
+
   def created_by?(user)
     return false if user.nil?
     return self.creator_id == user.id

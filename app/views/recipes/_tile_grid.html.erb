@@ -30,13 +30,20 @@
 
             <div class="recipe-footer">
                 <span class="recipe-favorites-count" style="margin-right: 10px;">
-                    <i class="fa fa-heart"></i>
+                    <i class="fa fa-heart" style="color: red;"></i>
                     <%= recipe.favorites_count %>
                 </span>
-                <span class="recipe-duration">
+                <% if recipe.has_directions? %>
+                <span class="recipe-duration" style="margin-right: 5px;">
                     <i class="fa fa-clock-o"></i>
                     <%= recipe.prep_time_details[:text] %>
                 </span>
+                <% end %>
+                <% if recipe.has_purchase_info? %>
+                <span class="recipe-footer-section" style="color: #ccc;">
+                    <i class="fa fa-shopping-cart" title="Purchase Info Available"></i>
+                </span>
+                <% end %>
             </div>
 
 
@@ -45,14 +52,3 @@
     <% end %>  
 </div>
 
-<style> 
-
-.recipe-tile .recipe-footer i {
-    color: red;
-}
-
-.recipe-tile .recipe-duration i {
-    color: #ABABAB;
-   
-}
-</style>
