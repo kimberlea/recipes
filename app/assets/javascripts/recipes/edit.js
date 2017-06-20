@@ -16,6 +16,7 @@ function saveRecipe() {
   var tags = tags_str.split(",");
   var image = $('input[name=image]')[0].files[0];
   var is_private = $('input[name=is_private]').is(':checked');
+  var is_recipe_private = $('input[name=is_recipe_private]').is(':checked');
   var id = getRecipeId();
 
   var prep_time_mins = prep_time_hours * 60 + prep_time_minutes;
@@ -30,6 +31,7 @@ function saveRecipe() {
     purchase_info: purchase_info, 
     prep_time_mins: prep_time_mins,
     is_private: is_private,
+    is_recipe_private: is_recipe_private,
     tags: JSON.stringify(tags),
  
   };

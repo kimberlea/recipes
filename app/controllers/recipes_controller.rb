@@ -44,7 +44,10 @@ class RecipesController < ApplicationController
   def show
     @body_style = "bg-white"
 
-    @recipe = Recipe.find(params[:id])
+    if @recipe.is_private && (!signed_in? || @recipe.creator.id != current_user.id)
+      redirect_to "/"
+      return
+    end
     @creator = @recipe.creator
     if self.current_user
       @following = self.current_user.following_of(@creator)
@@ -76,6 +79,10 @@ class RecipesController < ApplicationController
   end
 
   def edit
+    if !(is_me?(@recipe.creator) || is_superadmin?)
+      redirect_to "/"
+      return
+    end
     @body_style = "bg-image"
     @title = "Edit This Dish."
     render "recipes/edit"
@@ -96,6 +103,7 @@ class RecipesController < ApplicationController
     @recipe.purchase_info = params[:purchase_info] if params.key?(:purchase_info)
     @recipe.prep_time_mins = params[:prep_time_mins].to_i if params.key?(:prep_time_mins)
     @recipe.is_private = (params[:is_private]=="true") if params.key?(:is_private)
+    @recipe.is_recipe_private = (params[:is_recipe_private]=="true") if params.key?(:is_recipe_private)
     @recipe.creator = self.current_user
     if params.key?(:tags)
       tags = JSON.parse(params[:tags])

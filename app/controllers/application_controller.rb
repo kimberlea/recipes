@@ -38,6 +38,10 @@ class ApplicationController < ActionController::Base
     return current_user.id == user.id
   end
 
+  def is_superadmin?
+    return signed_in? && current_user.is_superadmin
+  end
+
   #def current_user
     #@current_user = User.find(session[:user_id])
   #end

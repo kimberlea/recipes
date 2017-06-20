@@ -63,7 +63,7 @@
             <%= @recipe.created_at.strftime("%B %-d, %Y") %>
       
             <% if current_user != nil %>
-              <% if @creator.id == current_user.id %>
+              <% if is_me?(@creator) || current_user.is_superadmin %>
               &bull;          
                 <a href="<%= @recipe.view_path %>/edit">Edit Dish</a>
               <% end %>
@@ -101,6 +101,7 @@
         </div>
       </div>
 
+      <% if @recipe.is_recipe_private != true || is_me?(@recipe.creator) %>
       <% if @recipe.ingredients.present? %>
       <div class="recipe-ingredients recipe-section">
         <h2><span>Ingredients</span></h2>
@@ -118,10 +119,11 @@
         </div>
       </div>
       <% end %>
+      <% end %>
 
       <% if @recipe.purchase_info.present? %>
       <div class="recipe-purchase recipe-section">
-        <h2><span>Purchase</span></h2>
+        <h2><span>Where To Buy</span></h2>
         <div class="recipe-purchase-body">
           <%= raw @recipe.purchase_info_html %>
         </div>

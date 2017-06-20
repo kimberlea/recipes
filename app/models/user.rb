@@ -8,6 +8,7 @@ class User < ActiveRecord::Base
   field :email, type: String
   field :picture, type: String
   field :bio, type: String
+  field :is_superadmin, type: :boolean, default: false
   field :notification_frequency, type: Integer, default: 1
   field :last_notification_at, type: Time
   field :flags, type: Integer, array: true, default: []

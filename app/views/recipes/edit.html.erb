@@ -12,7 +12,7 @@
     <% end %>
   </div>
 
-  <form class="form">
+  <div class="form">
 
     <input type="hidden" name="id" value="<%= @recipe.id %>"/>
 
@@ -33,12 +33,16 @@
     <h2><i class="fa fa-list-ol"></i>How to Make</h2>
 
     <div class="well well-slim">
-    <div class="checkbox">
-      <label style="font-weight: 200;">
-        <input type="checkbox" onclick="toggleHowToMakeVisible(this);">
-        I don't have the directions, or would prefer not to enter.
-      </label>
-    </div>
+      <div class="checkbox">
+        <label style="font-weight: 200;">
+          <input type="checkbox" onclick="toggleHowToMakeVisible(this);">
+          I don't have the directions, or would prefer not to enter.
+        </label>
+      </div>
+      <div class="help-block small text-muted" style="font-weight: 200;">
+        <i class="fa fa-question-circle"></i>
+        You can make the recipe private in the <strong>Privacy</strong> section at the bottom.
+      </div>
     </div>
 
     <div class="howtomake-fields">
@@ -86,7 +90,7 @@ Flour
 
     <hr>
 
-    <h2><i class="fa fa-shopping-cart"></i>How To Purchase</h2>
+    <h2><i class="fa fa-shopping-cart"></i>Where To Buy</h2>
     <div class="form-group">
       <textarea class="form-control input-lg" name="purchase_info" placeholder="(Optional) Enter instructions for how to purchase this dish pre-made. Website links, store names, and locations are all helpful."><%= @recipe.purchase_info %></textarea>
     </div>
@@ -132,9 +136,14 @@ Flour
     <div class="form-group">
       <label>Privacy</label>
       <div class="checkbox">
-      <label>
-        <input type="checkbox" name="is_private" <%= @recipe.is_private ? "checked" : "" %>> Make this dish private, so only I can see it. 
-      </label>
+        <label>
+          <input type="checkbox" name="is_recipe_private" <%= @recipe.is_recipe_private ? "checked" : "" %>>Hide the ingredients and directions, so only I can see it. 
+        </label>
+      </div>
+      <div class="checkbox">
+        <label>
+          <input type="checkbox" name="is_private" <%= @recipe.is_private ? "checked" : "" %>> Make this entire dish private, so only I can see it. 
+        </label>
       </div>
     </div>
 
@@ -145,16 +154,17 @@ Flour
         <i class="fa fa-check"></i>
         Save Dish
       </button>
+      <% if @recipe.id != nil %>
+        <button type="button" class="btn btn-danger pull-right" onclick="promptDeleteRecipe();">
+          <i class="fa fa-trash"></i>
+           Delete
+        </button>
+      <% end %>
+
     </div>
 
-  </form>
+  </div>
 
-  <% if @recipe.id != nil %>
-    <button type="button" class="btn btn-danger pull-right" onclick="promptDeleteRecipe();">
-      <i class="fa fa-trash"></i>
-       Delete
-    </button>
-  <% end %>
 
 </div>
 </div>

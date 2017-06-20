@@ -13,6 +13,7 @@ class Recipe < ActiveRecord::Base
   field :prep_time_mins, type: Integer
   field :image, type: String
   field :is_private, type: :boolean, default: false
+  field :is_recipe_private, type: :boolean, default: false
 
   field :search_vector, type: :tsvector
 
@@ -41,6 +42,9 @@ class Recipe < ActiveRecord::Base
   validate do
     errors.add(:title, "Please enter a title for this recipe.") if self.title.blank?
     errors.add(:description, "Please enter a description for this recipe.") if self.description.blank?
+    if self.is_private != true && self.is_recipe_private == true && self.purchase_info.blank?
+      errors.add(:purchase_info, "You must enter purchase info if you hide the recipe for a public dish. If it's not available for purchase, just make the entire dish private.")
+    end
     if self.purchase_info.blank? && self.directions.blank?
       errors.add(:purchase_info, "You must at least enter purchase info if you don't enter directions.")
       errors.add(:directions, "You must enter directions if you don't enter how to purchase.")
@@ -154,8 +158,6 @@ class Recipe < ActiveRecord::Base
     ret[:title] = self.title
     ret[:created_at] = self.created_at.to_i
     ret[:errors] = self.errors.to_hash if self.errors.any?
-    ret[:ingredients] = self.ingredients
-    ret[:directions] = self.directions
     ret[:purchase_info] = self.purchase_info
     ret[:tags] = self.tags
     ret[:description] = self.description
