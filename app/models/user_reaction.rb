@@ -3,19 +3,19 @@ class UserReaction < ActiveRecord::Base
   include QuickAuth::Authentic
 
   field :user_id, type: Integer
-  field :recipe_id, type: Integer
+  field :dish_id, type: Integer
   field :is_favorite, type: :boolean
 
-  belongs_to :recipe
+  belongs_to :dish
   belongs_to :user
 
   timestamps!
 
   validate do
     errors.add(:user_id, "User id is not set.") if self.user_id.blank?
-    errors.add(:recipe_id, "Recipe id is not set.") if self.recipe_id.blank?
-    if ( u = UserReaction.where(user_id: self.user_id, recipe_id: self.recipe_id).first ) && u.id != self.id
-      errors.add(:user, "You already liked this recipe!")
+    errors.add(:dish_id, "Dish id is not set.") if self.dish_id.blank?
+    if ( u = UserReaction.where(user_id: self.user_id, dish_id: self.dish_id).first ) && u.id != self.id
+      errors.add(:user, "You already liked this dish!")
     end
   end
 

@@ -1,6 +1,6 @@
-class Recipe < ActiveRecord::Base
+class Dish < ActiveRecord::Base
   include SchemaSync::Model
-  mount_uploader :image, RecipeImageUploader
+  mount_uploader :image, DishImageUploader
 
   field :title, type: String
   field :serving_size, type: Integer, rename_from: :serving_size
@@ -40,8 +40,8 @@ class Recipe < ActiveRecord::Base
   after_save :update_search_vector
 
   validate do
-    errors.add(:title, "Please enter a title for this recipe.") if self.title.blank?
-    errors.add(:description, "Please enter a description for this recipe.") if self.description.blank?
+    errors.add(:title, "Please enter a title for this dish.") if self.title.blank?
+    errors.add(:description, "Please enter a description for this dish.") if self.description.blank?
     if self.is_private != true && self.is_recipe_private == true && self.purchase_info.blank?
       errors.add(:purchase_info, "You must enter purchase info if you hide the recipe for a public dish. If it's not available for purchase, just make the entire dish private.")
     end
@@ -54,9 +54,9 @@ class Recipe < ActiveRecord::Base
       errors.add(:prep_time_mins, "Enter how long this recipe takes.") if self.prep_time_mins.blank?
     end
     errors.add(:serving_size, "Enter serving size.") if self.serving_size.blank?
-    errors.add(:creator, "Enter who created this recipe.") if self.creator_id.blank?
+    errors.add(:creator, "Enter who created this dish.") if self.creator_id.blank?
     if !Rails.env.test?
-      errors.add(:image, "Please add a image for your recipe.") if self.image.blank? || self.image.url.blank?
+      errors.add(:image, "Please add a image for your dish.") if self.image.blank? || self.image.url.blank?
     end
   end
 
@@ -108,7 +108,7 @@ class Recipe < ActiveRecord::Base
   end
 
   def favorites_count
-    UserReaction.where(recipe_id: self.id, is_favorite: true).count
+    UserReaction.where(dish_id: self.id, is_favorite: true).count
   end
 
   def prep_time_details
@@ -139,7 +139,7 @@ class Recipe < ActiveRecord::Base
   def update_search_vector
     v = "#{title} #{description} #{(tags || []).join(" ")}"
     conn = self.class.connection
-    sql = Recipe.send(:sanitize_sql, ["UPDATE recipes SET search_vector = to_tsvector(?) WHERE id=?", v, id])
+    sql = Dish.send(:sanitize_sql, ["UPDATE dishes SET search_vector = to_tsvector(?) WHERE id=?", v, id])
     conn.execute(sql)
   end
 

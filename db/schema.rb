@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170620001711) do
+ActiveRecord::Schema.define(version: 20170620214918) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -19,7 +19,7 @@ ActiveRecord::Schema.define(version: 20170620001711) do
   create_table "app_events", force: :cascade do |t|
     t.string   "action"
     t.integer  "actor_id"
-    t.integer  "recipe_id"
+    t.integer  "dish_id"
     t.integer  "comment_id"
     t.integer  "user_id"
     t.jsonb    "meta",       default: {}
@@ -30,19 +30,12 @@ ActiveRecord::Schema.define(version: 20170620001711) do
   create_table "comments", force: :cascade do |t|
     t.integer  "user_id"
     t.string   "body"
-    t.integer  "recipe_id"
+    t.integer  "dish_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  create_table "followings", force: :cascade do |t|
-    t.integer  "follower_id"
-    t.integer  "user_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "recipes", force: :cascade do |t|
+  create_table "dishes", force: :cascade do |t|
     t.string   "title"
     t.string   "description"
     t.string   "ingredients"
@@ -61,9 +54,16 @@ ActiveRecord::Schema.define(version: 20170620001711) do
     t.boolean  "is_recipe_private",      default: false
   end
 
+  create_table "followings", force: :cascade do |t|
+    t.integer  "follower_id"
+    t.integer  "user_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "user_reactions", force: :cascade do |t|
     t.integer  "user_id"
-    t.integer  "recipe_id"
+    t.integer  "dish_id"
     t.boolean  "is_favorite"
     t.datetime "created_at"
     t.datetime "updated_at"

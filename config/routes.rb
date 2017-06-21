@@ -1,17 +1,17 @@
 Rails.application.routes.draw do
 
-  get '/recipes' => 'recipes#index'
-  get '/dishes' => 'recipes#index'
-  get '/discover' => 'recipes#index'
+  get '/recipes' => 'dishes#index'
+  get '/dishes' => 'dishes#index'
+  get '/discover' => 'dishes#index'
 
-  get 'dish/create' => 'recipes#create'
-  get 'dish/:id' => 'recipes#show'
-  get 'dish/:id/:slug' => 'recipes#show'
-  get 'dish/:id/edit' => 'recipes#edit'
-  get 'dish/:id/:slug/edit' => 'recipes#edit'
+  get 'dish/create' => 'dishes#create'
+  get 'dish/:id' => 'dishes#show'
+  get 'dish/:id/:slug' => 'dishes#show'
+  get 'dish/:id/edit' => 'dishes#edit'
+  get 'dish/:id/:slug/edit' => 'dishes#edit'
 
-  get 'recipe/:id' => 'recipes#show'
-  get 'recipe/:id/:slug' => 'recipes#show'
+  get 'recipe/:id' => 'dishes#show'
+  get 'recipe/:id/:slug' => 'dishes#show'
 
   get '/sign_up' => 'account#sign_up'
   post '/register' => 'account#register'
@@ -37,12 +37,9 @@ Rails.application.routes.draw do
   post '/following' => 'followings#save'
   delete '/following' => 'followings#delete'
 
-  post '/recipe' => 'recipes#save'
-  post '/dish' => 'recipes#save'
-  delete '/recipe' => 'recipes#delete'
-  delete '/dish' => 'recipes#delete'
-  post '/recipe/favorite' => 'recipes#favorite'
-  post '/dish/favorite' => 'recipes#favorite'
+  post '/dish' => 'dishes#save'
+  delete '/dish' => 'dishes#delete'
+  post '/dish/favorite' => 'dishes#favorite'
 
   post '/user_reaction' => 'user_reactions#save'
   delete '/user_reaction' => 'user_reactions#delete'
@@ -51,9 +48,9 @@ Rails.application.routes.draw do
 
   get '/modal/sign_up' => 'account#sign_up_modal'
   get '/modal/sign_in' => 'account#sign_in_modal'
-  get '/modal/share_your_recipe' => 'recipes#share_your_recipe_modal'
+  get '/modal/share_your_dish' => 'dishes#share_your_dish_modal'
 
-  root 'recipes#index'
+  root 'dishes#index'
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

@@ -1,8 +1,8 @@
 require 'rails_helper'
 
-describe RecipesController do 
+describe DishesController do 
   describe "POST #save" do
-    it "saves a new recipe" do
+    it "saves a new dish" do
       user = create(:user)
       post :save, {
         title: "Southern Cabbage",
@@ -19,13 +19,13 @@ describe RecipesController do
       resp = JSON.parse(response.body)
       #puts resp
       # load recipe back
-      recipe = Recipe.find(resp['data']['id'])
+      dish = Dish.find(resp['data']['id'])
       # test that recipe is not nil
-      expect(recipe).not_to be_nil
+      expect(dish).not_to be_nil
       # test that resp has success == true
       expect(resp['success']).to eq(true)
       # test that recipe title is right
-      expect(recipe.title).to eq("Southern Cabbage")
+      expect(dish.title).to eq("Southern Cabbage")
     end
   end
 end

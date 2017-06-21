@@ -49,4 +49,11 @@ module DBRepair
     end
   end
 
+  def self.migrate_to_dishes
+    # app events
+    AppEvent.where(action: "recipe.created").update_all(action: "dish.created")
+    AppEvent.where(action: "recipe.favorited").update_all(action: "dish.favorited")
+    AppEvent.where(action: "recipe.commented").update_all(action: "dish.commented")
+  end
+
 end

@@ -1,14 +1,14 @@
 <div class="recipe-container">
   <div class="recipe-image-backdrop">
-    <img src="<%= @recipe.image.url %>"/>
+    <img src="<%= @dish.image.url %>"/>
   </div>
 
   <div class="header-space"></div>
 
   <div class="row" style="margin: 0px;"><div class="col-md-9">
 
-    <a class="recipe-image" href="<%= @recipe.image.url %>" data-lightbox="recipe-image-full" data-title="<%= @recipe.title %>">
-      <img class="df-card" src="<%= @recipe.image.url %>"/>
+    <a class="recipe-image" href="<%= @dish.image.url %>" data-lightbox="recipe-image-full" data-title="<%= @dish.title %>">
+      <img class="df-card" src="<%= @dish.image.url %>"/>
       <div class="expand text-center">
         <i class="fa fa-camera" style="margin-right: 5px;"></i>
         Click to expand photo
@@ -20,10 +20,10 @@
 
     <div class="recipe-content df-card">
       <div class="recipe-title">
-        <h1><%= @recipe.title %></h1>
+        <h1><%= @dish.title %></h1>
       </div>
 
-      <div class="recipe-meta row" style="max-width: 600px; margin: 0px auto; padding-bottom: 10px;">
+      <div class="recipe-meta row" style="max-width: 700px; margin: 0px auto; padding-bottom: 10px;">
         <div class="col-xs-3">
           <img src="<%= @creator.picture_url %>" class="img-circle" style="width: 80px; height: 80px;"/>
         </div>
@@ -50,7 +50,7 @@
                 Unfavorite
               </button>
             <% else %>
-              <button type="button" class="btn btn-clear" onclick="favoriteRecipe(<%= @recipe.id %>);">
+              <button type="button" class="btn btn-clear" onclick="favoriteRecipe(<%= @dish.id %>);">
                 <i class="fa fa-heart"></i>
                 Favorite
               </button>
@@ -58,14 +58,14 @@
           </div>
           <div class="recipe-meta-info">
             <i class="fa fa-heart"></i>
-            <%= @recipe.favorites_count %>
+            <%= @dish.favorites_count %>
             &bull;
-            <%= @recipe.created_at.strftime("%B %-d, %Y") %>
+            <%= @dish.created_at.strftime("%B %-d, %Y") %>
       
             <% if current_user != nil %>
               <% if is_me?(@creator) || current_user.is_superadmin %>
               &bull;          
-                <a href="<%= @recipe.view_path %>/edit">Edit Dish</a>
+                <a href="<%= @dish.view_path %>/edit">Edit Dish</a>
               <% end %>
             <% end %>
           </div>
@@ -74,66 +74,66 @@
         </div>
       </div>
       <div class="addthis_inline_share_toolbox" style="margin: 5px; text-align: center;" 
-        data-url="<%= @recipe.view_path(full: true) %>"
-        data-title="<%= @recipe.title %>"
-        data-media="<%= @recipe.image.url %>"
+        data-url="<%= @dish.view_path(full: true) %>"
+        data-title="<%= @dish.title %>"
+        data-media="<%= @dish.image.url %>"
         >
       </div>
 
       <div class="recipe-description recipe-section text-center">
-        <%= raw @recipe.description_html %>
+        <%= raw @dish.description_html %>
       </div>
 
       <div class="recipe-info recipe-section row">
         <div class="col-sm-6">
           <h5>Serving Size</h5>
-          <p>Makes <%= @recipe.serving_size %> servings </p>
+          <p>Makes <%= @dish.serving_size %> servings </p>
         </div>
         <div class="col-sm-6">
           <h5><span>Preparation Time</span></h5>
           <p>
-            <% if !@recipe.has_prep_time? %>
+            <% if !@dish.has_prep_time? %>
               See Below
             <% else %>
-            <%= @recipe.prep_time_details[:text] %>
+            <%= @dish.prep_time_details[:text] %>
             <% end %>
           </p>
         </div>
       </div>
 
-      <% if @recipe.is_recipe_private != true || is_me?(@recipe.creator) %>
-      <% if @recipe.ingredients.present? %>
+      <% if @dish.is_recipe_private != true || is_me?(@dish.creator) %>
+      <% if @dish.ingredients.present? %>
       <div class="recipe-ingredients recipe-section">
         <h2><span>Ingredients</span></h2>
         <div class="recipe-ingredients-body">
-          <%= raw @recipe.ingredients_html %>
+          <%= raw @dish.ingredients_html %>
         </div>
       </div>
       <% end %>
 
-      <% if @recipe.directions.present? %>
+      <% if @dish.directions.present? %>
       <div class="recipe-prep recipe-section">
         <h2><span>Directions</span></h2>
         <div class="recipe-prep-body">
-          <%= raw @recipe.directions_html %>
+          <%= raw @dish.directions_html %>
         </div>
       </div>
       <% end %>
       <% end %>
 
-      <% if @recipe.purchase_info.present? %>
+      <% if @dish.purchase_info.present? %>
       <div class="recipe-purchase recipe-section">
         <h2><span>Where To Buy</span></h2>
         <div class="recipe-purchase-body">
-          <%= raw @recipe.purchase_info_html %>
+          <%= raw @dish.purchase_info_html %>
         </div>
       </div>
       <% end %>
 
       <div class="recipe-tags recipe-section">
-        <% @recipe.tags.each do |tag| %>
+        <% @dish.tags.each do |tag| %>
           <span><%= tag %></span>
-        <% end if @recipe.tags %>
+        <% end if @dish.tags %>
       </div>
     </div>
 
@@ -186,7 +186,7 @@
       <div class="sidebar-title">
         Recent Dishes
       </div>
-      <%= render partial: "tile_grid", locals: {recipes: @recipes} %>
+      <%= render partial: "tile_grid", locals: {dishes: @dishes} %>
     </div>
   </div></div>
 
@@ -267,7 +267,7 @@
 
 <script>
 
-var recipeID = <%= @recipe.id %>;
+var recipeID = <%= @dish.id %>;
 
 function submitComment() {
 
@@ -275,7 +275,7 @@ function submitComment() {
   var recipe_id = recipeID;
 
   data = {
-    recipe_id: recipe_id,
+    dish_id: recipe_id,
     body: body,
   }
 
@@ -293,8 +293,8 @@ function submitComment() {
 }
 
 $(function() {
-  <% if @recipe.created_by?(current_user) && !current_user.has_flag?(1) %>
-  showModalFromURL("shareYourRecipe", "/modal/share_your_recipe", {closeIcon: false});
+  <% if @dish.created_by?(current_user) && !current_user.has_flag?(1) %>
+  showModalFromURL("shareYourDish", "/modal/share_your_dish", {closeIcon: false});
   <% end %>
 });
 

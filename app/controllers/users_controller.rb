@@ -6,9 +6,9 @@ class UsersController < ApplicationController
     
 
     if @filter == "favorite"
-      @recipes = Recipe.joins(:user_reactions).where("user_reactions.is_favorite = true and user_reactions.user_id = ?", @user.id)
+      @dishes = Dish.joins(:user_reactions).where("user_reactions.is_favorite = true and user_reactions.user_id = ?", @user.id)
     else
-      @recipes = Recipe.where(creator_id: @user.id)
+      @dishes = Dish.where(creator_id: @user.id)
     end
 
     if current_user
@@ -19,7 +19,7 @@ class UsersController < ApplicationController
 
     @page_info = {
       title: @user.full_name,
-      description: "Check out my recipes on Dishfave.com!",
+      description: "Check out my dishes on Dishfave.com!",
       url: @user.view_path,
       image: @user.picture_url,
     }
@@ -31,7 +31,7 @@ class UsersController < ApplicationController
     # load users
     @users = User.all
 
-    # load count for all recipes favorited
+    # load count for all dishes favorited
 
   end
 

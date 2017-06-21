@@ -2,7 +2,7 @@ function handleRecipeTyping(e, el) {
   if (e.keyCode == 13) {
     // get text in the input now
     var text = $(el).val();
-    navigateTo("/recipes?q=" + text);
+    navigateTo("/dishes?q=" + text);
     //console.log(text);
     //updatePage([".recipe-tiles"], {params: {q: text}});
   }

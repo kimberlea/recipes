@@ -52,7 +52,7 @@ function favoriteRecipe(recipe_id) {
   }
 
   apiRequest({
-    url: "/recipe/favorite",
+    url: "/dish/favorite",
     method: "POST",
     data: data,
     success: function(resp) {

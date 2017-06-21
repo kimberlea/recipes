@@ -7,25 +7,25 @@
     <h1>
       <%= @title %>
     </h1>
-    <% if @recipe.new_record? %>
+    <% if @dish.new_record? %>
     <p class="lead" style="color: #777;">A dish can be anything, including an entree, dessert, or even a drink!</p>
     <% end %>
   </div>
 
   <div class="form">
 
-    <input type="hidden" name="id" value="<%= @recipe.id %>"/>
+    <input type="hidden" name="id" value="<%= @dish.id %>"/>
 
 
     <div class="form-group">
 
       <label>Title</label>
-      <input type="text" name="title" class="form-control input-lg" placeholder="Enter title here." value="<%= @recipe.title %>"/>
+      <input type="text" name="title" class="form-control input-lg" placeholder="Enter title here." value="<%= @dish.title %>"/>
     </div>
 
     <div class="form-group">
       <label>Description</label>
-      <textarea class="form-control input-lg" rows="5" name="description" placeholder="Enter description here."><%= @recipe.description %></textarea>
+      <textarea class="form-control input-lg" rows="5" name="description" placeholder="Enter description here."><%= @dish.description %></textarea>
     </div>
 
     <hr>
@@ -51,7 +51,7 @@
       <textarea class="form-control input-lg" name="ingredients" placeholder="Butter
 Eggs
 Flour
-. . ." rows="10"><%= @recipe.ingredients %></textarea>
+. . ." rows="10"><%= @dish.ingredients %></textarea>
       <div class="help-block small text-muted">
         <i class="fa fa-question-circle"></i>
         Enter each ingredient on a new line.
@@ -61,7 +61,7 @@ Flour
     <div class="form-group">
       <label>Directions</label>
       <textarea class="form-control input-lg" name="directions" placeholder="1. Preheat oven to 350.
-2. And then . . ." rows="10"><%= @recipe.directions %></textarea>
+2. And then . . ." rows="10"><%= @dish.directions %></textarea>
       <div class="help-block small text-muted">
         <i class="fa fa-question-circle"></i>
         Enter each step on a new line with a number in front.
@@ -74,13 +74,13 @@ Flour
         <div class="col-xs-6 col-sm-4">
         <div class="input-group input-group-lg">
 
-          <input type="number" name="prep_time_hours" class="form-control" placeholder="0" value="<%= @recipe.prep_time_details[:hours] %>">
+          <input type="number" name="prep_time_hours" class="form-control" placeholder="0" value="<%= @dish.prep_time_details[:hours] %>">
           <span class="input-group-addon">hours</span>
         </div>
         </div>
         <div class="col-xs-6 col-sm-4">
         <div class="input-group input-group-lg">
-          <input type="number" name="prep_time_minutes" class="form-control" placeholder="30" value="<%= @recipe.prep_time_details[:minutes] %>">
+          <input type="number" name="prep_time_minutes" class="form-control" placeholder="30" value="<%= @dish.prep_time_details[:minutes] %>">
           <span class="input-group-addon">minutes</span>
         </div>
         </div>
@@ -92,7 +92,7 @@ Flour
 
     <h2><i class="fa fa-shopping-cart"></i>Where To Buy</h2>
     <div class="form-group">
-      <textarea class="form-control input-lg" name="purchase_info" placeholder="(Optional) Enter instructions for how to purchase this dish pre-made. Website links, store names, and locations are all helpful."><%= @recipe.purchase_info %></textarea>
+      <textarea class="form-control input-lg" name="purchase_info" placeholder="(Optional) Enter instructions for how to purchase this dish pre-made. Website links, store names, and locations are all helpful."><%= @dish.purchase_info %></textarea>
     </div>
 
     <hr>
@@ -104,7 +104,7 @@ Flour
         <div class="form-group">
           <label>Serving Size</label>
           <div class="input-group input-group-lg">
-            <input type="text" name="serving_size" class="form-control" placeholder="e.g. 8" value="<%= @recipe.serving_size %>"/>
+            <input type="text" name="serving_size" class="form-control" placeholder="e.g. 8" value="<%= @dish.serving_size %>"/>
             <span class="input-group-addon">servings</span>
           </div>
         </div>
@@ -113,7 +113,7 @@ Flour
 
     <div class="form-group">
       <label>Dish Tags</label>
-      <textarea class="form-control input-lg" name="tags" placeholder="dinner, italian, healthy, ..."><%= @recipe.tags_to_str %></textarea>
+      <textarea class="form-control input-lg" name="tags" placeholder="dinner, italian, healthy, ..."><%= @dish.tags_to_str %></textarea>
       <div class="help-block small text-muted">
         <i class="fa fa-question-circle"></i>
         Enter tags separated by a comma, like: dinner, italian, healthy.
@@ -123,8 +123,8 @@ Flour
     <div class="form-group">
       <label for="exampleInputFile">Image Upload</label>
       <input type="file" name="image"> 
-      <% if @recipe.image.url != nil %>
-        <img src="<%= @recipe.image.url %>" style="width: 150px;"/>
+      <% if @dish.image.url != nil %>
+        <img src="<%= @dish.image.url %>" style="width: 150px;"/>
       <% else %>
         <div class="help-block small text-muted">
           <i class="fa fa-question-circle"></i>
@@ -137,12 +137,12 @@ Flour
       <label>Privacy</label>
       <div class="checkbox">
         <label>
-          <input type="checkbox" name="is_recipe_private" <%= @recipe.is_recipe_private ? "checked" : "" %>>Hide the ingredients and directions, so only I can see it. 
+          <input type="checkbox" name="is_recipe_private" <%= @dish.is_recipe_private ? "checked" : "" %>>Hide the ingredients and directions, so only I can see it. 
         </label>
       </div>
       <div class="checkbox">
         <label>
-          <input type="checkbox" name="is_private" <%= @recipe.is_private ? "checked" : "" %>> Make this entire dish private, so only I can see it. 
+          <input type="checkbox" name="is_private" <%= @dish.is_private ? "checked" : "" %>> Make this entire dish private, so only I can see it. 
         </label>
       </div>
     </div>
@@ -154,7 +154,7 @@ Flour
         <i class="fa fa-check"></i>
         Save Dish
       </button>
-      <% if @recipe.id != nil %>
+      <% if @dish.id != nil %>
         <button type="button" class="btn btn-danger pull-right" onclick="promptDeleteRecipe();">
           <i class="fa fa-trash"></i>
            Delete

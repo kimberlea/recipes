@@ -41,7 +41,7 @@ function saveRecipe() {
   }
 
   apiRequest({
-    url: "/recipe",
+    url: "/dish",
     method: "POST",
     data: data,
     hasFile: true,
@@ -56,8 +56,8 @@ function saveRecipe() {
 
 function promptDeleteRecipe() {
   $.confirm({
-    title: "Delete this recipe?",
-    content: "Are you sure you want to delete this recipe?",
+    title: "Delete this dish?",
+    content: "Are you sure you want to delete this dish?",
     buttons: {
       confirm: function() {
         deleteRecipe();
@@ -70,11 +70,11 @@ function promptDeleteRecipe() {
 function deleteRecipe() {
   id = getRecipeId();
   apiRequest({
-    url: "/recipe",
+    url: "/dish",
     method: "DELETE",
     data: {id: id},
     success: function (resp) {
-      navigateTo("/recipes");
+      navigateTo("/dishes");
     }
   });
 }

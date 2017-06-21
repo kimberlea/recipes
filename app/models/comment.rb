@@ -3,10 +3,10 @@ class Comment < ActiveRecord::Base
 
   field :user_id, type: Integer 
   field :body, type: String
-  field :recipe_id, type: Integer
+  field :dish_id, type: Integer
 
   belongs_to :user
-  belongs_to :recipe
+  belongs_to :dish
 
 
   timestamps!
@@ -14,7 +14,7 @@ class Comment < ActiveRecord::Base
   validate do
     errors.add(:body, "Enter a comment please.") if self.body.blank?
     errors.add(:user_id, "User id not set.") if self.user_id.blank?
-    errors.add(:recipe_id, "Recipe id not set.") if self.recipe_id.blank?
+    errors.add(:dish_id, "Dish id not set.") if self.dish_id.blank?
   end
 
   def to_api 

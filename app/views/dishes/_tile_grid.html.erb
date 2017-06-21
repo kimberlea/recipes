@@ -1,45 +1,45 @@
 <div class="recipe-tiles">
-    <% if recipes.length == 0 %>
+    <% if dishes.length == 0 %>
     <div class="placeholder">
-        No recipes found, why don't you <a href="/recipe/create">add one</a>.
+        No dishes found, why don't you <a href="/dish/create">add one</a>.
     </div>
     <% end %>
 
-    <% recipes.each do |recipe| %>
-    <a class="recipe-tile" href="<%= recipe.view_path %>">
+    <% dishes.each do |dish| %>
+    <a class="recipe-tile" href="<%= dish.view_path %>">
         <div class="recipe-tile-image pos-rel">
-            <img src="<%= recipe.image.url %>"/>
+            <img src="<%= dish.image.url %>"/>
             <div class="recipe-tile-image-meta">
-                <img src="<%= recipe.creator.picture_url%>" class="img-circle" style="width:20px; height: 20px;"/>
-                <span class="recipe-tile-image-meta-name"><%= recipe.creator.full_name %></span>
+                <img src="<%= dish.creator.picture_url%>" class="img-circle" style="width:20px; height: 20px;"/>
+                <span class="recipe-tile-image-meta-name"><%= dish.creator.full_name %></span>
                 <span class="chefscore-badge-clear">
                   <i class="fa fa-fire"></i>
-                  <%= recipe.creator.favorites_count %>
+                  <%= dish.creator.favorites_count %>
                 </span>
             </div>
         </div>
 
         <div class="recipe-tile-content">
-            <div class="recipe-title" style="font-size: <%= recipe.title.length < 30 ? "18" : "16" %>px;">
-                <%= truncate(recipe.title, length: 40)%>
+            <div class="recipe-title" style="font-size: <%= dish.title.length < 30 ? "18" : "16" %>px;">
+                <%= truncate(dish.title, length: 40)%>
             </div>
 
             <div class="recipe-description">
-                <%= truncate(recipe.description, length: 50)%>
+                <%= truncate(dish.description, length: 50)%>
             </div>
 
             <div class="recipe-footer">
                 <span class="recipe-favorites-count" style="margin-right: 10px;">
                     <i class="fa fa-heart" style="color: red;"></i>
-                    <%= recipe.favorites_count %>
+                    <%= dish.favorites_count %>
                 </span>
-                <% if recipe.has_directions? %>
+                <% if dish.has_directions? %>
                 <span class="recipe-duration" style="margin-right: 5px;">
                     <i class="fa fa-clock-o"></i>
-                    <%= recipe.prep_time_details[:text] %>
+                    <%= dish.prep_time_details[:text] %>
                 </span>
                 <% end %>
-                <% if recipe.has_purchase_info? %>
+                <% if dish.has_purchase_info? %>
                 <span class="recipe-footer-section" style="color: #ccc;">
                     <i class="fa fa-shopping-cart" title="Purchase Info Available"></i>
                 </span>

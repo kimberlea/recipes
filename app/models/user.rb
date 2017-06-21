@@ -16,10 +16,10 @@ class User < ActiveRecord::Base
   timestamps!
   quick_auth_authentic!
 
-  has_many :recipes, class_name: "Recipe", foreign_key: :creator_id
+  has_many :dishes, class_name: "Dish", foreign_key: :creator_id
 
   NOTIFICATION_FREQUENCIES = {none: 0, daily: 1, weekly: 2}
-  FLAGS = {share_your_recipe: 1}
+  FLAGS = {share_your_dish: 1}
 
   validate do
     errors.add(:first_name, "Enter your first name.") if self.first_name.blank?
@@ -110,10 +110,10 @@ class User < ActiveRecord::Base
     Following.where(follower_id: self.id)
   end
 
-  def reaction_to(recipe, build=false)
-    r = UserReaction.where(user_id: self.id, recipe_id: recipe.id).first
+  def reaction_to(dish, build=false)
+    r = UserReaction.where(user_id: self.id, dish_id: dish.id).first
     if r.nil? && build == true
-      r = UserReaction.new(user_id: self.id, recipe_id: recipe.id)
+      r = UserReaction.new(user_id: self.id, dish_id: dish.id)
     end
     return r
   end
@@ -127,7 +127,7 @@ class User < ActiveRecord::Base
   end
 
   def favorites_count
-    UserReaction.where(is_favorite: true).where("recipe_id IN (SELECT id FROM recipes WHERE creator_id=?)", self.id).count
+    UserReaction.where(is_favorite: true).where("dish_id IN (SELECT id FROM dishes WHERE creator_id=?)", self.id).count
   end
 
   def notification_period
