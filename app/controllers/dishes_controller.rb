@@ -95,6 +95,9 @@ class DishesController < ApplicationController
   def save
     @dish ||= Dish.new
     new_record = @dish.new_record?
+    if new_record
+      @dish.creator = self.current_user
+    end
     @dish.title = params[:title] if params.key?(:title)
     @dish.serving_size = params[:serving_size] if params.key?(:serving_size)
     @dish.description = params[:description] if params.key?(:description)
@@ -104,7 +107,6 @@ class DishesController < ApplicationController
     @dish.prep_time_mins = params[:prep_time_mins].to_i if params.key?(:prep_time_mins)
     @dish.is_private = (params[:is_private]=="true") if params.key?(:is_private)
     @dish.is_recipe_private = (params[:is_recipe_private]=="true") if params.key?(:is_recipe_private)
-    @dish.creator = self.current_user
     if params.key?(:tags)
       tags = JSON.parse(params[:tags])
       tags = tags.collect {|tag| tag.strip.downcase}
