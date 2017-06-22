@@ -1,5 +1,6 @@
 class Comment < ActiveRecord::Base 
   include SchemaSync::Model
+  include APIUtils::Validation
 
   field :user_id, type: Integer 
   field :body, type: String
@@ -12,9 +13,13 @@ class Comment < ActiveRecord::Base
   timestamps!
 
   validate do
+    # present
     errors.add(:body, "Enter a comment please.") if self.body.blank?
     errors.add(:user_id, "User id not set.") if self.user_id.blank?
     errors.add(:dish_id, "Dish id not set.") if self.dish_id.blank?
+
+    # length
+    validate_length_of(:body, "body")
   end
 
   def to_api 

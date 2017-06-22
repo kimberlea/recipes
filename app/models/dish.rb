@@ -1,5 +1,6 @@
 class Dish < ActiveRecord::Base
   include SchemaSync::Model
+  include APIUtils::Validation
   mount_uploader :image, DishImageUploader
 
   field :title, type: String
@@ -40,6 +41,7 @@ class Dish < ActiveRecord::Base
   after_save :update_search_vector
 
   validate do
+    # presence
     errors.add(:title, "Please enter a title for this dish.") if self.title.blank?
     errors.add(:description, "Please enter a description for this dish.") if self.description.blank?
     if self.is_private != true && self.is_recipe_private == true && self.purchase_info.blank?
@@ -58,6 +60,13 @@ class Dish < ActiveRecord::Base
     if !Rails.env.test?
       errors.add(:image, "Please add a image for your dish.") if self.image.blank? || self.image.url.blank?
     end
+
+    # lengths
+    validate_length_of(:title, "title", 1, 1000)
+    validate_length_of(:description, "description")
+    validate_length_of(:directions, "directions")
+    validate_length_of(:ingredients, "ingredients")
+    validate_length_of(:purchase_info, "purchase info")
   end
 
   def view_path(opts={})
