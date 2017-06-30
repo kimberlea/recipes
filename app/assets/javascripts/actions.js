@@ -1,3 +1,17 @@
+function promptSignIn(opts={}) {
+  if (isSignedIn()) return;
+  closeModal('sign_up'); closeModal('sign_in');
+  if (opts.signUp == true) {
+    showModalFromURL("sign_up", "/modal/sign_up");
+  } else {
+    showModalFromURL("sign_in", "/modal/sign_in");
+  }
+}
+
+function promptForgotPassword() {
+  showModalFromURL("forgot_password", "/modal/forgot_password");
+}
+
 function followUser(user_id, update_parts) {
   if (!isSignedIn()) {
     showModalFromURL("sign_up", "/modal/sign_up");

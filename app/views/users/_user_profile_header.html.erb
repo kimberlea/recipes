@@ -11,7 +11,7 @@
         <button type="button" class="btn btn-clear" style="margin-right: 5px;" onclick="deleteFollowing(<%= @following.id %>, ['.profile-full-name', '.profile-status']);">
           Unfollow
         </button>
-      <% else %>
+      <% elsif signed_in? && !is_me?(@user) %>
         <button type="button" class="btn btn-clear" style="margin-right: 5px;" onclick="followUser(<%= @user.id %>, ['.profile-full-name', '.profile-status']);">
           Follow
         </button>

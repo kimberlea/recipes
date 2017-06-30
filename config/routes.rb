@@ -48,6 +48,7 @@ Rails.application.routes.draw do
 
   get '/modal/sign_up' => 'account#sign_up_modal'
   get '/modal/sign_in' => 'account#sign_in_modal'
+  get '/modal/forgot_password' => 'account#forgot_password_modal'
   get '/modal/share_your_dish' => 'dishes#share_your_dish_modal'
 
   root 'dishes#index'

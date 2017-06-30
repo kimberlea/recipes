@@ -75,7 +75,7 @@ class Dish < ActiveRecord::Base
       str += "/#{title.parameterize}"
     end
     if opts[:full] == true
-      str = "http://dishfave.com#{str}"
+      str = "https://dishfave.com#{str}"
     end
     return str
   end

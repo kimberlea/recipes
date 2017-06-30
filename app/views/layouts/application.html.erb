@@ -39,7 +39,7 @@
             <span class="link-title">Dishes</span>
           </a>
           
-          <a href="/members" class="navbar-link" style="margin-left: 10px; color: #fff">
+          <a href="/members" class="navbar-link hidden" style="margin-left: 10px; color: #fff">
             <i class="fa fa-user-circle-o" aria-hidden="true"></i>
             <span class="link-title">Members</span>
           </a>
@@ -81,7 +81,7 @@
               <img class="img-circle" src="<%= current_user.picture_url %>" style="width: 30px; height: 30px;"/>
             </a>
           <% else %>
-            <a href="/sign_in" class="navbar-link" style="">
+            <a href="#" class="navbar-link" style="" onclick="promptSignIn();">
               <i class="fa fa-sign-in"></i>
               <span class="link-title">Sign In</span>
             </a>

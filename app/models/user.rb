@@ -120,7 +120,7 @@ class User < ActiveRecord::Base
 
   def picture_url
     if self.picture.nil? || self.picture.url.nil?
-      "http://dishfave.com/assets/default-user.png"
+      "https://dishfave.com/assets/default-user.png"
     else
       self.picture.thumb.url
     end

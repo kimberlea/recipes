@@ -20,9 +20,8 @@ class AccountController < ApplicationController
     render layout: nil
   end
 
-  def forgot_password
-    @show_header = false
-    @body_style = "bg-wood"
+  def forgot_password_modal
+    render layout: nil
   end
 
   def profile

@@ -5,3 +5,7 @@
 <% @events.each do |ev| %>
 <%= media_block image_url: ev.subject_image_url || ev.actor.picture_url, title: ev.title(viewer: @user), body: truncate(ev.body, length: 200), url: ev.subject_view_path(full: true) %>
 <% end %>
+
+<% block_wrap class: "p small muted" do %>
+  To change your notification settings, go to <a href="https://dishfave.com/account/#settings" style="color: inherit;">account settings</a>.
+<% end %>
