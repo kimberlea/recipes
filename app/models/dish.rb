@@ -98,13 +98,6 @@ class Dish < ActiveRecord::Base
 
   def ingredients_html
     str = self.ingredients
-    str = str.split("\n").collect { |l|
-      if !(l.strip.start_with?("-") || l.strip.start_with?("*"))
-        "- #{l}"
-      else
-        l
-      end
-    }.join
     return markdown_render(str)
   end
 
