@@ -154,3 +154,20 @@
     color: #ABABAB;
    
 }
+
+.layout-mobile.layout-mobile-phone {
+  .recipe-tiles.single-col {
+    padding: 12px;
+
+    .recipe-tile {
+      width: 100%;
+      height: 300px;
+      margin: 12px 0px;
+
+      .recipe-tile-image img {
+        height: 170px;
+      }
+    }
+  }
+
+}

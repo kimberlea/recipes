@@ -4,6 +4,20 @@
   margin-top: 15px;
 
   .page-header {
-    margin-top: 20px;
+    margin-top: 0px;
+    h1 { margin-top: 0px; }
+  }
+
+  .tips {
+    margin-left: 20px;
+    font-weight: 200;
+    font-size: 90%;
+    .tip {
+      margin-bottom: 10px;
+
+      i.fa {
+        margin-right: 10px;
+      }
+    }
   }
 }
