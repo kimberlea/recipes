@@ -105,8 +105,10 @@ class DishesController < ApplicationController
     @dish.directions = params[:directions] if params.key?(:directions)
     @dish.purchase_info = params[:purchase_info] if params.key?(:purchase_info)
     @dish.prep_time_mins = params[:prep_time_mins].to_i if params.key?(:prep_time_mins)
+    @dish.is_purchasable = (params[:is_purchasable]=="true") if params.key?(:is_purchasable)
     @dish.is_private = (params[:is_private]=="true") if params.key?(:is_private)
     @dish.is_recipe_private = (params[:is_recipe_private]=="true") if params.key?(:is_recipe_private)
+    @dish.is_recipe_given = (params[:is_recipe_given]=="true") if params.key?(:is_recipe_given)
     if params.key?(:tags)
       tags = JSON.parse(params[:tags])
       tags = tags.collect {|tag| tag.strip.downcase}

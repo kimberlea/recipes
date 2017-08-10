@@ -15,8 +15,10 @@ function saveRecipe() {
   var tags_str = $('textarea[name=tags]').val();
   var tags = tags_str.split(",");
   var image = $('input[name=image]')[0].files[0];
+  var is_purchasable = $('input[name=is_purchasable]').is(':checked');
   var is_private = $('input[name=is_private]').is(':checked');
   var is_recipe_private = $('input[name=is_recipe_private]').is(':checked');
+  var is_recipe_given = !$('input[name=is_recipe_hidden]').is(':checked');
   var id = getRecipeId();
 
   var prep_time_mins = prep_time_hours * 60 + prep_time_minutes;
@@ -30,8 +32,10 @@ function saveRecipe() {
     directions: directions, 
     purchase_info: purchase_info, 
     prep_time_mins: prep_time_mins,
+    is_purchasable: is_purchasable,
     is_private: is_private,
     is_recipe_private: is_recipe_private,
+    is_recipe_given: is_recipe_given,
     tags: JSON.stringify(tags),
  
   };
@@ -84,8 +88,20 @@ function getRecipeId() {
 }
 
 function toggleHowToMakeVisible(el) {
+  el = $('input[name=is_recipe_hidden]')
   var do_hide = $(el).is(":checked");
   var $htm = $('.howtomake-fields');
+  if (do_hide) {
+    $htm.hide();
+  } else { 
+    $htm.show();
+  }
+}
+
+function togglePurchaseInfoVisible(el) {
+  el = $('input[name=is_purchasable]')
+  var do_hide = !$(el).is(":checked");
+  var $htm = $('textarea.purchase-info');
   if (do_hide) {
     $htm.hide();
   } else { 

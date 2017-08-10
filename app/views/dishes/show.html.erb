@@ -121,9 +121,9 @@
       <% end %>
       <% end %>
 
-      <% if @dish.purchase_info.present? %>
+      <% if @dish.is_purchasable && @dish.purchase_info.present? %>
       <div class="recipe-purchase recipe-section">
-        <h2><span>Where To Buy</span></h2>
+        <h2><span>Purchase Info</span></h2>
         <div class="recipe-purchase-body">
           <%= raw @dish.purchase_info_html %>
         </div>

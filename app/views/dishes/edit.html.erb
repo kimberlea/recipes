@@ -53,7 +53,7 @@
     <div class="well well-slim">
       <div class="checkbox">
         <label style="font-weight: 200;">
-          <input type="checkbox" onclick="toggleHowToMakeVisible(this);">
+          <input type="checkbox" name="is_recipe_hidden" <%= "checked" if !@dish.is_recipe_given %> onclick="toggleHowToMakeVisible(this);">
           I don't have the directions, or would prefer not to enter.
         </label>
       </div>
@@ -110,10 +110,12 @@ Flour
 
     <h2><i class="fa fa-shopping-cart"></i>Purchase Info</h2>
     <div class="form-group">
-      <div class="help-block small">
-        Do you or a business offer this dish for sale? If so, enter the information for purchase here.
+      <div class="checkbox">
+        <label>
+          <input type="checkbox" name="is_purchasable" <%= @dish.is_purchasable ? "checked" : "" %> onclick="togglePurchaseInfoVisible(this)"> This dish is available for sale pre-made.
+        </label>
       </div>
-      <textarea class="form-control input-lg" name="purchase_info" rows="5" placeholder="(Optional) Website links, store names, and locations are all helpful."><%= @dish.purchase_info %></textarea>
+      <textarea class="form-control input-lg purchase-info" name="purchase_info" rows="5" placeholder="(Optional) Website links, store names, and locations are all helpful."><%= @dish.purchase_info %></textarea>
     </div>
 
     <hr class="clear">
@@ -192,3 +194,10 @@ Flour
 
 </div>
 </div>
+
+<script>
+$(function() {
+  toggleHowToMakeVisible();
+  togglePurchaseInfoVisible();
+});
+</script>

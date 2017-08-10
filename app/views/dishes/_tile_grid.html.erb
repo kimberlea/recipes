@@ -17,6 +17,11 @@
                   <%= dish.creator.favorites_count %>
                 </span>
             </div>
+            <% if dish.is_purchasable %>
+            <div class="recipe-tile-purchasable" title="Great! This dish is available for purchase pre-made." data-toggle="tooltip" data-container="body">
+              <i class="fa fa-shopping-cart"></i>
+            </div>
+            <% end %>
         </div>
 
         <div class="recipe-tile-content">

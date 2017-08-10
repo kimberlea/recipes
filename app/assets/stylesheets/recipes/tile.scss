@@ -84,6 +84,18 @@
   text-align: left;
   border-radius: 3px;
   overflow:hidden;
+
+  .recipe-tile-purchasable {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    padding: 3px 10px;
+    background: #27ae60;
+    color: #eee;
+    font-size: 14px;
+    opacity: 0.9;
+    border-radius: 3px;
+  }
 }
 
 .recipe-tile:hover {

@@ -13,8 +13,11 @@ class Dish < ActiveRecord::Base
   #field :prep_time, type: String
   field :prep_time_mins, type: Integer
   field :image, type: String
+
+  field :is_purchasable, type: :boolean, default: false
   field :is_private, type: :boolean, default: false
   field :is_recipe_private, type: :boolean, default: false
+  field :is_recipe_given, type: :boolean, default: true
 
   field :search_vector, type: :tsvector
 
@@ -59,6 +62,10 @@ class Dish < ActiveRecord::Base
     errors.add(:creator, "Enter who created this dish.") if self.creator_id.blank?
     if !Rails.env.test?
       errors.add(:image, "Please add a image for your dish.") if self.image.blank? || self.image.url.blank?
+    end
+
+    if is_purchasable == true
+      errors.add(:purchase_info, "Please enter purchase info.") if purchase_info.blank?
     end
 
     # lengths
@@ -160,6 +167,7 @@ class Dish < ActiveRecord::Base
     ret[:title] = self.title
     ret[:created_at] = self.created_at.to_i
     ret[:errors] = self.errors.to_hash if self.errors.any?
+    ret[:is_purchasable] = self.is_purchasable
     ret[:purchase_info] = self.purchase_info
     ret[:tags] = self.tags
     ret[:description] = self.description
@@ -167,6 +175,7 @@ class Dish < ActiveRecord::Base
     ret[:prep_time_mins] = self.prep_time_mins
     ret[:view_path] = self.view_path
     ret[:is_private] = self.is_private
+    ret[:is_recipe_given] = self.is_recipe_given
     ret[:image] = self.image
 
     return ret
