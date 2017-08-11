@@ -87,7 +87,7 @@ class User < ActiveRecord::Base
   end
 
   def view_path(opts={})
-    str = "/member/#{id}"
+    str = "/member/#{id}/#{full_name.parameterize}"
     if opts[:full] == true
       str = "http://dishfave.com#{str}"
     end

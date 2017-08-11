@@ -19,8 +19,9 @@ Rails.application.routes.draw do
   get '/members' => 'users#index'
 
   get 'member/:id' => 'users#show'
-  get 'member/:id/followers' => 'users#followers'
-  get 'member/:id/following' => 'users#following'
+  get 'member/:id/:slug' => 'users#show'
+  get 'member/:id/:slug/followers' => 'users#followers'
+  get 'member/:id/:slug/following' => 'users#following'
 
   get '/activity' => 'app_events#activity'
 

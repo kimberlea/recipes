@@ -32,7 +32,12 @@
           <img src="/assets/logo_white.png" style="height: 40px;"/>
         </a>
 
-        <div class="navbar-primary-link navbox navbox-primary-links" style="">
+        <div class="navbox navbox-search" role="search">
+          <i class="fa fa-search mr-5"></i>
+          <input type="text" class="recipe-search-input" placeholder="Search Dishes" onkeyup="handleRecipeTyping(event, this);"/>
+        </div>
+
+        <div class="navbox navbox-primary-links" style="">
         
           <a href="/dishes" class="navbar-link" style="color: #fff">
             <i class="fa fa-cutlery" aria-hidden="true"></i> 
@@ -50,20 +55,11 @@
           </a>
         </div>
 
-      
-
-
         <div class="navbox">
           <a href="/dish/create" class="navbar-link" style="">
             <i class="fa fa-plus-circle"></i>
             <span class="link-title">New Dish</span>
           </a>  
-        </div>
-
-        <div class="navbox navbox-search" role="search">
-          <div class="form-group" style="margin-bottom: 0px; width: 100%;">
-            <input type="text" class="form-control recipe-search-input" placeholder="Search" onkeyup="handleRecipeTyping(event, this);"/>
-          </div>
         </div>
 
         <% if signed_in? %>
