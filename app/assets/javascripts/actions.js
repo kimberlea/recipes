@@ -66,7 +66,7 @@ function favoriteRecipe(recipe_id) {
   }
 
   apiRequest({
-    url: "/dish/favorite",
+    url: "/api/dish/favorite",
     method: "POST",
     data: data,
     success: function(resp) {
@@ -84,7 +84,7 @@ function unfavoriteRecipe(id) {
   }
 
   apiRequest({
-    url: "/user_reaction",
+    url: "/api/user_reaction",
     method: "POST",
     data: data,
     success: function(resp) {

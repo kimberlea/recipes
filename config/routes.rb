@@ -38,19 +38,19 @@ Rails.application.routes.draw do
   post '/following' => 'followings#save'
   delete '/following' => 'followings#delete'
 
-  post '/dish' => 'dishes#save'
-  delete '/dish' => 'dishes#delete'
-  post '/dish/favorite' => 'dishes#favorite'
-
-  post '/user_reaction' => 'user_reactions#save'
-  delete '/user_reaction' => 'user_reactions#delete'
-
   post '/comment' => 'comments#save'
 
   get '/modal/sign_up' => 'account#sign_up_modal'
   get '/modal/sign_in' => 'account#sign_in_modal'
   get '/modal/forgot_password' => 'account#forgot_password_modal'
   get '/modal/share_your_dish' => 'dishes#share_your_dish_modal'
+
+  namespace :api do
+    api_resources :dishes do
+      post '/dish/favorite' => 'dishes#favorite'
+    end
+    api_resources :user_reactions
+  end
 
   root 'dishes#index'
 

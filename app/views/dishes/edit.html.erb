@@ -1,6 +1,6 @@
 <div class="header-space"></div>
 
-<div class="container" style="padding: 0px 15px;">
+<div class="container" style="padding: 0px 15px;" data-bind="withView : Dishfave.DishEditorView">
 <div class="recipe-edit-container df-card df-col">
 
   <div class="page-header">
@@ -38,12 +38,12 @@
     <div class="form-group">
 
       <label>Title</label>
-      <input type="text" name="title" class="form-control input-lg" placeholder="Enter title here." value="<%= @dish.title %>"/>
+      <input type="text" name="title" class="form-control input-lg" placeholder="Enter title here." data-bind="textInput : dish.title"/>
     </div>
 
     <div class="form-group">
       <label>Description</label>
-      <textarea class="form-control input-lg" rows="5" name="description" placeholder="Enter description here."><%= @dish.description %></textarea>
+      <textarea class="form-control input-lg" rows="5" name="description" placeholder="Enter description here." data-bind="textInput : dish.description"></textarea>
     </div>
 
     <hr class="clear">
@@ -53,7 +53,7 @@
     <div class="well well-slim">
       <div class="checkbox">
         <label style="font-weight: 200;">
-          <input type="checkbox" name="is_recipe_hidden" <%= "checked" if !@dish.is_recipe_given %> onclick="toggleHowToMakeVisible(this);">
+          <input type="checkbox" name="is_recipe_not_given" data-bind="checked : dish.is_recipe_not_given">
           I don't have the directions, or would prefer not to enter.
         </label>
       </div>
@@ -63,13 +63,13 @@
       </div>
     </div>
 
-    <div class="howtomake-fields">
+    <div class="howtomake-fields" data-bind="visible : dish.is_recipe_given()">
     <div class="form-group">
       <label>Ingredients</label>
       <textarea class="form-control input-lg" name="ingredients" placeholder="Butter
 Eggs
 Flour
-. . ." rows="10"><%= @dish.ingredients %></textarea>
+. . ." rows="10" data-bind="textInput : dish.ingredients"></textarea>
       <div class="help-block small text-muted">
         <i class="fa fa-question-circle"></i>
         Enter each ingredient on a new line.
@@ -79,7 +79,7 @@ Flour
     <div class="form-group">
       <label>Directions</label>
       <textarea class="form-control input-lg" name="directions" placeholder="1. Preheat oven to 350.
-2. And then . . ." rows="10"><%= @dish.directions %></textarea>
+2. And then . . ." rows="10" data-bind="textInput : dish.directions"></textarea>
       <div class="help-block small text-muted">
         <i class="fa fa-question-circle"></i>
         Enter each step on a new line with a number in front.
@@ -91,14 +91,7 @@ Flour
       <div class="row">
         <div class="col-xs-6 col-sm-4">
         <div class="input-group input-group-lg">
-
-          <input type="number" name="prep_time_hours" class="form-control" placeholder="0" value="<%= @dish.prep_time_details[:hours] %>">
-          <span class="input-group-addon">hours</span>
-        </div>
-        </div>
-        <div class="col-xs-6 col-sm-4">
-        <div class="input-group input-group-lg">
-          <input type="number" name="prep_time_minutes" class="form-control" placeholder="30" value="<%= @dish.prep_time_details[:minutes] %>">
+          <input type="number" name="prep_time_minutes" class="form-control" placeholder="30" data-bind="textInput : dish.prep_time_mins">
           <span class="input-group-addon">minutes</span>
         </div>
         </div>
@@ -112,10 +105,10 @@ Flour
     <div class="form-group">
       <div class="checkbox">
         <label>
-          <input type="checkbox" name="is_purchasable" <%= @dish.is_purchasable ? "checked" : "" %> onclick="togglePurchaseInfoVisible(this)"> This dish is available for sale pre-made.
+          <input type="checkbox" name="is_purchasable" data-bind="checked : dish.is_purchasable"> This dish is available for sale pre-made.
         </label>
       </div>
-      <textarea class="form-control input-lg purchase-info" name="purchase_info" rows="5" placeholder="(Optional) Website links, store names, and locations are all helpful."><%= @dish.purchase_info %></textarea>
+      <textarea class="form-control input-lg purchase-info" name="purchase_info" rows="5" placeholder="(Optional) Website links, store names, and locations are all helpful." data-bind="textInput : dish.purchase_info, visible : dish.is_purchasable()"></textarea>
     </div>
 
     <hr class="clear">
@@ -126,7 +119,7 @@ Flour
         <div class="form-group">
           <label>Serving Size</label>
           <div class="input-group input-group-lg">
-            <input type="text" name="serving_size" class="form-control" placeholder="8" value="<%= @dish.serving_size %>"/>
+            <input type="text" name="serving_size" class="form-control" placeholder="8" data-bind="textInput : dish.serving_size"/>
             <span class="input-group-addon">servings</span>
           </div>
         </div>
@@ -135,7 +128,7 @@ Flour
 
     <div class="form-group">
       <label>Dish Tags</label>
-      <textarea class="form-control input-lg" name="tags" placeholder="dinner, italian, healthy, ..."><%= @dish.tags_to_str %></textarea>
+      <textarea class="form-control input-lg" name="tags" placeholder="dinner, italian, healthy, ..." data-bind="textInput : dish.tags_str"></textarea>
       <div class="help-block small text-muted">
         <i class="fa fa-question-circle"></i>
         Enter tags separated by a comma, like: dinner, italian, healthy.
@@ -146,15 +139,16 @@ Flour
     <h2><i class="fa fa-camera"></i>Image Upload</h2>
 
     <div class="form-group">
-      <input type="file" name="image"> 
-      <% if @dish.image.url != nil %>
-        <img src="<%= @dish.image.url %>" style="width: 150px;"/>
-      <% else %>
+      <input type="file" name="image" data-bind="fileupload : dish.image"> 
+      {{#if : dish.image_url.present() }}
+      <img style="width: 150px;" data-bind="attr.src : dish.image_url()"/>
+      {{/if }}
+      {{#if : !dish.image_url.present() }}
         <div class="help-block small text-muted">
           <i class="fa fa-question-circle"></i>
           Don't have an image yet? Find a good one on <a href="https://images.google.com" target="_blank">Google Images</a> for now.
         </div>
-      <% end %>
+      {{/if }}
     
     </div>
 
@@ -163,12 +157,12 @@ Flour
     <div class="form-group">
       <div class="checkbox">
         <label>
-          <input type="checkbox" name="is_recipe_private" <%= @dish.is_recipe_private ? "checked" : "" %>>Hide the ingredients and directions, so only I can see it. 
+          <input type="checkbox" name="is_recipe_private" data-bind="checked : dish.is_recipe_private">Hide the ingredients and directions, so only I can see it. 
         </label>
       </div>
       <div class="checkbox">
         <label>
-          <input type="checkbox" name="is_private" <%= @dish.is_private ? "checked" : "" %>> Make this entire dish private, so only I can see it. 
+          <input type="checkbox" name="is_private" data-bind="checked : dish.is_private"> Make this entire dish private, so only I can see it. 
         </label>
       </div>
     </div>
@@ -176,16 +170,16 @@ Flour
     <hr class="clear">
 
     <div class="form-group">
-      <button type="button" class="btn btn-success btn-lg" onclick="saveRecipe();">
+      <button type="button" class="btn btn-success btn-lg" data-bind="click : saveDish, loading : dish.is_saving">
         <i class="fa fa-check"></i>
         Save Dish
       </button>
-      <% if @dish.id != nil %>
-        <button type="button" class="btn btn-danger pull-right" onclick="promptDeleteRecipe();">
-          <i class="fa fa-trash"></i>
-           Delete
-        </button>
-      <% end %>
+      {{#if : dish.id.present() }}
+      <button class="btn btn-danger btn-lg pull-right" data-bind="click : promptDeleteDish, loading : dish.is_saving">
+        <i class="fa fa-trash"></i>
+         Delete
+      </button>
+      {{/if }}
 
     </div>
 
@@ -195,9 +189,3 @@ Flour
 </div>
 </div>
 
-<script>
-$(function() {
-  toggleHowToMakeVisible();
-  togglePurchaseInfoVisible();
-});
-</script>

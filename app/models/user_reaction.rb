@@ -19,6 +19,26 @@ class UserReaction < ActiveRecord::Base
     end
   end
 
+  def update_as_action!(opts)
+    actor = opts[:actor]
+    self.user_id = actor.id
+    self.dish_id = opts[:dish_id] if opts[:dish_id]
+    self.is_favorite = QuickScript.parse_bool(opts[:is_favorite]) if opts[:is_favorite].present?
+
+    saved = self.save
+    if saved
+      # update dish
+      if (dish = self.dish)
+        dish.update_meta
+      end
+    end
+    return { success: saved, data: self}
+  end
+
+  def delete_as_action!(opts)
+    return {success: false}
+  end
+
   def to_api
     ret = {}
     ret[:id] = self.id.to_s

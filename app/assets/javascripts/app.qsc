@@ -1,0 +1,7 @@
+class Dishfave.Application extends QS.Application
+  init : =>
+    @opts.update_title = false
+    @opts.handle_links = false
+    @setUser(@opts.current_user)
+
+  showModalFromURL : window.showModalFromURL

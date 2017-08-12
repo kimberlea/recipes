@@ -12,6 +12,7 @@ gem 'uglifier', '>= 1.3.0'
 gem 'coffee-rails', '~> 4.1.0'
 # See https://github.com/rails/execjs#readme for more supported runtimes
 gem 'therubyracer', platforms: :ruby
+gem 'babel-transpiler'
 
 # Use jquery as the JavaScript library
 gem 'jquery-rails'
@@ -30,7 +31,8 @@ gem 'quick_notify', github: 'agquick/quick_notify', ref: '02bf591'
 
 gem 'quick_utils', github: 'agquick/quick_utils'
 
-#gem 'quick_script', github: 'agquick/quick_script', ref: '90dd8d4'
+gem 'quick_script', github: 'agquick/quick_script', ref: 'b6391ed'
+#gem 'quick_script', path: '~/Projects/lib/quick_script'
 
 gem 'carrierwave', '~> 1.0'
 

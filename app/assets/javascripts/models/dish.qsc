@@ -1,0 +1,27 @@
+class Dishfave.Dish extends QS.Model
+  @includeCollection()
+  @includeAdapter
+    load_url: '/dishes'
+    save_url: '/dish'
+
+  init : =>
+    @addFields ['title', 'description', 'ingredients', 'directions', 'purchase_info', 'image_url', 'view_path'], ''
+    @addFields ['is_purchasable', 'is_private', 'is_recipe_private'], false
+    @addFields ['is_recipe_given'], true
+    @addFields ['prep_time_mins', 'serving_size'], null
+    @addFields ['tags'], []
+
+    @addSubModel 'image', Dishfave.DishImageUpload
+
+    @addComputed 'is_recipe_not_given',
+      read: ->
+        !@is_recipe_given()
+      write: (val)->
+        @is_recipe_given(!val)
+
+    @addComputed 'tags_str',
+      read: ->
+        @tags().join(", ")
+      write: (val)->
+        return if QS.utils.isBlank(val)
+        @tags(val.split(","))

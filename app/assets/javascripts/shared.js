@@ -16,6 +16,7 @@ function isSignedIn() {
 
 function setCurrentUser(user) {
   window.currentUser = user;
+  window.App.setUser(user);
 }
 
 var openModals = {};

@@ -6,9 +6,9 @@ class UsersController < ApplicationController
     
 
     if @filter == "favorite"
-      @dishes = Dish.joins(:user_reactions).where("user_reactions.is_favorite = true and user_reactions.user_id = ?", @user.id)
+      @dishes = Dish.is_visible_by(current_user).joins(:user_reactions).where("user_reactions.is_favorite = true and user_reactions.user_id = ?", @user.id)
     else
-      @dishes = Dish.where(creator_id: @user.id)
+      @dishes = Dish.is_visible_by(current_user).where(creator_id: @user.id)
     end
 
     if current_user

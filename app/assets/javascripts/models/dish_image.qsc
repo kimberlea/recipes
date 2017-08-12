@@ -1,0 +1,2 @@
+class Dishfave.DishImageUpload extends QS.FileModel
+  init : ->

@@ -105,6 +105,20 @@
   <% else %>
     var currentUser = null;
   <% end %>
+  $(function() {
+    var opts = {
+      app_class: Dishfave.Application,
+      user_class: Dishfave.User,
+      environment: '<%= Rails.env %>',
+      build_number: <%= 0 %>,
+      data: <%= jsify(js_data) %>
+    };
+    <% if current_user %>
+    opts.current_user = <%= jsify(current_user.to_api) %>
+    <% end %>
+    window.App = QuickScript.initialize(opts);
+  });
+  
   </script>
   <% if Rails.env.production? %>
   <script>

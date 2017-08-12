@@ -1,6 +1,9 @@
 class Dish < ActiveRecord::Base
   include SchemaSync::Model
+  include QuickScript::Model
+  include QuickScript::Stateable
   include APIUtils::Validation
+
   mount_uploader :image, DishImageUploader
 
   field :title, type: String
@@ -30,15 +33,25 @@ class Dish < ActiveRecord::Base
   has_many :user_reactions
 
   timestamps!
+  state :active, 1
+  state :deleted, 2
+  stateable!
 
   scope :serves_count, lambda {|count|
     where("serving_size > ?", count)
   }
   scope :is_public, lambda {
-    where(is_private: false)
+    not_deleted.where(is_private: false)
   }
   scope :with_tag, lambda {|tag|
     where("? = ANY(tags)", tag)
+  }
+  scope :is_visible_by, lambda {|user|
+    if user.nil?
+      is_public
+    else
+      not_deleted.where("(dishes.creator_id = ?) OR (dishes.is_private <> 't')", user.id)
+    end
   }
 
   after_save :update_search_vector
@@ -74,6 +87,56 @@ class Dish < ActiveRecord::Base
     validate_length_of(:directions, "directions")
     validate_length_of(:ingredients, "ingredients")
     validate_length_of(:purchase_info, "purchase info")
+  end
+
+  def update_as_action!(opts)
+    actor = opts[:actor]
+    new_record = self.new_record?
+    if new_record
+      self.creator = actor
+      self.state! :active
+    end
+    update_fields_from(opts, [
+      :title,
+      :serving_size,
+      :description,
+      :ingredients,
+      :directions,
+      :purchase_info,
+      :prep_time_mins,
+      :is_purchasable,
+      :is_private,
+      :is_recipe_private,
+      :is_recipe_given
+    ])
+    if opts.key?(:tags)
+      tags = JSON.parse(opts[:tags])
+      self.tags = tags.collect {|tag| tag.strip.downcase}
+    end
+    if opts.key?(:image)
+      self.image = opts[:image]
+    end
+    success = self.save
+    if success && new_record
+      AppEvent.publish("dish.created", actor, {dish: self})
+    end
+    return {success: success, data: self, error: self.error_message, new_record: new_record}
+  end
+
+  def delete_as_action!(opts)
+    self.set_state! :deleted
+    return {success: true, data: self}
+  end
+
+  def favorite_as_action!(opts)
+    actor = opts[:actor]
+    reaction = actor.reaction_to(self, true)
+    reaction.is_favorite = true
+    saved = reaction.save
+    if saved
+      AppEvent.publish("dish.favorited", actor, dish: self)
+    end
+    return {success: true, data: reaction, dish: self}
   end
 
   def view_path(opts={})
@@ -161,23 +224,27 @@ class Dish < ActiveRecord::Base
     Rails.logger.info ex.backtrace.join("\n\t")
   end
 
-  def to_api
+  def to_api(lvl=:default, opts={})
     ret = {}
     ret[:id] = self.id.to_s
     ret[:title] = self.title
-    ret[:created_at] = self.created_at.to_i
-    ret[:errors] = self.errors.to_hash if self.errors.any?
+    ret[:description] = self.description
+    ret[:ingredients] = self.ingredients
+    ret[:directions] = self.directions
     ret[:is_purchasable] = self.is_purchasable
     ret[:purchase_info] = self.purchase_info
     ret[:tags] = self.tags
-    ret[:description] = self.description
     ret[:serving_size] = self.serving_size
     ret[:prep_time_mins] = self.prep_time_mins
-    ret[:view_path] = self.view_path
     ret[:is_private] = self.is_private
     ret[:is_recipe_given] = self.is_recipe_given
-    ret[:image] = self.image
+    ret[:image_url] = self.image ? self.image.url : nil
+    ret[:is_recipe_private] = self.is_recipe_private
+    ret[:is_private] = self.is_private
 
+    ret[:view_path] = self.view_path
+    ret[:created_at] = self.created_at.to_i
+    ret[:errors] = self.errors.to_hash if self.errors.any?
     return ret
   end
 end

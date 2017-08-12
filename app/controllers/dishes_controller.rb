@@ -11,11 +11,11 @@ class DishesController < ApplicationController
     @order = params[:order] || "newest"
 
     if @filter_creator == "me"
-      @dishes = Dish.where(creator_id: current_user.id)
+      @dishes = Dish.is_visible_by(current_user).where(creator_id: current_user.id)
     elsif @filter_creator == "friends"
-      @dishes = Dish.is_public.where("creator_id IN (SELECT user_id from followings where followings.follower_id = ?)", current_user.id)
+      @dishes = Dish.is_visible_by(current_user).where("creator_id IN (SELECT user_id from followings where followings.follower_id = ?)", current_user.id)
     else
-      @dishes = Dish.is_public
+      @dishes = Dish.is_visible_by(current_user)
     end
 
     if @filter_tag.present? && @filter_tag != "all"
@@ -60,7 +60,7 @@ class DishesController < ApplicationController
     @comments = Comment.where(dish_id: @dish.id).order("created_at desc")
 
     # load 5 most recent dish
-    @dishes = Dish.is_public.limit(8).order("created_at desc")
+    @dishes = Dish.is_visible_by(current_user).limit(8).order("created_at desc")
   
     @page_info = {
       title: @dish.title,
@@ -85,6 +85,7 @@ class DishesController < ApplicationController
     end
     @body_style = "bg-image"
     @title = "Edit This Dish."
+    @js_data[:dish] = @dish.to_api
     render "dishes/edit"
   end
 
@@ -92,64 +93,11 @@ class DishesController < ApplicationController
     render layout: nil
   end
 
-  def save
-    @dish ||= Dish.new
-    new_record = @dish.new_record?
-    if new_record
-      @dish.creator = self.current_user
-    end
-    @dish.title = params[:title] if params.key?(:title)
-    @dish.serving_size = params[:serving_size] if params.key?(:serving_size)
-    @dish.description = params[:description] if params.key?(:description)
-    @dish.ingredients = params[:ingredients] if params.key?(:ingredients)
-    @dish.directions = params[:directions] if params.key?(:directions)
-    @dish.purchase_info = params[:purchase_info] if params.key?(:purchase_info)
-    @dish.prep_time_mins = params[:prep_time_mins].to_i if params.key?(:prep_time_mins)
-    @dish.is_purchasable = (params[:is_purchasable]=="true") if params.key?(:is_purchasable)
-    @dish.is_private = (params[:is_private]=="true") if params.key?(:is_private)
-    @dish.is_recipe_private = (params[:is_recipe_private]=="true") if params.key?(:is_recipe_private)
-    @dish.is_recipe_given = (params[:is_recipe_given]=="true") if params.key?(:is_recipe_given)
-    if params.key?(:tags)
-      tags = JSON.parse(params[:tags])
-      tags = tags.collect {|tag| tag.strip.downcase}
-      @dish.tags = tags
-    end
-    if params.key?(:image)
-      @dish.image = params[:image]
-    end
-    saved = @dish.save
-    if saved && new_record
-      AppEvent.publish("dish.created", current_user, {dish: @dish})
-    end
-    res = {success: saved, data: @dish.to_api}
-    render_result(res)
-  end
-
-  def delete
-    if @dish.nil?
-      res = {success: false, error: "Dish could not be found."}
-    else
-      @dish.destroy
-      res = {success: true, data: @dish.to_api}
-    end
-    render_result(res)
-  end
-
-  def favorite
-    @reaction = current_user.reaction_to(@dish, true)
-    @reaction.is_favorite = true
-    saved = @reaction.save
-    if saved
-      AppEvent.publish("dish.favorited", current_user, dish: @reaction.dish)
-    end
-    render_result({success: true, data: @reaction.to_api})
-  end
-
   private
 
   def load_dish
     if params[:id].present?
-      @dish = Dish.find(params[:id])
+      @dish = Dish.is_visible_by(current_user).find(params[:id])
     end
   end
 

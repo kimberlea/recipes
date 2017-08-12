@@ -1,0 +1,30 @@
+class Dishfave.DishEditorView extends QS.View
+  init : ->
+    @dish = new Dishfave.Dish(@app.opts.data.dish)
+
+  saveDish : =>
+    if !@app.is_logged_in()
+      @app.showModalFromURL("sign_up", "/modal/sign_up")
+      return
+
+    fields = ['title', 'description', 'is_recipe_given', 'ingredients', 'directions', 'prep_time_mins', 'is_purchasable', 'purchase_info', 'tags', 'serving_size', 'is_recipe_private', 'is_private']
+    fields.push('image') if @dish.image.input.present()
+    @dish.save fields, (resp)=>
+      if resp.success
+        @app.navigateTo(@dish.view_path())
+      else
+        $.alert(resp.error)
+
+  deleteDish : =>
+    @dish.delete ['id'], (resp)=>
+      if resp.success
+        @app.navigateTo("/dishes")
+
+  promptDeleteDish : =>
+    $.confirm
+      title: "Delete this dish?",
+      content: "Are you sure you want to delete this dish?",
+      buttons:
+        confirm: =>
+          @deleteDish()
+        cancel: =>

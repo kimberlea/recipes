@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170810135133) do
+ActiveRecord::Schema.define(version: 20170812041021) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -54,6 +54,8 @@ ActiveRecord::Schema.define(version: 20170810135133) do
     t.boolean  "is_recipe_private",      default: false
     t.boolean  "is_purchasable",         default: false
     t.boolean  "is_recipe_given",        default: true
+    t.integer  "state",                  default: 1
+    t.datetime "state_changed_at"
   end
 
   create_table "followings", force: :cascade do |t|

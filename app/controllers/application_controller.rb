@@ -4,8 +4,9 @@ class ApplicationController < ActionController::Base
   # For APIs, you may want to use :null_session instead.
   # protect_from_forgery with: :exception
 
+  attr_reader :js_data
   before_action :setup_vars
-  helper_method :page_title, :page_info, :is_me?
+  helper_method :page_title, :page_info, :is_me?, :js_data
 
   def render_result(res)
     status = res[:success] == true ? 200 : 500
@@ -19,6 +20,7 @@ class ApplicationController < ActionController::Base
 
   def setup_vars
     @show_header = true
+    @js_data = {}
   end
 
   def page_title
