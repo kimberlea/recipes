@@ -13,6 +13,15 @@ GIT
     quick_notify (1.3.0)
 
 GIT
+  remote: git://github.com/agquick/quick_script.git
+  revision: b6391ed5cf32607287183628669a723c3b0c22f9
+  ref: b6391ed
+  specs:
+    quick_script (2.0.5)
+      faraday
+      haml-rails
+
+GIT
   remote: git://github.com/agquick/quick_utils.git
   revision: 09826b2c8e1b2022ac58103bbe7348620c7356aa
   specs:
@@ -25,13 +34,6 @@ GIT
   revision: 7ec06b3a4c95fe4fac9b8bb13af09b539933b38e
   specs:
     schema_sync (0.1.0)
-
-PATH
-  remote: ~/Projects/lib/quick_script
-  specs:
-    quick_script (2.0.5)
-      faraday
-      haml-rails
 
 GEM
   remote: https://rubygems.org/
@@ -106,7 +108,7 @@ GEM
       railties (>= 3.0.0)
     faker (1.7.3)
       i18n (~> 0.5)
-    faraday (0.12.1)
+    faraday (0.12.2)
       multipart-post (>= 1.2, < 3)
     fog-aws (0.12.0)
       fog-core (~> 1.38)
@@ -126,7 +128,7 @@ GEM
     formatador (0.2.5)
     globalid (0.3.7)
       activesupport (>= 4.1.0)
-    haml (5.0.1)
+    haml (5.0.2)
       temple (>= 0.8.0)
       tilt
     haml-rails (1.0.0)
@@ -219,8 +221,8 @@ GEM
       rspec-mocks (~> 3.5.0)
       rspec-support (~> 3.5.0)
     rspec-support (3.5.0)
-    ruby_parser (3.9.0)
-      sexp_processor (~> 4.1)
+    ruby_parser (3.10.1)
+      sexp_processor (~> 4.9)
     sass (3.4.22)
     sass-rails (5.0.6)
       railties (>= 4.0.0, < 6)
@@ -231,7 +233,7 @@ GEM
     sdoc (0.4.2)
       json (~> 1.7, >= 1.7.7)
       rdoc (~> 4.0)
-    sexp_processor (4.9.0)
+    sexp_processor (4.10.0)
     sprockets (3.7.0)
       concurrent-ruby (~> 1.0)
       rack (> 1, < 3)
