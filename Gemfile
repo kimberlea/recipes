@@ -44,6 +44,10 @@ gem 'redcarpet'
 
 gem 'non-stupid-digest-assets'
 
+gem 'nokogiri'
+
+gem 'iso8601'
+
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 

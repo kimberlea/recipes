@@ -144,6 +144,7 @@ GEM
       ruby_parser (~> 3.5)
     i18n (0.7.0)
     ipaddress (0.8.3)
+    iso8601 (0.9.1)
     jbuilder (2.6.1)
       activesupport (>= 3.0.0, < 5.1)
       multi_json (~> 1.2)
@@ -277,9 +278,11 @@ DEPENDENCIES
   factory_girl_rails (~> 4.0)
   faker
   fog-aws
+  iso8601
   jbuilder (~> 2.0)
   jquery-rails
   mini_magick
+  nokogiri
   non-stupid-digest-assets
   pg
   quick_auth!

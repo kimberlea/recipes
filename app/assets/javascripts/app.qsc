@@ -5,3 +5,18 @@ class Dishfave.Application extends QS.Application
     @setUser(@opts.current_user)
 
   showModalFromURL : window.showModalFromURL
+
+class Dishfave.AdminView extends QS.View
+  init : ->
+    @recipe_url = ko.observable("")
+
+  importRecipe : =>
+    Dishfave.Dish.Adapter.import_from_url
+      data:
+        url: @recipe_url()
+      loading : @is_saving
+      callback: (resp)=>
+        if resp.success
+          @app.navigateTo(resp.data.view_path)
+        else
+          $.alert(resp.error)

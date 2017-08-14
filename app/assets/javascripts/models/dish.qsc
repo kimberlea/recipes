@@ -3,6 +3,8 @@ class Dishfave.Dish extends QS.Model
   @includeAdapter
     load_url: '/dishes'
     save_url: '/dish'
+    endpoints:
+      import_from_url: '/dishes/import_from_url'
 
   init : =>
     @addFields ['title', 'description', 'ingredients', 'directions', 'purchase_info', 'image_url', 'view_path'], ''

@@ -16,6 +16,7 @@ class Dish < ActiveRecord::Base
   #field :prep_time, type: String
   field :prep_time_mins, type: Integer
   field :image, type: String
+  field :source_url, type: String
 
   field :is_purchasable, type: :boolean, default: false
   field :is_private, type: :boolean, default: false
@@ -55,6 +56,7 @@ class Dish < ActiveRecord::Base
   }
 
   after_save :update_search_vector
+  before_destroy :remove_image!
 
   validate do
     # presence
@@ -87,6 +89,12 @@ class Dish < ActiveRecord::Base
     validate_length_of(:directions, "directions")
     validate_length_of(:ingredients, "ingredients")
     validate_length_of(:purchase_info, "purchase info")
+  end
+
+  def self.import_from_url_as_action!(opts)
+    url = opts[:url]
+    res = APIUtils.import_big_oven_recipe(url)
+    return res
   end
 
   def update_as_action!(opts)

@@ -1,0 +1,13 @@
+.view-admin-view(data-bind="withView : Dishfave.AdminView")
+  .header-space
+  .container
+    %h1 Admin
+
+    %h2 Add Dish From URL
+
+    .form-group
+      %input.form-control(placeholder="URL" data-bind="textInput : recipe_url")
+
+    .form-group
+      %button.btn.btn-success(data-bind="click : importRecipe, loading : is_saving")
+        Import Recipe

@@ -45,9 +45,12 @@ Rails.application.routes.draw do
   get '/modal/forgot_password' => 'account#forgot_password_modal'
   get '/modal/share_your_dish' => 'dishes#share_your_dish_modal'
 
+  get '/admin' => 'admin#view'
+
   namespace :api do
     api_resources :dishes do
       post '/dish/favorite' => 'dishes#favorite'
+      post '/dishes/import_from_url' => 'dishes#import_from_url'
     end
     api_resources :user_reactions
   end
