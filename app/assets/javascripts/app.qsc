@@ -17,6 +17,13 @@ class Dishfave.AdminView extends QS.View
       loading : @is_saving
       callback: (resp)=>
         if resp.success
-          @app.navigateTo(resp.data.view_path)
+          $.confirm
+            title: "Dish saved."
+            content: "Dish successfully saved."
+            columnClass: "small"
+            buttons:
+              view: =>
+                @app.navigateTo(resp.data.view_path)
+              done: =>
         else
           $.alert(resp.error)
