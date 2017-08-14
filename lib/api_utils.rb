@@ -14,6 +14,15 @@ module APIUtils
   end
 
   def self.import_big_oven_recipe(url, opts={})
+    if opts[:all]
+      urls = self.find_all_big_oven_links(url)
+      urls.each do |url|
+        self.import_big_oven_recipe(url)
+        puts "Waiting 5 seconds"
+        sleep 5
+      end
+      return
+    end
     d = opts[:dish] || Dish.new
     url = d.source_url if d && url.nil?
     url = url.strip
@@ -41,6 +50,14 @@ module APIUtils
       puts "Dish was NOT saved! #{d.error_message}"
     end
     return {success: saved, data: d, error: d.error_message}
+  end
+
+  def self.find_all_big_oven_links(url)
+    xml = Nokogiri::XML(open(url).read)
+    as = xml.css("a")
+    urls = as.collect{|a| a["href"]}.compact.collect{|l| l.strip}
+    urls = urls.select {|url| url.include?("bigoven.com/recipe")}.uniq
+    return urls
   end
 
 end
