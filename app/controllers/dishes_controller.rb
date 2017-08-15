@@ -32,7 +32,7 @@ class DishesController < ApplicationController
 
     sort = case @order
       when "popular"
-        "cached_favorites_count desc"
+        "cached_favorites_count desc NULLS LAST"
       when "quickest"
         "prep_time_mins asc"
       else

@@ -23,7 +23,8 @@ class Dishfave.Dish extends QS.Model
 
     @addComputed 'tags_str',
       read: ->
+        return "" if @tags() == null
         @tags().join(", ")
       write: (val)->
         return if QS.utils.isBlank(val)
-        @tags(val.split(","))
+        @tags(val.split(",").map((t)->t.trim()))

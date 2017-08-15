@@ -17,9 +17,15 @@ module APIUtils
     if opts[:all]
       urls = self.find_all_big_oven_links(url)
       urls.each do |url|
-        self.import_big_oven_recipe(url)
-        puts "Waiting 5 seconds"
-        sleep 5
+        begin
+          next if Dish.where(source_url: url).count > 0
+          self.import_big_oven_recipe(url)
+          puts "Waiting 5 seconds"
+          sleep 5
+        rescue => ex
+          QuickScript.log_exception(ex)
+          puts "Could not parse recipe #{url}"
+        end
       end
       return
     end
@@ -28,7 +34,7 @@ module APIUtils
     url = url.strip
     # check if url already added
     if d.new_record? && Dish.where(source_url: url).count > 0
-      return {success: false, error: "This url has already been added."}
+      return {success: false, error: "This url has already been added.", error_type: "AlreadyAddedError"}
     end
     xml = Nokogiri::XML(open(url).read)
     json = xml.css("script[type='application/ld+json']").first.text
