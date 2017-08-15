@@ -142,6 +142,7 @@ class Dish < ActiveRecord::Base
     reaction.is_favorite = true
     saved = reaction.save
     if saved
+      self.update_meta
       AppEvent.publish("dish.favorited", actor, dish: self)
     end
     return {success: true, data: reaction, dish: self}
