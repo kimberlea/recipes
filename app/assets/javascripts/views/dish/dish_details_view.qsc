@@ -1,0 +1,4 @@
+class Dishfave.DishDetailsView extends QS.View
+  init : ->
+    @dish = new Dishfave.Dish(@app.opts.data.dish)
+    @user_reaction = new Dishfave.UserReaction(@app.opts.data.user_reaction)

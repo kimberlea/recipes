@@ -1,4 +1,4 @@
-window.Dishfave = {}
+window.Dishfave = {utils: {}}
 
 Dishfave.APIHost = new QS.Host("/api")
 QS.ModelAdapter.host = Dishfave.APIHost

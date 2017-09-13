@@ -34,6 +34,8 @@ gem 'quick_utils', github: 'agquick/quick_utils'
 gem 'quick_script', github: 'agquick/quick_script', ref: 'b6391ed'
 #gem 'quick_script', path: '~/Projects/lib/quick_script'
 
+gem 'ramba', github: 'agquick/ramba', branch: 'develop'
+
 gem 'carrierwave', '~> 1.0'
 
 gem 'mini_magick'

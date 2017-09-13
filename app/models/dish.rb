@@ -26,6 +26,8 @@ class Dish < ActiveRecord::Base
   field :search_vector, type: :tsvector
 
   field :cached_favorites_count, type: Integer
+  field :cached_ratings_count, type: Integer
+  field :cached_ratings_avg, type: Float
 
   field :creator_id, type: Integer
 
@@ -227,6 +229,10 @@ class Dish < ActiveRecord::Base
   def update_meta
     # compute likes count
     self.cached_favorites_count = self.favorites_count
+    # compute ratings info
+    ratings_scope = UserReaction.where(dish_id: self.id).where("rating IS NOT NULL")
+    self.cached_ratings_count = ratings_scope.count
+    self.cached_ratings_avg = ratings_scope.average(:rating)
     self.save(validate: false)
   rescue => ex
     Rails.logger.info ex.message
@@ -253,6 +259,10 @@ class Dish < ActiveRecord::Base
 
     ret[:view_path] = self.view_path
     ret[:created_at] = self.created_at.to_i
+
+    ret[:favorites_count] = self.cached_favorites_count
+    ret[:ratings_count] = self.cached_ratings_count
+    ret[:ratings_avg] = self.cached_ratings_avg.present? ? cached_ratings_avg.round(2) : nil
     ret[:errors] = self.errors.to_hash if self.errors.any?
     return ret
   end

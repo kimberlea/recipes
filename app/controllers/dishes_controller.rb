@@ -61,6 +61,10 @@ class DishesController < ApplicationController
 
     # load 5 most recent dish
     @dishes = Dish.is_visible_by(current_user).limit(8).order("created_at desc")
+
+    @js_data[:dish] = @dish.to_api if @dish
+    @js_data[:user_reaction] = @user_reaction.to_api if @user_reaction
+    @js_data[:following] = @following.to_api if @following
   
     @page_info = {
       title: @dish.title,

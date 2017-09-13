@@ -1,0 +1,57 @@
+class Dishfave.DishRatingButtonView extends QS.View
+  @registerComponent 'df-dish-rating-button', 'view-dish-rating-button'
+  init : ->
+    @dish = new Dishfave.Dish()
+    @reaction = new Dishfave.UserReaction()
+
+    @addComputed 'selected_info', ->
+      r = @reaction.rating()
+      if r?
+        exp = Dishfave.utils.getRatingExpression(r)
+        i = exp.icon
+        t = exp.textSelf
+      else
+        i = "kai kai-face-smile"
+        t = "Rate this Dish"
+      return {text: t, icon: i}
+    @load()
+
+  load : =>
+    @dish.absorb(@opts.dish)
+    @reaction.absorb(@opts.userReaction)
+
+  selectRating : (val)=>
+    Dishfave.UserReaction.Adapter.react
+      data:
+        dish_id: @dish.id()
+        rating: val
+      loading : @is_saving
+      callback: (resp)=>
+        if resp.success
+          @reaction.handleData(resp.data)
+
+
+<template name="view-dish-rating-button" lang="haml">
+.dropdown.inline
+  %button.btn.btn-clear(data-toggle="dropdown")
+    %i(data-bind="attr.class : selected_info().icon")
+    {{ selected_info().text }}
+    %span.caret
+  %ul.dropdown-menu
+    %li
+      %a(data-bind="on.click : $view.selectRating(100)")
+        %i.kai.kai-face-happy
+        I loved it!
+    %li
+      %a(data-bind="on.click : $view.selectRating(75)")
+        %i.kai.kai-face-smile
+        I liked it.
+    %li
+      %a(data-bind="on.click : $view.selectRating(50)")
+        %i.kai.kai-face-neutral
+        It was ok...
+    %li
+      %a(data-bind="on.click : $view.selectRating(25)")
+        %i.kai.kai-face-mad
+        I didn't like it.
+</template>

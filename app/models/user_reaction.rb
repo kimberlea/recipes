@@ -5,11 +5,19 @@ class UserReaction < ActiveRecord::Base
   field :user_id, type: Integer
   field :dish_id, type: Integer
   field :is_favorite, type: :boolean
+  field :rating, type: Integer
 
   belongs_to :dish
   belongs_to :user
 
   timestamps!
+
+  scope :with_user_id, lambda {|uid|
+    where(user_id: uid)
+  }
+  scope :with_dish_id, lambda {|did|
+    where(dish_id: did)
+  }
 
   validate do
     errors.add(:user_id, "User id is not set.") if self.user_id.blank?
@@ -19,11 +27,20 @@ class UserReaction < ActiveRecord::Base
     end
   end
 
+  def self.react_as_action!(opts)
+    actor = opts[:actor]
+    r = UserReaction.with_user_id(actor.id).with_dish_id(opts[:dish_id])
+    r = r.first || UserReaction.new
+    res = r.update_as_action!(opts)
+    return res
+  end
+
   def update_as_action!(opts)
     actor = opts[:actor]
     self.user_id = actor.id
     self.dish_id = opts[:dish_id] if opts[:dish_id]
     self.is_favorite = QuickScript.parse_bool(opts[:is_favorite]) if opts[:is_favorite].present?
+    self.rating = opts[:rating].to_i if opts.key?(:rating)
 
     saved = self.save
     if saved
@@ -42,6 +59,9 @@ class UserReaction < ActiveRecord::Base
   def to_api
     ret = {}
     ret[:id] = self.id.to_s
+    ret[:dish_id] = self.dish_id.to_s
+    ret[:user_id] = self.user_id.to_s
+    ret[:rating] = self.rating
     ret[:is_favorite] = self.is_favorite
     ret[:errors] = self.errors.to_hash
     return ret

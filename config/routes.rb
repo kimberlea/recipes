@@ -52,7 +52,9 @@ Rails.application.routes.draw do
       post '/dish/favorite' => 'dishes#favorite'
       post '/dishes/import_from_url' => 'dishes#import_from_url'
     end
-    api_resources :user_reactions
+    api_resources :user_reactions do
+      post '/user_reactions/react' => 'user_reactions#react'
+    end
   end
 
   root 'dishes#index'

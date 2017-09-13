@@ -1,0 +1,12 @@
+class Dishfave.UserReaction extends QS.Model
+  @includeCollection()
+  @includeAdapter
+    load_url: '/user_reactions'
+    save_url: '/user_reaction'
+    endpoints:
+      react: '/user_reactions/react'
+
+  init : ->
+    @addFields ['user_id', 'dish_id'], ''
+    @addFields ['rating'], 0
+    @addFields ['is_favorite'], false

@@ -1,4 +1,4 @@
-<div class="recipe-container">
+<div class="recipe-container" data-bind="withView : Dishfave.DishDetailsView">
   <div class="recipe-image-backdrop">
     <img src="<%= @dish.image.url %>"/>
   </div>
@@ -34,12 +34,14 @@
               <i class="fa fa-fire"></i>
               <%= @creator.favorites_count %>
             </span>
+          </div>
+          <div class="recipe-meta-reactions">
             <% if @following.present? %>
-              <button type="button" class="btn btn-clear" style="margin-left: 5px" onclick="deleteFollowing(<%= @following.id %>, ['.recipe-meta']);">
+              <button type="button" class="btn btn-clear" onclick="deleteFollowing(<%= @following.id %>, ['.recipe-meta']);">
                 Unfollow
               </button>
             <% else %>
-              <button type="button" class="btn btn-clear" style="margin-left: 5px" onclick="followUser(<%= @creator.id %>, ['.recipe-meta']);">
+              <button type="button" class="btn btn-clear" onclick="followUser(<%= @creator.id %>, ['.recipe-meta']);">
                 Follow
               </button>
             <% end %>
@@ -55,11 +57,17 @@
                 Favorite
               </button>
             <% end %>
+            <df-dish-rating-button params="dish : dish, userReaction : user_reaction"></df-dish-rating-button>
           </div>
+
           <div class="recipe-meta-info">
             <i class="fa fa-heart"></i>
-            <%= @dish.favorites_count %>
+            <%= @dish.cached_favorites_count %>
             &bull;
+            {{#if : dish.has_ratings() }}
+            <df-dish-rating-icon params="rating : dish.ratings_avg(), count : dish.ratings_count()"></df-dish-rating-icon>
+            &bull;
+            {{/if }}
             <%= @dish.created_at.strftime("%B %-d, %Y") %>
       
             <% if current_user != nil %>

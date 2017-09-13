@@ -12,6 +12,7 @@ class Dishfave.Dish extends QS.Model
     @addFields ['is_recipe_given'], true
     @addFields ['prep_time_mins', 'serving_size'], null
     @addFields ['tags'], []
+    @addFields ['favorites_count', 'ratings_count', 'ratings_avg'], 0
 
     @addSubModel 'image', Dishfave.DishImageUpload
 
@@ -28,3 +29,7 @@ class Dishfave.Dish extends QS.Model
       write: (val)->
         return if QS.utils.isBlank(val)
         @tags(val.split(",").map((t)->t.trim()))
+
+    @addComputed 'has_ratings', ->
+      r = @ratings_avg()
+      return r? && r > 0

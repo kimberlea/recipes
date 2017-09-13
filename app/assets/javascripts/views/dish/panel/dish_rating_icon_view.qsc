@@ -1,0 +1,29 @@
+class Dishfave.DishRatingIconView extends QS.View
+  @registerComponent 'df-dish-rating-icon', 'view-dish-rating-icon'
+  init : ->
+    @dish = new Dishfave.Dish()
+    @rating = @opts.rating
+    @count = @opts.count
+
+    @addComputed 'expression', ->
+      Dishfave.utils.getRatingExpression(ko.unwrap(@rating))
+    @addComputed 'icon_class', ->
+      exp = @expression()
+      return "" if !exp?
+      return exp.icon
+
+
+<template name="view-dish-rating-icon" lang="haml">
+%i(class="{{ icon_class }}" data-bind="tip : {content: expression().textAll}")
+{{#if : count }}
+%span.count
+  {{ count }}
+{{/if }}
+</template>
+
+<style lang="sass">
+df-dish-rating-icon
+  i
+    color: #d64541
+    margin-top: 2px
+</style>
