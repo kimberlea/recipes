@@ -15,7 +15,6 @@
 // require turbolinks
 //
 //= require ramba/shared
-//= require_tree ./lib
 //= require init
 //= require shared
 //= require_tree .
