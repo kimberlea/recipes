@@ -1,5 +1,5 @@
 Dishfave.utils.getRatingExpression = (val, opts)->
-  return null if !val?
+  return null if !val? || val == 0
   ret = {}
   if val > 87.5
     icon = "kai kai-face-happy"

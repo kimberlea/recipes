@@ -6,8 +6,8 @@ class Dishfave.DishRatingButtonView extends QS.View
 
     @addComputed 'selected_info', ->
       r = @reaction.rating()
-      if r?
-        exp = Dishfave.utils.getRatingExpression(r)
+      exp = Dishfave.utils.getRatingExpression(r)
+      if exp?
         i = exp.icon
         t = exp.textSelf
       else
