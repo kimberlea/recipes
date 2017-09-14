@@ -1,0 +1,82 @@
+class Dishfave.DishIndexView extends QS.View
+  init : ->
+    @dishes = new Dishfave.Dish.Collection(limit: 100)
+    @live_query = ko.observable("")
+    @params = @app.path_params
+    @tags = [
+      {title: "All", name: "all"}
+      {title: "Dinner", name: "dinner"}
+      {title: "Lunch", name: "lunch"}
+      {title: "Breakfast", name: "breakfast"}
+      {title: "Dessert", name: "dessert"}
+      {title: "Quick", name: "quick"}
+      {title: "Healthy", name: "healthy"}
+      {title: "Vegetarian", name: "vegetarian"}
+      {title: "Vegan", name: "vegan"}
+      {title: "Sides", name: "sides"}
+      {title: "Drinks", name: "drinks"}
+
+    ]
+
+    @addComputed 'query', ->
+      @params().q
+    @addComputed 'order', ->
+      @params().order || 'newest'
+    @addComputed 'creator', ->
+      @params().creator || 'all'
+    @addComputed 'favorite', ->
+      @params().favorite == 'true'
+    @addComputed 'tag', ->
+      @params().tag || 'all'
+
+    @addComputed 'can_load_more', ->
+      @dishes.page() < @dishes.pages_count()
+
+    @app.handle 'app.path_changed', @load
+
+  load : =>
+    @loadDishes()
+
+  loadDishes : =>
+    scope = {not_deleted: []}
+    sort = ""
+    query = @query()
+    creator = @creator()
+    order = @order()
+    fav = @favorite()
+    tag = @tag()
+    uid = @app.current_user.id()
+    if QS.utils.isPresent(uid)
+      switch creator
+        when 'me'
+          scope.with_creator_id = uid
+        when 'friends'
+          scope.with_creator_in_followings_of = uid
+    switch order
+      when "popular"
+        sort = "cached_favorites_count desc NULLS LAST"
+      when "quickest"
+        sort = "prep_time_mins asc"
+      else
+        sort = "created_at desc"
+    if QS.utils.isPresent(tag) && tag != 'all'
+      scope.with_tag = tag
+    if fav == true
+      scope.is_favorite_of = uid
+    if QS.utils.isPresent(query)
+      scope.with_search_term = query
+
+    @dishes.load scope,
+      includes: ['creator']
+      sort: sort
+
+  loadMoreDishes : =>
+    @dishes.appendNextPage (resp)=>
+
+  updateFilter : (opts)=>
+    p = $.extend({}, @params(), opts)
+    qs = $.param(p)
+    @app.redirectTo("?#{qs}")
+
+  handleSearchEnter : =>
+    @updateFilter(q: @live_query())

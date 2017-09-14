@@ -170,13 +170,16 @@ class User < ActiveRecord::Base
     mail.deliver_now
   end
 
-  def to_api
+  def to_api(lvl=:default, opts={})
     ret = {}
     ret[:id] = self.id.to_s
     ret[:first_name] = self.first_name
     ret[:last_name] = self.last_name
+    ret[:full_name] = self.full_name
+    ret[:favorites_count] = self.favorites_count
     ret[:email] = self.email
     ret[:bio] = self.bio
+    ret[:picture_url] = self.picture_url
     ret[:errors] = self.errors.to_hash if self.errors.any?
 
     return ret

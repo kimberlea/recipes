@@ -19,3 +19,4 @@ Dishfave.utils.getRatingExpression = (val, opts)->
     textAll = "Most people don't like it."
 
   return {icon: icon, textSelf: textSelf, textAll: textAll}
+

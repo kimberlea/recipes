@@ -15,6 +15,7 @@ class Dishfave.Dish extends QS.Model
     @addFields ['favorites_count', 'ratings_count', 'ratings_avg'], 0
 
     @addSubModel 'image', Dishfave.DishImageUpload
+    @addSubModel 'creator', Dishfave.User
 
     @addComputed 'is_recipe_not_given',
       read: ->

@@ -14,8 +14,8 @@ GIT
 
 GIT
   remote: git://github.com/agquick/quick_script.git
-  revision: b6391ed5cf32607287183628669a723c3b0c22f9
-  ref: b6391ed
+  revision: 4662b41cfa1dafe1ad8b1adf37217dad6e80f9c7
+  ref: 4662b41
   specs:
     quick_script (2.0.5)
       faraday
@@ -118,7 +118,7 @@ GEM
       railties (>= 3.0.0)
     faker (1.7.3)
       i18n (~> 0.5)
-    faraday (0.12.2)
+    faraday (0.13.1)
       multipart-post (>= 1.2, < 3)
     fog-aws (0.12.0)
       fog-core (~> 1.38)
@@ -138,7 +138,7 @@ GEM
     formatador (0.2.5)
     globalid (0.3.7)
       activesupport (>= 4.1.0)
-    haml (5.0.2)
+    haml (5.0.3)
       temple (>= 0.8.0)
       tilt
     haml-rails (1.0.0)

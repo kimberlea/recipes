@@ -56,6 +56,18 @@ class Dish < ActiveRecord::Base
       not_deleted.where("(dishes.creator_id = ?) OR (dishes.is_private <> 't')", user.id)
     end
   }
+  scope :with_creator_id, lambda {|uid|
+    where(creator_id: uid)
+  }
+  scope :with_creator_in_followings_of, lambda {|uid|
+    where("creator_id IN (SELECT user_id from followings where followings.follower_id = ?)", uid)
+  }
+  scope :is_favorite_of, lambda {|uid|
+    joins(:user_reactions).where("user_reactions.is_favorite = true and user_reactions.user_id = ?", uid)
+  }
+  scope :with_search_term, lambda {|term|
+    where("search_vector @@ plainto_tsquery(?)", term)
+  }
 
   after_save :update_search_vector
   before_destroy :remove_image!
@@ -91,6 +103,10 @@ class Dish < ActiveRecord::Base
     validate_length_of(:directions, "directions")
     validate_length_of(:ingredients, "ingredients")
     validate_length_of(:purchase_info, "purchase info")
+  end
+
+  def self.update_meta
+    Dish.not_deleted.find_each {|d| d.update_meta}
   end
 
   def self.import_from_url_as_action!(opts)
@@ -251,6 +267,7 @@ class Dish < ActiveRecord::Base
     ret[:tags] = self.tags
     ret[:serving_size] = self.serving_size
     ret[:prep_time_mins] = self.prep_time_mins
+    ret[:prep_time_details] = self.prep_time_details
     ret[:is_private] = self.is_private
     ret[:is_recipe_given] = self.is_recipe_given
     ret[:image_url] = self.image ? self.image.url : nil
@@ -264,6 +281,16 @@ class Dish < ActiveRecord::Base
     ret[:ratings_count] = self.cached_ratings_count
     ret[:ratings_avg] = self.cached_ratings_avg.present? ? cached_ratings_avg.round(2) : nil
     ret[:errors] = self.errors.to_hash if self.errors.any?
+
+    if has_present_association?(:creator)
+      ret[:creator] = self.creator.to_api(:embedded)
+    end
     return ret
+  end
+
+  class ScopeResponder < QuickScript::ModelScopeResponder
+    def base_scope
+      Dish.is_visible_by(actor)
+    end
   end
 end

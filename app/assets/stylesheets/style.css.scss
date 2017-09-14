@@ -13,6 +13,10 @@ hr.clear {
   border-color: transparent;
 }
 
+a.no-underline:hover {
+  text-decoration: none;
+}
+
 .backdrop-tint {
   position: fixed;
   top: 0px;
@@ -84,6 +88,8 @@ hr.clear {
 .pad-0 { padding: 0px; }
 .mt-0 { margin-top: 0px; }
 .mr-5 { margin-right: 5px; }
+.mr-10 { margin-right: 10px; }
+.full-width { width: 100%; }
 
 .help-block {
   color: #aaa;

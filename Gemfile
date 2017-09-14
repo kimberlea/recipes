@@ -31,7 +31,7 @@ gem 'quick_notify', github: 'agquick/quick_notify', ref: '02bf591'
 
 gem 'quick_utils', github: 'agquick/quick_utils'
 
-gem 'quick_script', github: 'agquick/quick_script', ref: 'b6391ed'
+gem 'quick_script', github: 'agquick/quick_script', ref: '4662b41'
 #gem 'quick_script', path: '~/Projects/lib/quick_script'
 
 gem 'ramba', github: 'agquick/ramba', branch: 'develop'

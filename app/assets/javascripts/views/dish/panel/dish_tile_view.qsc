@@ -1,3 +1,72 @@
+class Dishfave.DishTileView extends QS.View
+  @registerComponent 'df-dish-tile', 'view-dish-panel-tile'
+  init : ->
+    @dish = @model || @opts.dish
+
+class Dishfave.DishTileGridView extends QS.View
+  @registerComponent 'df-dish-tile-grid', 'view-dish-panel-tile_grid'
+  init : ->
+    @dishes = @opts.dishes
+
+<template name="view-dish-panel-tile" lang="haml">
+%a.recipe-tile(href="{{ dish.view_path }}")
+
+  .recipe-tile-image.pos-rel
+    %img(data-bind="attr.src : dish.image_url")
+    .recipe-tile-image-meta
+      %img.img-circle(data-bind="attr.src : dish.creator.picture_url" style="width: 20px; height: 20px;")
+      %span.recipe-tile-image-meta-name
+        {{ dish.creator.full_name }}
+      %span.chefscore-badge-clear
+        %i.fa.fa-fire
+        {{ dish.creator.favorites_count }}
+    {{#if : dish.is_purchasable() }}
+    .recipe-tile-purchasable(data-bind="tip: {content: 'Great! This dish is available for purchase pre-made.', container: 'body'}")
+      %i.fa.fa-shopping-cart
+    {{/if }}
+
+  .recipe-tile-content
+    .recipe-title(data-bind="css : {'recipe-title-long': dish.title().length > 30}")
+      {{ dish.title() | fit : 40 }}
+    .recipe-description
+      {{ dish.description() | fit:50 }}
+    .recipe-footer
+      %span.recipe-favorites-count.mr-10
+        %i.fa.fa-heart(style="color: red;")
+        {{ dish.favorites_count }}
+      {{#if : dish.directions.present() }}
+      %span.recipe-duration.mr-5
+        %i.fa.fa-clock-o
+        {{ dish.prep_time_details().text }}
+      {{/if }}
+      {{#if : dish.purchase_info.present() }}
+      %span.recipe-footer-section(style="color: #ccc;")
+        %i.fa.fa-shopping-cart(title="Purchase Info Available")
+      {{/if }}
+
+</template>
+
+<template name="view-dish-panel-tile_grid" lang="haml">
+.recipe-tiles
+  {{#if : dishes.is_ready() && dishes.length() == 0 }}
+  .placeholder
+    No dishes found, why don&#8217;t you <a href="/dish/create">add one</a>.
+  {{/if }}
+  .text-center(data-bind="visible : dishes.is_loading()")
+    %df-loading-dot
+  {{#foreach : dishes.items() }}
+  %df-dish-tile(params="dish : $data")
+  {{/foreach }}
+
+</template>
+
+<style lang="scss">
+
+.recipe-tiles {
+  text-align: center;
+  margin: 3px -15px;
+}
+
 .recipes-header h1 {
   color: white;
   text-align: center;
@@ -62,11 +131,6 @@
   color: #555555;
 }
 
-
-.recipe-tiles {
-  text-align: center;
-  margin: 3px -15px;
-}
 
 .recipe-tile {
   position:relative;
@@ -151,6 +215,10 @@
 .recipe-tile-content .recipe-title {
   text-align: left;
   margin-bottom: 5px;
+  font-size: 18px;
+  &.recipe-title-long {
+    font-size: 16px;
+  }
 }
 
 .recipe-tile-content .recipe-description {
@@ -160,7 +228,7 @@
 }
 
 .recipe-tile .recipe-footer i {
-    color: #ABABAB;
+  color: #ABABAB;
    
 }
 
@@ -180,3 +248,5 @@
   }
 
 }
+
+</style>
