@@ -1,4 +1,269 @@
 class Dishfave.DishDetailsView extends QS.View
+  @registerComponent 'df-dish-details', 'df-dish-details'
   init : ->
     @dish = new Dishfave.Dish(@app.opts.data.dish)
-    @user_reaction = new Dishfave.UserReaction(@app.opts.data.user_reaction)
+    @creator = @dish.creator
+    @dishes = new Dishfave.Dish.Collection(limit: 8)
+
+
+    @addComputed 'is_mine', ->
+      @creator.id() == @app.current_user.id()
+
+    @load()
+
+  load : ->
+    @loadRecentDishes()
+    @showShareModal()
+
+  loadRecentDishes : ->
+    @dishes.load {not_deleted: []},
+      includes: ['creator']
+      sort: 'created_at DESC'
+
+  showShareModal : ->
+    if @is_mine() && !@app.current_user.flags().includes(1)
+      @app.showModalFromURL("shareYourDish", "/modal/share_your_dish", {closeIcon: false})
+
+  toggleFollowing : ->
+    if !@app.is_logged_in()
+      @app.promptAuthentication()
+      return
+    @app.user_service.toggleFollowing(@creator)
+
+  toggleFavorite : ->
+    if !@app.is_logged_in()
+      @app.promptAuthentication()
+      return
+    @app.user_service.toggleDishFavorite(@dish)
+
+  submitComment : =>
+    body = $('textarea[name=body]').val()
+    recipe_id = @dish.id()
+  
+    data = {
+      dish_id: recipe_id,
+      body: body,
+    }
+  
+    apiRequest({
+      url: "/comment",
+      method: "POST",
+      data: data,
+      success: (resp)->
+        updatePage([".comments-content"])
+      ,
+      error: (resp)->
+        $.alert(resp.error)
+    })
+
+<template name="df-dish-details" lang="haml">
+.recipe-container
+  .recipe-image-backdrop
+    %img(data-bind="attr.src : dish.image_url")
+  .header-space
+
+  .row(style="margin: 0px;")
+    .col-md-9
+      %a.recipe-image(data-lightbox="recipe-image-full" data-bind="attr : {'data-title' : dish.title() , 'href' : dish.image_url()}")
+        %img.df-card.pad-0(data-bind="attr.src : dish.image_url")/
+        .expand.text-center
+          %i.fa.fa-camera(style="margin-right: 5px;")
+          Click to expand photo
+          %span(style="margin: 0px 5px; color: #777;") •
+          %i.fa.fa-chevron-down(style="margin-right: 5px;")
+          Scroll down for details
+
+      .recipe-content.df-card
+        .recipe-title
+          %h1 {{ dish.title }}
+
+        .recipe-meta.row(style="max-width: 700px; margin: 0px auto; padding-bottom: 10px;")
+          .col-xs-3
+            %img.img-circle(data-bind="attr.src : dish.creator.picture_url()" style="width: 80px; height: 80px;")/
+
+          .col-xs-9.text-left
+            .recipe-meta-name(style="color: #555;")
+              %a(href="{{ dish.creator.view_path }}") {{ dish.creator.full_name }}
+              %span.badge.chefscore-badge(data-toggle="tooltip" title="ChefScore is the total number of favorites on all dishes")
+                %i.fa.fa-fire
+                {{ creator.favorites_count }}
+
+            .recipe-meta-reactions
+              %button.btn.btn-clear(data-bind="on.click : toggleFollowing()")
+                {{ creator.following.id.present() ? 'Unfollow' : 'Follow' }}
+
+              %button.btn.btn-clear(data-bind="on.click : toggleFavorite()")
+                {{ dish.user_reaction.is_favorite() ? 'Unfavorite' : 'Favorite' }}
+
+              %df-dish-rating-button(params="dish : dish, userReaction : dish.user_reaction")
+
+            .recipe-meta-info
+              %i.fa.fa-heart
+              {{ dish.favorites_count }}
+              •
+              {{#if : dish.has_ratings() }}
+              %df-dish-rating-icon(params="rating : dish.ratings_avg(), count : dish.ratings_count()")
+              •
+              {{/if }}
+              {{ dish.created_at.moment().format("MMMM D, YYYY") }}
+              {{#if : is_mine() }}
+              •
+              %a(href="{{ dish.view_path }}/edit") Edit Dish
+              {{/if }}
+
+        / Go to www.addthis.com/dashboard to customize your tools
+        .addthis_inline_share_toolbox(data-media="{{ dish.image_url }}" data-title="{{ dish.title }}" data-url="{{ dish.view_url }}" style="margin: 5px; text-align: center;")
+
+        .recipe-description.recipe-section.text-center
+          {{{ dish.description_html }}}
+
+        .recipe-info.recipe-section.row
+          .col-sm-6
+            %h5 Serving Size
+            %p
+              Makes {{ dish.serving_size }} servings
+          .col-sm-6
+            %h5
+              %span Preparation Time
+            %p
+              {{ dish.prep_time_mins() > 0 ? dish.prep_time_details().text : 'See Below' }}
+
+
+        {{#if : dish.is_recipe_private() != true || is_mine() }}
+        {{#if : dish.ingredients_html.present() }}
+        .recipe-ingredients.recipe-section
+          %h2
+            %span Ingredients
+          .recipe-ingredients-body
+            {{{ dish.ingredients_html }}}
+        {{/if }}
+        {{#if : dish.directions_html.present() }}
+        .recipe-prep.recipe-section
+          %h2
+            %span Directions
+          .recipe-prep-body
+            {{{ dish.directions_html }}}
+        {{/if }}
+        {{/if }}
+
+        {{#if : dish.is_purchasable() && dish.purchase_info_html.present() }}
+        .recipe-purchase.recipe-section
+          %h2
+            %span Purchase Info
+          .recipe-purchase-body
+            {{{ dish.purchae_info_html }}}
+        {{/if }}
+
+        .recipe-tags.recipe-section
+          {{#if : dish.tags.present() }}
+          {{#foreach : dish.tags }}
+          %span {{ $data }}
+          {{/foreach }}
+          {{/if }}
+
+      -# Indent comments-content back over
+        .comments-content.text-left.df-card(style="margin-top: 20px; margin-bottom: 20px;")
+          - if current_user != nil
+            .new-comment
+              .new-comment-image
+                %img.img-circle(src="#{current_user.picture_url}" style="width: 40px; height: 40px;")/
+              .new-comment-text
+                %textarea(name="body" placeholder="Add a comment." rows="3" type="text")
+              .new-comment-submit(style="padding: 20px 10px;")
+                %button.btn.btn-default(data-bind="click : submitComment" type="button") Submit
+          .comments
+            - @comments.each do |comment|
+              .comment
+                .comment-image
+                  %img.img-circle(src="#{comment.user.picture_url}" style="width: 40px; height: 40px;")/
+                .comment-body
+                  .comment-creator
+                    %a(href="/user/#{comment.user_id}")
+                      = comment.user.full_name
+                    %span.comment-date
+                      = time_ago_in_words(comment.created_at)
+                  .comment-text
+                    = comment.body
+
+    .col-md-3
+      .sidebar-panel.df-card
+        .sidebar-title
+          Recent Dishes
+        .sidebar-body
+          %df-dish-tile-grid(params="dishes : dishes")
+
+</template>
+
+<style lang="css">
+.comments-content {
+  padding: 30px;
+  background: #fafafa;
+
+}
+
+.comments-content .new-comment {
+  border: 1px solid #f4f4f4;
+  background: #fff;
+  display: flex;
+}
+
+.comments-content .new-comment .new-comment-text {
+  flex: 1;
+}
+
+.recipe-meta-info i{
+  color: red;
+}
+
+.new-comment-image {
+  padding: 20px;
+}
+
+.new-comment .new-comment-submit {
+  text-align: center;
+}
+
+.new-comment .new-comment-submit button {
+  padding: 15px;
+}
+
+.comments-content .comment {
+  border: 1px solid #f4f4f4;
+  background: #fff;
+  display: flex;
+  margin: 30px 0px;
+  padding: 20px;
+}
+
+.comment .comment-image {
+  padding-right: 20px;
+}
+
+.new-comment-text textarea {
+  width: 100%;
+  padding: 20px;
+  border: none;
+}
+
+.new-comment-text textarea:focus {
+  outline: none;
+}
+
+.comment .comment-creator a {
+  color: black;
+}
+
+.comment .comment-creator .comment-date {
+  color: #808386;
+  font-size: 80%;
+}
+
+
+.comments .comment-text {
+  width: 100%;
+  border: none;
+  flex: 1;
+  color: #505356;
+}
+
+</style>

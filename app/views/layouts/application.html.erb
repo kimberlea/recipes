@@ -27,68 +27,7 @@
 
 <body class="<%= @body_style %>">
   <% if @show_header == true %>
-    <nav class="navbar navbar-default navbar-fixed-top" style="background-color: #d64541; border: #d64541;">
-      <div class="container-fluid-flex">
-        <a class="navbar-logo navbox" href="/">
-          <img src="/assets/logo_white.png" style="height: 40px;"/>
-        </a>
-
-        <div class="navbox navbox-search" role="search">
-          <i class="fa fa-search mr-5"></i>
-          <input type="text" class="recipe-search-input" placeholder="Search Dishes" onkeyup="handleRecipeTyping(event, this);"/>
-        </div>
-
-        <div class="navbox navbox-primary-links" style="">
-        
-          <a href="/dishes" class="navbar-link" style="color: #fff">
-            <i class="fa fa-cutlery" aria-hidden="true"></i> 
-            <span class="link-title">Dishes</span>
-          </a>
-          
-          <a href="/members" class="navbar-link hidden" style="margin-left: 10px; color: #fff">
-            <i class="fa fa-user-circle-o" aria-hidden="true"></i>
-            <span class="link-title">Members</span>
-          </a>
-
-          <a href="/activity" class="navbar-link" style="margin-left: 10px; color: #fff">
-            <i class="fa fa-comments-o" aria-hidden="true"></i>
-            <span class="link-title">Activity</span>
-          </a>
-        </div>
-
-        <div class="navbox">
-          <a href="/dish/create" class="navbar-link" style="">
-            <i class="fa fa-plus-circle"></i>
-            <span class="link-title">New Dish</span>
-          </a>  
-        </div>
-
-        <% if signed_in? %>
-        <div class="navbox navbox-chefscore">
-          <a class="navbar-link" href="/activity?filter=favorites" title="Your ChefScore is the total number of favorites you have on all your dishes. Share your dishes to get more favorites!" data-toggle="tooltip" data-placement="bottom">
-            <i class="fa fa-fire"></i>
-            <%= current_user.favorites_count %>
-          </a>
-        </div>
-        <% end %>
-
-        <div class="navbox navbox-avatar">
-          <% if signed_in? %>
-            <a href="<%= current_user.view_path %>" class="navbar-link">
-              <img class="img-circle" src="<%= current_user.picture_url %>" style="width: 30px; height: 30px;"/>
-            </a>
-          <% else %>
-            <a href="#" class="navbar-link" style="" onclick="promptSignIn();">
-              <i class="fa fa-sign-in"></i>
-              <span class="link-title">Sign In</span>
-            </a>
-          <% end %>
-        </div>
-
-
-
-      </div>
-    </nav>
+  <df-site-header></df-site-header>
   <% end %>
 
   <%= yield %>
@@ -109,13 +48,13 @@
   $(function() {
     var opts = {
       app_class: Dishfave.Application,
-      user_class: Dishfave.User,
+      account_model: Dishfave.User,
       environment: '<%= Rails.env %>',
       build_number: <%= 0 %>,
       data: <%= jsify(js_data) %>
     };
     <% if current_user %>
-    opts.current_user = <%= jsify(current_user.to_api) %>
+      opts.current_user = <%= jsify(current_user.to_api(:full, {actor: current_user})) %>
     <% end %>
     window.App = QuickScript.initialize(opts);
   });

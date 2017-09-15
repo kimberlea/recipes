@@ -2,3 +2,6 @@ class Dishfave.User extends QS.Model
 
   init : ->
     @addFields ['first_name', 'last_name', 'picture_url'], ''
+    @addFields ['flags'], []
+
+    @addSubModel 'following', Dishfave.Following, true

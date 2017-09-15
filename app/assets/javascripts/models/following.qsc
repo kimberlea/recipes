@@ -1,0 +1,9 @@
+class Dishfave.Following extends QS.Model
+  @includeCollection()
+  @includeAdapter
+    load_url: '/followings'
+    save_url: '/following'
+
+  init : ->
+    @addFields ['follower_id', 'user_id'], ''
+

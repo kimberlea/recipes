@@ -56,7 +56,7 @@ class UserReaction < ActiveRecord::Base
     return {success: false}
   end
 
-  def to_api
+  def to_api(lvl=:default, opts={})
     ret = {}
     ret[:id] = self.id.to_s
     ret[:dish_id] = self.dish_id.to_s

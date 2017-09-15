@@ -40,6 +40,8 @@ class Dish < ActiveRecord::Base
   state :deleted, 2
   stateable!
 
+  attr_accessor :user_reaction, :api_request_scope
+
   scope :serves_count, lambda {|count|
     where("serving_size > ?", count)
   }
@@ -256,14 +258,21 @@ class Dish < ActiveRecord::Base
   end
 
   def to_api(lvl=:default, opts={})
+    scope = api_request_scope
+    ens = scope ? scope.enhances : []
+    actor = scope ? scope.actor : nil
     ret = {}
     ret[:id] = self.id.to_s
     ret[:title] = self.title
     ret[:description] = self.description
+    ret[:description_html] = self.description_html if ens.include?("description_html")
     ret[:ingredients] = self.ingredients
+    ret[:ingredients_html] = self.ingredients_html if ens.include?("ingredients_html")
     ret[:directions] = self.directions
+    ret[:directions_html] = self.directions_html if ens.include?("directions_html")
     ret[:is_purchasable] = self.is_purchasable
     ret[:purchase_info] = self.purchase_info
+    ret[:purchase_info_html] = self.purchase_info_html if ens.include?("purchase_info_html")
     ret[:tags] = self.tags
     ret[:serving_size] = self.serving_size
     ret[:prep_time_mins] = self.prep_time_mins
@@ -275,6 +284,7 @@ class Dish < ActiveRecord::Base
     ret[:is_private] = self.is_private
 
     ret[:view_path] = self.view_path
+    ret[:view_url] = self.view_path(full: true)
     ret[:created_at] = self.created_at.to_i
 
     ret[:favorites_count] = self.cached_favorites_count
@@ -283,7 +293,11 @@ class Dish < ActiveRecord::Base
     ret[:errors] = self.errors.to_hash if self.errors.any?
 
     if has_present_association?(:creator)
-      ret[:creator] = self.creator.to_api(:embedded)
+      ret[:creator] = creator.to_api(:embedded)
+    end
+
+    if user_reaction
+      ret[:user_reaction] = user_reaction.to_api(:embedded)
     end
     return ret
   end

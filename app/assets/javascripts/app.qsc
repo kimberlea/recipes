@@ -2,9 +2,23 @@ class Dishfave.Application extends QS.Application
   init : =>
     @opts.update_title = false
     @opts.handle_links = false
+    @user_service = new Dishfave.UserService(this)
+    @is_loaded = ko.observable(false)
     @setUser(@opts.current_user)
 
   showModalFromURL : window.showModalFromURL
+
+  promptAuthentication : (opts={})=>
+    return if @is_logged_in()
+    closeModal('sign_up'); closeModal('sign_in')
+    if (opts.signUp == true)
+      @showModalFromURL("sign_up", "/modal/sign_up")
+    else
+      @showModalFromURL("sign_in", "/modal/sign_in")
+
+  afterRender : ->
+    @is_loaded(true)
+
 
 class Dishfave.AdminView extends QS.View
   init : ->

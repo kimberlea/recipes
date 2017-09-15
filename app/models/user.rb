@@ -18,6 +18,8 @@ class User < ActiveRecord::Base
 
   has_many :dishes, class_name: "Dish", foreign_key: :creator_id
 
+  attr_accessor :api_request_scope, :following
+
   NOTIFICATION_FREQUENCIES = {none: 0, daily: 1, weekly: 2}
   FLAGS = {share_your_dish: 1}
 
@@ -171,6 +173,7 @@ class User < ActiveRecord::Base
   end
 
   def to_api(lvl=:default, opts={})
+    actor = opts[:actor]
     ret = {}
     ret[:id] = self.id.to_s
     ret[:first_name] = self.first_name
@@ -179,8 +182,17 @@ class User < ActiveRecord::Base
     ret[:favorites_count] = self.favorites_count
     ret[:email] = self.email
     ret[:bio] = self.bio
+    ret[:view_path] = self.view_path
     ret[:picture_url] = self.picture_url
+
+    if lvl == :full
+      ret[:flags] = (self.flags || []) if actor == self
+    end
     ret[:errors] = self.errors.to_hash if self.errors.any?
+
+    if following
+      ret[:following] = following.to_api(:embedded)
+    end
 
     return ret
   end

@@ -4,41 +4,6 @@ class DishesController < ApplicationController
 
   def index
     @body_style = "bg-white"
-    @q = params[:q]
-    @filter_favorite = params[:favorite] == "true"
-    @filter_creator = params[:creator] || "all"
-    @filter_tag = params[:tag] || "all"
-    @order = params[:order] || "newest"
-
-    if @filter_creator == "me"
-      @dishes = Dish.is_visible_by(current_user).where(creator_id: current_user.id)
-    elsif @filter_creator == "friends"
-      @dishes = Dish.is_visible_by(current_user).where("creator_id IN (SELECT user_id from followings where followings.follower_id = ?)", current_user.id)
-    else
-      @dishes = Dish.is_visible_by(current_user)
-    end
-
-    if @filter_tag.present? && @filter_tag != "all"
-      @dishes = @dishes.with_tag(@filter_tag)
-    end
-
-    if @filter_favorite && current_user
-      @dishes = @dishes.joins(:user_reactions).where("user_reactions.is_favorite = true and user_reactions.user_id = ?", current_user.id)
-    end
-
-    if @q.present?
-      @dishes = @dishes.where("search_vector @@ to_tsquery(?)", @q)
-    end
-
-    sort = case @order
-      when "popular"
-        "cached_favorites_count desc NULLS LAST"
-      when "quickest"
-        "prep_time_mins asc"
-      else
-        "created_at desc"
-      end
-    @dishes = @dishes.order(sort)
   end
 
   def show
@@ -51,7 +16,9 @@ class DishesController < ApplicationController
     @creator = @dish.creator
     if self.current_user
       @following = self.current_user.following_of(@creator)
+      @creator.following = @following
       @user_reaction = self.current_user.reaction_to(@dish)
+      @dish.user_reaction = @user_reaction
     else
       @following = nil
       @user_reaction = nil
@@ -60,11 +27,11 @@ class DishesController < ApplicationController
     @comments = Comment.where(dish_id: @dish.id).order("created_at desc")
 
     # load 5 most recent dish
-    @dishes = Dish.is_visible_by(current_user).limit(8).order("created_at desc")
+    #@dishes = Dish.is_visible_by(current_user).limit(8).order("created_at desc")
+
+    @dish.api_request_scope = QuickScript::SmartScope.new(actor: current_user, enhances: ["description_html", "ingredients_html", "directions_html", "purchase_info_html"])
 
     @js_data[:dish] = @dish.to_api if @dish
-    @js_data[:user_reaction] = @user_reaction.to_api if @user_reaction
-    @js_data[:following] = @following.to_api if @following
   
     @page_info = {
       title: @dish.title,
@@ -72,7 +39,6 @@ class DishesController < ApplicationController
       url: @dish.view_path(full: true),
       image: @dish.image.url,
     }
-   
   end
 
   def create

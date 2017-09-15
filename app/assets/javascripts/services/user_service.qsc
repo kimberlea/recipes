@@ -1,0 +1,36 @@
+class Dishfave.UserService extends QS.Service
+  toggleFollowing : (user, opts)->
+    following = user.following
+    if following.id.present()
+      @unfollowUser(user, opts)
+    else
+      @followUser(user, opts)
+
+  followUser : (user)->
+    Dishfave.Following.Adapter.save
+      data:
+        user_id: user.id()
+      callback : (resp)=>
+        if resp.success
+          user.following.handleData(resp.data)
+        else
+          $.alert resp.error
+
+  unfollowUser : (user)->
+    following = user.following
+    following.delete ['id'], (resp)=>
+      if resp.success
+        following.reset()
+      else
+        $.alert resp.error
+
+  toggleDishFavorite : (dish)->
+    reaction = dish.user_reaction
+    new_val = !reaction.is_favorite()
+    Dishfave.UserReaction.Adapter.react
+      data:
+        dish_id: dish.id()
+        is_favorite: new_val
+      callback : (resp)->
+        if resp.success
+          reaction.handleData(resp.data)

@@ -291,6 +291,7 @@ DEPENDENCIES
   factory_girl_rails (~> 4.0)
   faker
   fog-aws
+  html2haml
   iso8601
   jbuilder (~> 2.0)
   jquery-rails

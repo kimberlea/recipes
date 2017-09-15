@@ -8,7 +8,7 @@
 #package "bootstrap", javascript: "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js", stylesheet: "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css", module: "shared"
 
 
-#package "moment", github: "moment/moment", tag: "2.10.6", module: "shared"
+package "moment", github: "moment/moment", tag: "2.10.6", module: "shared"
 
 package 'quick_script', github: 'agquick/quick_script.js', tag: 'a989892', module: 'shared'
 #package 'quick_script', path: '~/Projects/lib/quick_script.js', path_mode: :link, module: 'shared'
