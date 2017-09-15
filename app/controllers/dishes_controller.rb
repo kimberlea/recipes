@@ -24,7 +24,7 @@ class DishesController < ApplicationController
       @user_reaction = nil
     end
     # load comments
-    @comments = Comment.where(dish_id: @dish.id).order("created_at desc")
+    #@comments = Comment.where(dish_id: @dish.id).order("created_at desc")
 
     # load 5 most recent dish
     #@dishes = Dish.is_visible_by(current_user).limit(8).order("created_at desc")

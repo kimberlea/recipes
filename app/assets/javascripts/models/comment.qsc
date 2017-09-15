@@ -1,0 +1,12 @@
+class Dishfave.Comment extends QS.Model
+  @includeCollection()
+  @includeAdapter
+    load_url: '/comments'
+    save_url: '/comment'
+
+  init : ->
+    @addFields ['dish_id', 'user_id', 'body'], ''
+    @addFields ['created_at'], 0
+    @created_at.extend(date: true)
+
+    @addSubModel 'user', Dishfave.User

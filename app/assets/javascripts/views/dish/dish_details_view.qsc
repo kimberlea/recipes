@@ -4,6 +4,8 @@ class Dishfave.DishDetailsView extends QS.View
     @dish = new Dishfave.Dish(@app.opts.data.dish)
     @creator = @dish.creator
     @dishes = new Dishfave.Dish.Collection(limit: 8)
+    @comments = new Dishfave.Comment.Collection()
+    @new_comment = new Dishfave.Comment()
 
 
     @addComputed 'is_mine', ->
@@ -13,11 +15,17 @@ class Dishfave.DishDetailsView extends QS.View
 
   load : ->
     @loadRecentDishes()
+    @loadComments()
     @showShareModal()
 
   loadRecentDishes : ->
     @dishes.load {not_deleted: []},
       includes: ['creator']
+      sort: 'created_at DESC'
+
+  loadComments : ->
+    @comments.load {with_dish_id: @dish.id()},
+      includes: ['user'],
       sort: 'created_at DESC'
 
   showShareModal : ->
@@ -37,24 +45,13 @@ class Dishfave.DishDetailsView extends QS.View
     @app.user_service.toggleDishFavorite(@dish)
 
   submitComment : =>
-    body = $('textarea[name=body]').val()
-    recipe_id = @dish.id()
-  
-    data = {
-      dish_id: recipe_id,
-      body: body,
-    }
-  
-    apiRequest({
-      url: "/comment",
-      method: "POST",
-      data: data,
-      success: (resp)->
-        updatePage([".comments-content"])
-      ,
-      error: (resp)->
+    @new_comment.dish_id(@dish.id())
+    @new_comment.save ['dish_id', 'body'], (resp)=>
+      if resp.success
+        @comments.update()
+        @new_comment.reset()
+      else
         $.alert(resp.error)
-    })
 
 <template name="df-dish-details" lang="haml">
 .recipe-container
@@ -162,28 +159,30 @@ class Dishfave.DishDetailsView extends QS.View
           {{/if }}
 
       -# Indent comments-content back over
-        .comments-content.text-left.df-card(style="margin-top: 20px; margin-bottom: 20px;")
-          - if current_user != nil
-            .new-comment
-              .new-comment-image
-                %img.img-circle(src="#{current_user.picture_url}" style="width: 40px; height: 40px;")/
-              .new-comment-text
-                %textarea(name="body" placeholder="Add a comment." rows="3" type="text")
-              .new-comment-submit(style="padding: 20px 10px;")
-                %button.btn.btn-default(data-bind="click : submitComment" type="button") Submit
-          .comments
-            - @comments.each do |comment|
-              .comment
-                .comment-image
-                  %img.img-circle(src="#{comment.user.picture_url}" style="width: 40px; height: 40px;")/
-                .comment-body
-                  .comment-creator
-                    %a(href="/user/#{comment.user_id}")
-                      = comment.user.full_name
-                    %span.comment-date
-                      = time_ago_in_words(comment.created_at)
-                  .comment-text
-                    = comment.body
+      .comments-content.text-left.df-card(style="margin-top: 20px; margin-bottom: 20px;")
+        {{#if : app.is_logged_in() }}
+        .new-comment
+          .new-comment-image
+            %img.img-circle(data-bind="attr.src : app.current_user.picture_url()" style="width: 40px; height: 40px;")/
+          .new-comment-text
+            %textarea(name="body" placeholder="Add a comment." rows="3" data-bind="textInput : new_comment.body")
+          .new-comment-submit(style="padding: 20px 10px;")
+            %button.btn.btn-default(data-bind="click : submitComment, loading : new_comment.is_saving") Submit
+        {{/if }}
+        .comments
+          {{#foreach : comments.items }}
+          .comment
+            .comment-image
+              %img.img-circle(data-bind="attr.src : user.picture_url" style="width: 40px; height: 40px;")/
+            .comment-body
+              .comment-creator
+                %a(href="{{ user.view_path }}")
+                  {{ user.full_name }}
+                %span.comment-date
+                  {{ created_at.moment().fromNow() }}
+              .comment-text
+                {{ body }}
+          {{/foreach }}
 
     .col-md-3
       .sidebar-panel.df-card

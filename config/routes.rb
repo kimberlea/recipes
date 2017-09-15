@@ -56,6 +56,7 @@ Rails.application.routes.draw do
       post '/user_reactions/react' => 'user_reactions#react'
     end
     api_resources :followings
+    api_resources :comments
   end
 
   root 'dishes#index'
