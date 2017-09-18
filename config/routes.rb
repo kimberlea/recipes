@@ -57,6 +57,8 @@ Rails.application.routes.draw do
     end
     api_resources :followings
     api_resources :comments
+
+    post 'account' => 'account#save'
   end
 
   root 'dishes#index'

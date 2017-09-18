@@ -18,11 +18,13 @@ class Dishfave.UserService extends QS.Service
 
   unfollowUser : (user)->
     following = user.following
-    following.delete ['id'], (resp)=>
-      if resp.success
-        following.reset()
-      else
-        $.alert resp.error
+    Dishfave.Following.Adapter.delete
+      data: {id: following.id()}
+      callback : (resp)=>
+        if resp.success
+          following.reset()
+        else
+          $.alert resp.error
 
   toggleDishFavorite : (dish)->
     reaction = dish.user_reaction

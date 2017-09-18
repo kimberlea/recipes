@@ -8,6 +8,18 @@ class Dishfave.DishTileGridView extends QS.View
   init : ->
     @dishes = @opts.dishes
 
+
+class Dishfave.DishesLoadMoreView extends QS.View
+  @registerComponent 'df-dishes-load-more', 'df-dishes-load-more'
+  init : ->
+    @dishes = @opts.dishes
+    @addComputed 'can_load_more', ->
+      @dishes.page() < @dishes.pages_count()
+
+  loadMoreDishes : =>
+    @dishes.appendNextPage (resp)=>
+
+
 <template name="view-dish-panel-tile" lang="haml">
 %a.recipe-tile(href="{{ dish.view_path }}")
 
@@ -19,7 +31,7 @@ class Dishfave.DishTileGridView extends QS.View
         {{ dish.creator.full_name }}
       %span.chefscore-badge-clear
         %i.fa.fa-fire
-        {{ dish.creator.favorites_count }}
+        {{ dish.creator.chefscore }}
     {{#if : dish.is_purchasable() }}
     .recipe-tile-purchasable(data-bind="tip: {content: 'Great! This dish is available for purchase pre-made.', container: 'body'}")
       %i.fa.fa-shopping-cart
@@ -58,6 +70,13 @@ class Dishfave.DishTileGridView extends QS.View
   %df-dish-tile(params="dish : $data")
   {{/foreach }}
 
+</template>
+
+<template name="df-dishes-load-more" lang="haml">
+.df-dish-load-more.text-center
+  %a.small.no-underline(data-bind="click : loadMoreDishes, visible : can_load_more()")
+    %i.kai.kai-chevron-down
+    more
 </template>
 
 <style lang="scss">

@@ -83,7 +83,7 @@ class Dishfave.DishDetailsView extends QS.View
               %a(href="{{ dish.creator.view_path }}") {{ dish.creator.full_name }}
               %span.badge.chefscore-badge(data-toggle="tooltip" title="ChefScore is the total number of favorites on all dishes")
                 %i.fa.fa-fire
-                {{ creator.favorites_count }}
+                {{ creator.chefscore }}
 
             .recipe-meta-reactions
               %button.btn.btn-clear(data-bind="on.click : toggleFollowing()")

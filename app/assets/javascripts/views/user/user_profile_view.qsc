@@ -1,0 +1,101 @@
+class Dishfave.UserProfileView extends QS.View
+  @registerComponent 'df-user-profile', 'df-user-profile'
+  init : ->
+    @user = new Dishfave.User(@app.opts.data.user)
+    @dishes = new Dishfave.Dish.Collection(limit: 25)
+
+    @addComputed 'is_me', ->
+      @user.id() == @app.current_user.id()
+
+    @addComputed 'section', ->
+      s = @app.path_params().s
+      if s == "favorited"
+        return "favorited"
+      else
+        return "added"
+
+    @app.handle 'app.path_changed', => @load()
+    @load()
+
+  load : =>
+    @loadDishes()
+
+  loadDishes : =>
+    scope = {}
+    uid = @user.id()
+    section = @section()
+    if section == 'favorites'
+      scope.is_favorite_of = uid
+    else
+      scope.with_creator_id = uid
+
+    @dishes.load scope,
+      includes: ['creator']
+      sort: 'created_at DESC'
+
+  loadMoreDishes : =>
+
+
+
+<template name="df-user-profile" lang="haml">
+.df-user-profile.profile-page.container
+  .header-space
+
+  %df-user-profile-header(params="user: user")
+
+  .page-tabs.row(style="border-top: 1px solid #ccc;")
+    .col-xs-6.page-tab(data-bind="css.active : section() == 'added'")
+      %a(path="?s=added")
+        %i.fa.fa-list
+        My Dishes
+    .col-xs-6.page-tab(data-bind="css.active : section() == 'favorited'")
+      %a(path="?s=favorited")
+        %i.fa.fa-heart
+        Favorite Dishes
+
+  %df-dish-tile-grid(params="dishes : dishes")
+
+  %df-dishes-load-more(params="dishes : dishes")
+</template>
+
+
+<style lang="scss">
+.df-user-profile {
+  .page-tabs {
+    background-color: #f7f7f7;
+    .page-tab {
+      text-align: center;
+      padding: 10px 0px;
+      border-right: 1px solid #ccc;
+      &:last-child {
+        border-right: none;
+      }
+      &.active {
+        color: #555;
+        border-bottom: 2px solid #376ED2;
+        i { 
+          color: #376ED2;
+        }
+      }
+      a {
+        color: #aaa;
+        padding: 0px 10px;
+      }
+    }
+
+  }
+
+  .btn-success {
+    margin: 10px;
+    
+  }
+
+  .status-info {
+    text-align: center;
+  }
+
+  .status-info-title {
+    font: oblique;
+  }
+}
+</style>

@@ -1,0 +1,112 @@
+class Dishfave.UserProfileHeaderView extends QS.View
+  @registerComponent 'df-user-profile-header', 'df-user-profile-header'
+  init : ->
+    @user = @opts.user
+    @is_editing_bio = ko.observable(false)
+    @bio = ko.observable("")
+
+    @addComputed 'is_me', ->
+      @user.id() == @app.current_user.id()
+
+  toggleFollowing : ->
+    if !@app.is_logged_in()
+      @app.promptAuthentication()
+      return
+    @app.user_service.toggleFollowing(@user)
+
+  startBioEdit : ->
+    @bio(@user.bio())
+    @is_editing_bio(true)
+
+  cancelBioEdit : ->
+    @is_editing_bio(false)
+
+  updateBio : ->
+    Dishfave.AccountAdapter.save
+      data: {bio: @bio()}
+      callback : (resp)=>
+        if resp.success
+          @user.handleData(resp.data)
+          @is_editing_bio(false)
+
+
+
+<template name="df-user-profile-header" lang="haml">
+.df-user-profile-header.profile-header.row
+
+  .profile-picture.col-xs-3.col-sm-2.text-center
+    %img.img-circle(data-bind="attr.src : user.picture_url" style="width: 80px; height: 80px;")
+
+  .profile-name.col-xs-9.col-sm-10.col-md-6(style="padding-top: 25px;")
+    .profile-full-name
+      {{ user.full_name }}
+
+      {{#if : !is_me() }}
+      %button.btn.btn-clear.mr-5(data-bind="on.click : toggleFollowing()")
+        {{ user.following.id.present() ? 'Unfollow' : 'Follow' }}
+      {{/if }}
+
+      {{#if : is_me() }}
+      %a.btn.btn-clear(href="/account" style="margin-right: 5px;")
+        %i.fa.fa-cog(aria-hidden="true")
+        Settings
+      %a.btn.btn-clear(href="/logout")
+        Sign Out
+      {{/if }}
+
+    .user-bio
+      .status-bio(style="padding: 5px;" data-bind="visible : !is_editing_bio()")
+        %span.bio-text(style="font-weight: 200;") {{ user.bio }}
+        {{#if : is_me() }}
+        %a(data-bind="click : startBioEdit" style="padding-left: 10px;") Edit Bio
+        {{/if }}
+      .status-editor(data-bind="visible : is_editing_bio()")
+        %textarea.form-control(name="bio" data-bind="textInput : bio")
+        %a(data-bind="click : updateBio") save
+        %a(data-bind="click : cancelBioEdit" style="padding-left: 5px;") cancel
+
+    / Go to www.addthis.com/dashboard to customize your tools
+    .addthis_inline_share_toolbox(style="margin: 5px;")
+
+  .profile-status.col-xs-12.text-center(style="")
+    .row
+      .status-info.col-xs-3
+        .status-info-number
+          %i.fa.fa-fire
+          {{ user.chefscore() || 0 }}
+        .status-info-title
+          ChefScore
+          %i.fa.fa-question-circle(data-toggle="tooltip" title="Your ChefScore is the total number of favorites you have on all your dishes.")
+
+      .status-info.col-xs-3
+        .status-info-number
+          {{ user.dishes_count() || 0 }}
+        .status-info-title
+          Dishes
+
+      .status-info.col-xs-3
+        %a(href="{{ user.view_path }}/followers")
+          .status-info-number
+            {{ user.followers_count() || 0 }}
+          .status-info-title
+            Followers
+      .status-info.col-xs-3
+        %a(href="{{ user.view_path }}/following")
+          .status-info-number
+            {{ user.followings_count() || 0 }}
+          .status-info-title
+            Following
+</template>
+
+
+<style lang="sass">
+.profile-header
+  .profile-full-name
+    font-size: 24px
+  .profile-picture
+    padding: 30px
+  .btn-success
+    margin: 10px
+  .status-info-title
+    font: oblique
+</style>

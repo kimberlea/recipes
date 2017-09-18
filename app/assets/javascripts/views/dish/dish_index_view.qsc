@@ -1,6 +1,6 @@
 class Dishfave.DishIndexView extends QS.View
   init : ->
-    @dishes = new Dishfave.Dish.Collection(limit: 100)
+    @dishes = new Dishfave.Dish.Collection(limit: 50)
     @live_query = ko.observable("")
     @params = @app.path_params
     @tags = [

@@ -1,5 +1,11 @@
 module DBRepair
 
+  def self.update_meta(cls)
+    cls.all.find_each do |m|
+      m.update_meta
+    end
+  end
+
   def self.create_events
     if false
       Recipe.all.each do |r|

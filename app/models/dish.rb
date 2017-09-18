@@ -147,25 +147,15 @@ class Dish < ActiveRecord::Base
     success = self.save
     if success && new_record
       AppEvent.publish("dish.created", actor, {dish: self})
+      self.creator.update_meta
     end
     return {success: success, data: self, error: self.error_message, new_record: new_record}
   end
 
   def delete_as_action!(opts)
     self.set_state! :deleted
+    self.creator.update_meta
     return {success: true, data: self}
-  end
-
-  def favorite_as_action!(opts)
-    actor = opts[:actor]
-    reaction = actor.reaction_to(self, true)
-    reaction.is_favorite = true
-    saved = reaction.save
-    if saved
-      self.update_meta
-      AppEvent.publish("dish.favorited", actor, dish: self)
-    end
-    return {success: true, data: reaction, dish: self}
   end
 
   def view_path(opts={})

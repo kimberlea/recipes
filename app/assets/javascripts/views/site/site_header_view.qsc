@@ -43,7 +43,7 @@ class Dishfave.SiteHeaderView extends QS.View
     <div class="navbox navbox-chefscore">
       <a class="navbar-link" href="/activity?filter=favorites" title="Your ChefScore is the total number of favorites you have on all your dishes. Share your dishes to get more favorites!" data-toggle="tooltip" data-placement="bottom">
         <i class="fa fa-fire"></i>
-        {{ app.current_user.favorites_count }}
+        {{ app.current_user.chefscore }}
       </a>
     </div>
     {{/if }}

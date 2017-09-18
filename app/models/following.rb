@@ -30,7 +30,7 @@ class Following < ActiveRecord::Base
     end
     success = self.save
     if success && new_record
-      AppEvent.publish("user.followed", current_user, {user: user})
+      AppEvent.publish("user.followed", actor, {user: user})
     end
     return {success: success, data: self, error: self.error_message, new_record: new_record}
   end

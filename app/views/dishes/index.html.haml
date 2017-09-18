@@ -58,7 +58,4 @@
 
     %df-dish-tile-grid(params="dishes : dishes")
 
-    .text-center
-      %a.small.no-underline(data-bind="click : loadMoreDishes, visible : can_load_more()")
-        %i.kai.kai-chevron-down
-        more
+    %df-dishes-load-more(params="dishes : dishes")

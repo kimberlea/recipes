@@ -37,9 +37,13 @@ class UserReaction < ActiveRecord::Base
 
   def update_as_action!(opts)
     actor = opts[:actor]
+    favorited = false
     self.user_id = actor.id
     self.dish_id = opts[:dish_id] if opts[:dish_id]
-    self.is_favorite = QuickScript.parse_bool(opts[:is_favorite]) if opts[:is_favorite].present?
+    if opts[:is_favorite].present?
+      self.is_favorite = QuickScript.parse_bool(opts[:is_favorite])
+      favorited = self.is_favorite
+    end
     self.rating = opts[:rating].to_i if opts.key?(:rating)
 
     saved = self.save
@@ -47,6 +51,10 @@ class UserReaction < ActiveRecord::Base
       # update dish
       if (dish = self.dish)
         dish.update_meta
+        dish.creator.update_meta
+        if favorited
+          AppEvent.publish("dish.favorited", actor, dish: dish)
+        end
       end
     end
     return { success: saved, data: self}

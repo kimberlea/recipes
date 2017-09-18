@@ -13,6 +13,11 @@ class User < ActiveRecord::Base
   field :last_notification_at, type: Time
   field :flags, type: Integer, array: true, default: []
 
+  field :cached_chefscore, type: Integer
+  field :cached_dishes_count, type: Integer
+  field :cached_followers_count, type: Integer
+  field :cached_followings_count, type: Integer
+
   timestamps!
   quick_auth_authentic!
 
@@ -172,6 +177,20 @@ class User < ActiveRecord::Base
     mail.deliver_now
   end
 
+  def update_meta(opts={})
+    # dishes
+    self.cached_dishes_count = Dish.not_deleted.with_creator_id(self.id).count
+    # chefscore
+    self.cached_chefscore = self.favorites_count
+    # followers count
+    self.cached_followers_count = self.followings_of_me.count
+    self.cached_followings_count = self.followings_by_me.count
+    self.save(valdate: false)
+  rescue => ex
+    Rails.logger.info ex.message
+    Rails.logger.info ex.backtrace.join("\n\t")
+  end
+
   def to_api(lvl=:default, opts={})
     actor = opts[:actor]
     ret = {}
@@ -179,11 +198,15 @@ class User < ActiveRecord::Base
     ret[:first_name] = self.first_name
     ret[:last_name] = self.last_name
     ret[:full_name] = self.full_name
-    ret[:favorites_count] = self.favorites_count
     ret[:email] = self.email
     ret[:bio] = self.bio
     ret[:view_path] = self.view_path
     ret[:picture_url] = self.picture_url
+
+    ret[:chefscore] = self.cached_chefscore
+    ret[:dishes_count] = self.cached_dishes_count
+    ret[:followers_count] = self.cached_followers_count
+    ret[:followings_count] = self.cached_followings_count
 
     if lvl == :full
       ret[:flags] = (self.flags || []) if actor == self

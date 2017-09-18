@@ -11,20 +11,17 @@ class UsersController < ApplicationController
       @dishes = Dish.is_visible_by(current_user).where(creator_id: @user.id)
     end
 
-    if current_user
-      @following = self.current_user.following_of(@user) 
-    else
-      @following = nil
+    if current_user.present?
+      @user.following = self.current_user.following_of(@user) 
     end
 
+    @js_data[:user] = @user.to_api if @user
     @page_info = {
       title: @user.full_name,
       description: "Check out my dishes on Dishfave.com!",
       url: @user.view_path,
       image: @user.picture_url,
     }
-   
-    
   end
 
   def index
