@@ -22,11 +22,20 @@ class User < ActiveRecord::Base
   quick_auth_authentic!
 
   has_many :dishes, class_name: "Dish", foreign_key: :creator_id
+  has_many :followings_of, class_name: "Following", foreign_key: :user_id
+  has_many :followings_by, class_name: "Following", foreign_key: :follower_id
 
   attr_accessor :api_request_scope, :following
 
   NOTIFICATION_FREQUENCIES = {none: 0, daily: 1, weekly: 2}
   FLAGS = {share_your_dish: 1}
+
+  scope :with_following_of_user_id, lambda {|uid|
+    joins(:followings_by).where("followings.user_id = ?", uid)
+  }
+  scope :with_following_by_user_id, lambda {|uid|
+    joins(:followings_of).where("followings.follower_id = ?", uid)
+  }
 
   validate do
     errors.add(:first_name, "Enter your first name.") if self.first_name.blank?

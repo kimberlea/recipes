@@ -98,4 +98,35 @@ class Dishfave.UserProfileView extends QS.View
     font: oblique;
   }
 }
+.profile-page {
+  background-color: #FFFFFF;
+
+  .profile-content {
+    border: 1px solid #CFCCC4;
+  }
+
+  .profile-name {
+   
+  }
+
+}
+
+.status-info {
+  display: inline-block;
+
+  .status-info-number {
+    color: #D64541;
+  }
+}
+
+
+
+.my-recipes {
+  border: 1px solid #CFCCC4;
+}
+
+.favorite-recipes {
+  border: 1px solid #CFCCC4;
+
+}
 </style>

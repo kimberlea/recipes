@@ -1,0 +1,32 @@
+class Dishfave.UserFollowingView extends QS.View
+  @registerComponent 'df-user-following'
+  init : ->
+    @user = new Dishfave.User(@app.opts.data.user)
+
+    @users = new Dishfave.User.Collection()
+
+    @mode = @opts.mode || 'followers'
+
+    @load()
+
+  load : ->
+    @loadUsers()
+
+  loadUsers : ->
+    if @mode == 'followers'
+      scope = {with_following_of_user_id: @user.id()}
+    else
+      scope = {with_following_by_user_id: @user.id()}
+    @users.load scope
+
+<template name="df-user-following" lang="haml">
+
+.df-user-followers
+  .header-space
+
+  .container
+    %df-user-profile-header(params="user: user")
+    .followers-content
+      %df-user-tile-grid(params="users : users")
+
+</template>

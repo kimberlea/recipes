@@ -57,6 +57,7 @@ Rails.application.routes.draw do
     end
     api_resources :followings
     api_resources :comments
+    api_resources :users
 
     post 'account' => 'account#save'
   end

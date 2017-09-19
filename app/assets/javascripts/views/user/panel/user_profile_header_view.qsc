@@ -79,10 +79,11 @@ class Dishfave.UserProfileHeaderView extends QS.View
           %i.fa.fa-question-circle(data-toggle="tooltip" title="Your ChefScore is the total number of favorites you have on all your dishes.")
 
       .status-info.col-xs-3
-        .status-info-number
-          {{ user.dishes_count() || 0 }}
-        .status-info-title
-          Dishes
+        %a(href="{{ user.view_path }}")
+          .status-info-number
+            {{ user.dishes_count() || 0 }}
+          .status-info-title
+            Dishes
 
       .status-info.col-xs-3
         %a(href="{{ user.view_path }}/followers")

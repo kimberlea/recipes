@@ -1,0 +1,104 @@
+class Dishfave.UserTileView extends QS.View
+  @registerComponent 'df-user-tile'
+  init : ->
+    @user = @opts.user
+
+class Dishfave.UserTileGridView extends QS.View
+  @registerComponent 'df-user-tile-grid'
+  init : ->
+    @users = @opts.users
+
+
+<template name="df-user-tile" lang="haml">
+%a.df-user-tile.user-tile(href="{{ user.view_path }}")
+  .user-tile-body(style="padding: 10px;")
+    .user-picture-section.pos-rel
+      %img.img-circle(data-bind="attr.src : user.picture_url")
+    .user-name-section
+      {{ user.full_name }}
+    .user-bio-section
+      {{ user.bio }}
+  .user-tile-footer
+    .user-stats-section
+      .title Dishes
+      {{ user.dishes_count }}
+    .user-stats-section
+      .title Followers
+      {{ user.followers_count }}
+    .user-stats-section
+      .title ChefScore
+      {{ user.chefscore }}
+
+</template>
+
+<template name="df-user-tile-grid" lang="haml">
+.df-user-tile-grid.user-tiles
+  {{#foreach : users.items }}
+  %df-user-tile(params="user: $data")
+  {{/foreach }}
+
+</template>
+
+<style lang="scss">
+.user-tiles {
+  text-align: center;
+  padding: 20px;
+  margin: 20px;
+}
+
+.user-tile {
+  position:relative;
+  display: inline-block;
+  width: 200px;
+  background: white;
+  color: #555;
+  vertical-align: middle;
+  margin: 12px;
+  box-shadow: 1px 2px 8px #aaa;
+  text-align: left;
+  border-radius: 3px;
+  overflow:hidden;
+
+  .user-picture-section {
+    text-align: center;
+    margin-top: 20px;
+    img.img-circle {
+      width: 80px;
+      height: 80px;
+    }
+  }
+  .user-name-section {
+    text-align: center;
+    padding: 10px;
+    font-size: 16px;
+  }
+  .user-bio-section {
+    font-size: 14px;
+    text-align: center;
+    height: 45px;
+  }
+  .user-tile-footer {
+    background-color: #E2E8F1;
+    font-size: 16px;
+    padding: 5px;
+  }
+}
+
+.user-tile:hover {
+  text-decoration: none;
+}
+
+.user-tile-footer {
+  display: flex;
+}
+
+.user-stats-section {
+  flex: 1;
+  text-align: center;
+}
+
+.user-stats-section .title {
+  font-size: 12px;
+}
+
+</style>

@@ -1,8 +1,1 @@
-<div class="header-space" style="height: 60px"></div>
-
-<div class="container">
-  <%= render partial: "users/user_profile_header", locals: {user: @user} %>
-  <div class="followers-content">
-    <%= render partial: "user_grid", locals: {users: @users} %>
-  </div>
-</div>
+<df-user-following params="mode : 'followers'"></df-user-following>

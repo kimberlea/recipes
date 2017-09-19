@@ -10,7 +10,7 @@
 
 package "moment", github: "moment/moment", tag: "2.10.6", module: "shared"
 
-package 'quick_script', github: 'agquick/quick_script.js', tag: 'a989892', module: 'shared'
+package 'quick_script', github: 'agquick/quick_script.js', tag: '66416cb', module: 'shared'
 #package 'quick_script', path: '~/Projects/lib/quick_script.js', path_mode: :link, module: 'shared'
 
 package 'overlay', github: 'agquick/overlay.js', tag: 'c639581', module: 'shared'
