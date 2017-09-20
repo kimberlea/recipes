@@ -4,9 +4,13 @@ class Dishfave.DishRatingIconView extends QS.View
     @dish = new Dishfave.Dish()
     @rating = @opts.rating
     @count = @opts.count
+    @mode = @opts.mode || 'all'
 
     @addComputed 'expression', ->
       Dishfave.utils.getRatingExpression(ko.unwrap(@rating))
+    @addComputed 'tip', ->
+      exp = @expression()
+      if @mode == 'all' then exp.textAll else exp.textSelf
     @addComputed 'icon_class', ->
       exp = @expression()
       return "" if !exp?
@@ -14,7 +18,7 @@ class Dishfave.DishRatingIconView extends QS.View
 
 
 <template name="view-dish-rating-icon" lang="haml">
-%i(class="{{ icon_class }}" data-bind="tip : {content: expression().textAll}")
+%i(class="{{ icon_class }}" data-bind="tip : {content: tip}")
 {{#if : count }}
 %span.count
   {{ count }}

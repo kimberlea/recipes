@@ -1,4 +1,5 @@
 class Dishfave.DishIndexView extends QS.View
+  @registerComponent 'df-dish-index'
   init : ->
     @dishes = new Dishfave.Dish.Collection(limit: 50)
     @live_query = ko.observable("")
@@ -28,11 +29,17 @@ class Dishfave.DishIndexView extends QS.View
       @params().favorite == 'true'
     @addComputed 'tag', ->
       @params().tag || 'all'
+    @addComputed 'is_showing_all', ->
+      for key in Object.keys(@params())
+        if key != 'order'
+          return false
+      return true
 
     @addComputed 'can_load_more', ->
       @dishes.page() < @dishes.pages_count()
 
     @app.handle 'app.path_changed', @load
+    @load()
 
   load : =>
     @loadDishes()
@@ -80,3 +87,72 @@ class Dishfave.DishIndexView extends QS.View
 
   handleSearchEnter : =>
     @updateFilter(q: @live_query())
+
+
+<template name="df-dish-index" lang="haml">
+.container-fluid.recipes-container
+  .header-space
+
+  .recipes-content
+    .recipes-filter
+      .links
+        %a(path="/dishes" data-bind="css.active : is_showing_all()")
+          All
+        {{#if : app.is_logged_in() }}
+        %a(path="/dishes?creator=friends" data-bind="css.active : creator() == 'friends'")
+          My Friends&#8217; Dishes
+        %a(path="/dishes?creator=me" data-bind="css.active : creator() == 'me'")
+          My Dishes
+        %a(path="/dishes?favorite=true" data-bind="css.active : favorite() == true")
+          My Favorites
+        {{/if }}
+        %span.text-muted •
+        %a(data-bind="on.click : updateFilter({order: 'newest'}), css.active : order()== 'newest'")
+          Newest
+        %a(data-bind="on.click : updateFilter({order: 'popular'}), css.active : order() == 'popular'")
+          Popular
+
+      .dropdown.inline
+        %a.dropdown-toggle(data-toggle="dropdown")
+          %i.fa.fa-filter.mr-5(style="opacity: 0.5;")
+          More filters
+          %span.caret
+        .dropdown-menu.dropdown-menu-right(style="width: 250px;")
+          .col-xs-6
+            .dropdown-section-header Created By
+            .dropdown-section-body
+              %a.menu-option(data-bind="on.click : updateFilter({creator: 'all'}), css.active : creator() == 'all'") Everyone
+              {{#if : app.is_logged_in() }}
+              %a.menu-option(data-bind="on.click : updateFilter({creator: 'friends'}), css.active : creator() == 'friends'") My Friends
+              %a.menu-option(data-bind="on.click : updateFilter({creator: 'me'}), css.active : creator() == 'me'") Me
+              {{/if }}
+
+            .dropdown-section-header Order By
+            .dropdown-section-body
+              %a.menu-option(data-bind="on.click : updateFilter({order: 'newest'}), css.active : order() == 'newest'") Newest
+              %a.menu-option(data-bind="on.click : updateFilter({order: 'popular'}), css.active : order() == 'popular'") Popular
+              %a.menu-option(data-bind="on.click : updateFilter({order: 'quickest'}), css.active : order() == 'quickest'") Quickest
+
+            {{#if : app.is_logged_in() }}
+            .dropdown-section-header More
+            .dropdown-section-body
+              %a.menu-option(data-bind="on.click : updateFilter({favorites: true}), css.active : favorite() == true") Favorites
+            {{/if }}
+
+          .col-xs-6
+            .dropdown-section-header Tags
+            .dropdown-section-body
+              {{#foreach : tags }}
+              %a.menu-option(data-bind="on.click : $view.updateFilter({tag: name}), css.active : $view.tag() == name") {{ title }}
+              {{/foreach }}
+
+          .col-xs-12.dropdown-search
+            .dropdown-section-header Search
+            .dropdown-section-body(style="padding: 0px 10px;")
+              %input.full-width(type='text' placeholder="Search Dishes" name="dropdown-search" data-bind="value : live_query, handleEnter : handleSearchEnter")
+
+    %df-dish-tile-grid(params="dishes : dishes")
+
+    %df-dishes-load-more(params="dishes : dishes")
+
+</template>

@@ -12,6 +12,8 @@ class Comment < ActiveRecord::Base
 
   timestamps!
 
+  attr_accessor :dish_reaction
+
   scope :with_dish_id, lambda {|did|
     where(dish_id: did)
   }
@@ -24,6 +26,20 @@ class Comment < ActiveRecord::Base
 
     # length
     validate_length_of(:body, "body")
+  end
+
+  def self.enhance_dish_reaction(comments, opts={})
+    return comments if comments.empty?
+    # get relevant user ids
+    dish_id = comments.first.dish_id
+    cm = comments.reduce({}) {|memo, val| memo[val.user_id] = val; memo}
+    uids = cm.keys
+    rs = UserReaction.with_dish_id(dish_id).where("user_id IN (?)", uids).all.to_a
+    rm = rs.reduce({}) {|memo, val| memo[val.user_id] = val; memo}
+    comments.each do |c|
+      c.dish_reaction = rm[c.user_id]
+    end
+    return comments
   end
 
   def update_as_action!(opts) 
@@ -51,6 +67,9 @@ class Comment < ActiveRecord::Base
     ret[:errors] = self.errors.to_hash
     if has_present_association?(:user)
       ret[:user] = user.to_api(:embedded)
+    end
+    if dish_reaction
+      ret[:dish_reaction] = dish_reaction.to_api(:embedded)
     end
     return ret
   end

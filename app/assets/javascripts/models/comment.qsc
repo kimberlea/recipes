@@ -10,3 +10,4 @@ class Dishfave.Comment extends QS.Model
     @created_at.extend(date: true)
 
     @addSubModel 'user', Dishfave.User
+    @addSubModel 'dish_reaction', Dishfave.UserReaction

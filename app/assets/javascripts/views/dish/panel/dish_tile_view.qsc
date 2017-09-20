@@ -40,17 +40,26 @@ class Dishfave.DishesLoadMoreView extends QS.View
   .recipe-tile-content
     .recipe-title(data-bind="css : {'recipe-title-long': dish.title().length > 30}")
       {{ dish.title() | fit : 40 }}
+
     .recipe-description
       {{ dish.description() | fit:50 }}
+
     .recipe-footer
       %span.recipe-favorites-count.mr-10
         %i.fa.fa-heart(style="color: red;")
-        {{ dish.favorites_count }}
+        {{ dish.favorites_count() || 0 }}
+
+      {{#if : dish.has_ratings() }}
+      %span.recipe-reactions.mr-5
+        %df-dish-rating-icon(params="rating : dish.ratings_avg(), count : dish.ratings_count()")
+      {{/if }}
+        
       {{#if : dish.directions.present() }}
       %span.recipe-duration.mr-5
         %i.fa.fa-clock-o
         {{ dish.prep_time_details().text }}
       {{/if }}
+
       {{#if : dish.purchase_info.present() }}
       %span.recipe-footer-section(style="color: #ccc;")
         %i.fa.fa-shopping-cart(title="Purchase Info Available")

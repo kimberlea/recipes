@@ -26,6 +26,7 @@ class Dishfave.DishDetailsView extends QS.View
   loadComments : ->
     @comments.load {with_dish_id: @dish.id()},
       includes: ['user'],
+      enhances: ['dish_reaction'],
       sort: 'created_at DESC'
 
   showShareModal : ->
@@ -176,8 +177,12 @@ class Dishfave.DishDetailsView extends QS.View
               %img.img-circle(data-bind="attr.src : user.picture_url" style="width: 40px; height: 40px;")/
             .comment-body
               .comment-creator
-                %a(href="{{ user.view_path }}")
+                %a.mr-5(href="{{ user.view_path }}")
                   {{ user.full_name }}
+                {{#if : dish_reaction.id.present() }}
+                %span.dish-reaction.mr-5
+                  %df-dish-rating-icon(params="rating : dish_reaction.rating(), mode: 'self'")
+                {{/if }}
                 %span.comment-date
                   {{ created_at.moment().fromNow() }}
               .comment-text

@@ -45,6 +45,7 @@ class Following < ActiveRecord::Base
     self.destroy
     follower.update_meta
     user.update_meta
+    #Job.update_meta_for(follower, user)
     return {success: true, data: self}
   end
 
