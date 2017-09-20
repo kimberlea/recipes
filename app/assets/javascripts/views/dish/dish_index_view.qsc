@@ -21,6 +21,10 @@ class Dishfave.DishIndexView extends QS.View
 
     @addComputed 'query', ->
       @params().q
+    @addComputed 'type', ->
+      t = @params().type
+      return 'all' if QS.utils.isBlank(t)
+      return t
     @addComputed 'order', ->
       @params().order || 'newest'
     @addComputed 'creator', ->
@@ -52,6 +56,7 @@ class Dishfave.DishIndexView extends QS.View
     order = @order()
     fav = @favorite()
     tag = @tag()
+    type = @type()
     uid = @app.current_user.id()
     if QS.utils.isPresent(uid)
       switch creator
@@ -72,6 +77,10 @@ class Dishfave.DishIndexView extends QS.View
       scope.is_favorite_of = uid
     if QS.utils.isPresent(query)
       scope.with_search_term = query
+    if type == 'recipes'
+      scope.with_public_recipe = true
+    else if type == 'sold'
+      scope.is_purchasable = true
 
     @dishes.load scope,
       includes: ['creator']
@@ -96,9 +105,14 @@ class Dishfave.DishIndexView extends QS.View
   .recipes-content
     .recipes-filter
       .links
-        %a(path="/dishes" data-bind="css.active : is_showing_all()")
+        %a(path="/dishes" data-bind="css.active : type() == 'all'")
           All
+        %a(path="/dishes?type=sold" data-bind="css.active : type() == 'sold'")
+          Sold In Store
+        %a(path="/dishes?type=recipes" data-bind="css.active : type() == 'recipes'")
+          Recipes
         {{#if : app.is_logged_in() }}
+        %span.text-muted •
         %a(path="/dishes?creator=friends" data-bind="css.active : creator() == 'friends'")
           My Friends&#8217; Dishes
         %a(path="/dishes?creator=me" data-bind="css.active : creator() == 'me'")
@@ -137,6 +151,8 @@ class Dishfave.DishIndexView extends QS.View
             .dropdown-section-header More
             .dropdown-section-body
               %a.menu-option(data-bind="on.click : updateFilter({favorites: true}), css.active : favorite() == true") Favorites
+              %a.menu-option(data-bind="on.click : updateFilter({type: 'sold'}), css.active : type() == 'sold'") Sold In Store
+              %a.menu-option(data-bind="on.click : updateFilter({type: 'recipes'}), css.active : type() == 'recipes'") Recipes
             {{/if }}
 
           .col-xs-6

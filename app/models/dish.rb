@@ -70,6 +70,12 @@ class Dish < ActiveRecord::Base
   scope :with_search_term, lambda {|term|
     where("search_vector @@ plainto_tsquery(?)", term)
   }
+  scope :with_public_recipe, lambda {|val=true|
+    where(is_recipe_given: true, is_recipe_private: false)
+  }
+  scope :is_purchasable, lambda {|val|
+    where(is_purchasable: val)
+  }
 
   after_save :update_search_vector
   before_destroy :remove_image!
