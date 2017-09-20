@@ -110,7 +110,7 @@ class Dishfave.DishIndexView extends QS.View
         %a(path="/dishes?type=sold" data-bind="css.active : type() == 'sold'")
           Sold In Store
         %a(path="/dishes?type=recipes" data-bind="css.active : type() == 'recipes'")
-          Recipes
+          Make It Yourself
         {{#if : app.is_logged_in() }}
         %span.text-muted •
         %a(path="/dishes?creator=friends" data-bind="css.active : creator() == 'friends'")
