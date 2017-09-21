@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170918143156) do
+ActiveRecord::Schema.define(version: 20170921140206) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -98,6 +98,7 @@ ActiveRecord::Schema.define(version: 20170918143156) do
     t.integer  "cached_dishes_count"
     t.integer  "cached_followers_count"
     t.integer  "cached_followings_count"
+    t.string   "full_name"
   end
 
 end

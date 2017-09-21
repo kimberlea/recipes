@@ -43,7 +43,7 @@ function closeModal(id) {
 
 function updateFlagAndCloseModal(flag, id) {
   apiRequest({
-    url: "/account/update_flags",
+    url: "/api/account/update_flags",
     data: {flags: JSON.stringify([flag])},
     success: function(resp) {
       closeModal(id);

@@ -62,4 +62,11 @@ module DBRepair
     AppEvent.where(action: "recipe.commented").update_all(action: "dish.commented")
   end
 
+  def self.fix_user_names
+    User.all.find_each do |u|
+      u[:full_name] = u[:first_name] + " " + u[:last_name]
+      u.save(validate: false)
+    end
+  end
+
 end

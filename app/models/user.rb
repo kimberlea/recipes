@@ -5,6 +5,7 @@ class User < ActiveRecord::Base
 
   field :first_name, type: String
   field :last_name, type: String
+  field :full_name, type: String
   field :email, type: String
   field :picture, type: String
   field :bio, type: String
@@ -38,8 +39,7 @@ class User < ActiveRecord::Base
   }
 
   validate do
-    errors.add(:first_name, "Enter your first name.") if self.first_name.blank?
-    errors.add(:last_name, "Enter your last name.") if self.last_name.blank?
+    errors.add(:full_name, "Enter your full name.") if self.full_name.blank?
     errors.add(:email, "Enter your email address.") if self.email.blank?
     if (user = User.find_by_email(email)) && user.id != self.id
       errors.add(:email, "This email address already exists!")
@@ -74,12 +74,20 @@ class User < ActiveRecord::Base
     end
 
     # things for create or update
-    self.first_name = opts[:first_name] if opts[:first_name]
-    self.last_name = opts[:last_name] if opts[:last_name]
+    self.full_name = opts[:full_name].strip if opts[:full_name]
     self.email = opts[:email].strip.downcase if opts[:email]
     self.password = opts[:password] if opts[:password]
     self.bio = opts[:bio] if opts[:bio]
   
+    self.notification_frequency = opts[:notification_frequency].to_i if opts.key?(:notification_frequency)
+
+    if opts.key?(:picture)
+      self.picture = opts[:picture]
+    end
+
+    if opts.key?(:password)
+      self.password = opts[:password]
+    end
 
     # save and return response
     success = self.save
@@ -98,12 +106,18 @@ class User < ActiveRecord::Base
     return {success: success, data: self, error: error, new_record: new_record}
   end
 
-  def full_name
-    return "#{self.first_name} #{self.last_name}"
+  def first_name
+    return nil if full_name.blank?
+    full_name.split(" ").first
+  end
+
+  def last_name
+    return nil if full_name.blank?
+    full_name.split(" ")[1..-1].join(" ")
   end
 
   def view_path(opts={})
-    str = "/member/#{id}/#{full_name.parameterize}"
+    str = "/member/#{id}/#{(full_name || "").parameterize}"
     if opts[:full] == true
       str = "http://dishfave.com#{str}"
     end
@@ -200,26 +214,23 @@ class User < ActiveRecord::Base
     Rails.logger.info ex.backtrace.join("\n\t")
   end
 
-  def to_api(lvl=:default, opts={})
+  def to_api(lvl=:full, opts={})
     actor = opts[:actor]
     ret = {}
     ret[:id] = self.id.to_s
-    ret[:first_name] = self.first_name
-    ret[:last_name] = self.last_name
     ret[:full_name] = self.full_name
     ret[:email] = self.email
     ret[:bio] = self.bio
     ret[:view_path] = self.view_path
     ret[:picture_url] = self.picture_url
+    ret[:notification_frequency] = self.notification_frequency
 
-    ret[:chefscore] = self.cached_chefscore
-    ret[:dishes_count] = self.cached_dishes_count
-    ret[:followers_count] = self.cached_followers_count
-    ret[:followings_count] = self.cached_followings_count
+    ret[:chefscore] = self.cached_chefscore || 0
+    ret[:dishes_count] = self.cached_dishes_count || 0
+    ret[:followers_count] = self.cached_followers_count || 0
+    ret[:followings_count] = self.cached_followings_count || 0
 
-    if lvl == :full
-      ret[:flags] = (self.flags || []) if actor == self
-    end
+    ret[:flags] = (self.flags || [])
     ret[:errors] = self.errors.to_hash if self.errors.any?
 
     if following

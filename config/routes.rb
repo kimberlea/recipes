@@ -14,7 +14,6 @@ Rails.application.routes.draw do
   get 'recipe/:id/:slug' => 'dishes#show'
 
   get '/sign_up' => 'account#sign_up'
-  post '/register' => 'account#register'
 
   get '/members' => 'users#index'
 
@@ -26,20 +25,11 @@ Rails.application.routes.draw do
   get '/activity' => 'app_events#activity'
 
   get '/sign_in' => 'account#sign_in'
-  post '/login' => 'account#login'
   get '/logout' => 'account#logout'
   get '/forgot' => 'account#forgot_password'
 
-  get 'account' => 'account#profile'
-  post '/account' => 'account#save'
-  post '/account/update_flags' => 'account#update_flags'
-  post '/account/reset_password' => 'account#reset_password'
+  get 'account' => 'account#edit'
  
-  post '/following' => 'followings#save'
-  delete '/following' => 'followings#delete'
-
-  post '/comment' => 'comments#save'
-
   get '/modal/sign_up' => 'account#sign_up_modal'
   get '/modal/sign_in' => 'account#sign_in_modal'
   get '/modal/forgot_password' => 'account#forgot_password_modal'
@@ -48,6 +38,12 @@ Rails.application.routes.draw do
   get '/admin' => 'admin#view'
 
   namespace :api do
+    post 'account' => 'account#save'
+    post '/account/register' => 'account#register'
+    post '/account/login' => 'account#login'
+    post '/account/update_flags' => 'account#update_flags'
+    post '/account/reset_password' => 'account#reset_password'
+
     api_resources :dishes do
       post '/dish/favorite' => 'dishes#favorite'
       post '/dishes/import_from_url' => 'dishes#import_from_url'
@@ -59,7 +55,6 @@ Rails.application.routes.draw do
     api_resources :comments
     api_resources :users
 
-    post 'account' => 'account#save'
   end
 
   root 'dishes#index'

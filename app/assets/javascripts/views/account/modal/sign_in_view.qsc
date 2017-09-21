@@ -1,0 +1,113 @@
+class Dishfave.SignInView extends QS.View
+  templateID: 'df-sign-in'
+  init : ->
+    @mode = ko.observable(@opts.mode || 'register')
+    @email = ko.observable()
+    @password = ko.observable()
+    @full_name = ko.observable()
+
+  login : ->
+    Dishfave.AccountAdapter.login
+      data:
+        email: @email()
+        password: @password()
+      loading: @is_saving
+      callback : (resp)=>
+        if resp.success
+          @app.setUser(resp.data)
+          @hideOverlay()
+          @opts.onLogin?(resp)
+        else
+          $.alert(resp.error)
+
+  register : ->
+    Dishfave.AccountAdapter.register
+      data:
+        email: @email()
+        password: @password()
+        full_name: @full_name()
+      loading: @is_saving
+      callback: (resp)=>
+        if resp.success
+          @app.setUser(resp.data)
+          @hideOverlay()
+          @opts.onLogin?(resp)
+        else
+          $.alert(resp.error)
+
+  resetPassword : ->
+    Dishfave.AccountAdapter.reset_password
+      data:
+        email: @email()
+      loading: @is_saving
+      callback : (resp)=>
+        if resp.success
+          $.alert("We've emailed you instructions on resetting your password.")
+          @mode('login')
+        else
+          $.alert(resp.error)
+
+
+<template name="df-sign-in" lang="haml">
+.panel-body(style="padding: 15px 30px;")
+  .brand.text-center(style="padding: 20px 0px 10px;")
+    .logo
+      %img(src="/assets/logo_white.png" style="height: 40px;")/
+
+    {{#if : mode() == 'login' }}
+    .intro.text-center(style="margin: 30px 0px;")
+      %h3(style="margin-bottom: 10px") Welcome Back
+      .text-muted.small(style="font-size: 12px;") Log In
+    .intro.text-center(style="padding-bottom: 10px;")
+      %a(data-bind="on.click : mode('register')")
+        Don&#8217;t have an account?
+    {{/if }}
+
+    {{#if : mode() == 'register' }}
+    .intro.text-center(style="margin: 30px 0px;")
+      %h3(style="margin-bottom: 10px") Get Started Absolutely <span class="text-primary">FREE</span>
+      .text-muted.small(style="font-size: 12px;") Enter your information below
+    .intro.text-center(style="padding-bottom: 10px;")
+      %a(data-bind="on.click : mode('login')")
+        Already have an account?
+    {{/if }}
+
+    {{#if : mode() == 'forgot' }}
+    .intro.text-center(style="margin: 30px 0px;")
+      %h3(style="margin-bottom: 10px") Forgot Your Password?
+      .text-muted.small(style="font-size: 12px;") Enter your email to reset your password.
+    {{/if }}
+
+    %form
+      .form-group(data-bind="fadeVisible : mode() == 'register'")
+        %input.form-control.input-lg(placeholder="Enter your full name." type="text" data-bind="textInput : full_name")/
+
+      .form-group
+        %input.form-control.input-lg(placeholder="Enter your email address." type="text" data-bind="textInput : email")/
+
+      .form-group(data-bind="fadeVisible : mode() != 'forgot'")
+        %input.form-control.input-lg(name="password" placeholder="Enter password." type="password" data-bind="textInput : password")/
+
+      {{#if : mode() == 'login' }}
+      %button.btn.btn-success.btn-lg.btn-full(data-bind="click : login, loading : is_saving")
+        %i.fa.fa-check
+        Sign In
+
+      %div(style="font-size: 16px; text-align: center; padding-top: 10px;")
+        %a(data-bind="on.click : mode('forgot')" style="padding-left: 10px;") Forgot Password
+      {{/if }}
+
+      {{#if : mode() == 'register' }}
+      %button.btn.btn-success.btn-lg.btn-full(data-bind="click : register, loading : is_saving")
+        %i.fa.fa-check
+        Get Started
+      {{/if }}
+
+      {{#if : mode() == 'forgot' }}
+      %button.btn.btn-success.btn-lg.btn-full(data-bind="click : resetPassword, loading : is_saving")
+        %i.fa.fa-check
+        Reset Password
+      %div(style="font-size: 16px; text-align: center; padding-top: 10px;")
+        %a(data-bind="on.click : mode('login')" style="padding-left: 10px;") Back to Sign In
+      {{/if }}
+</template>

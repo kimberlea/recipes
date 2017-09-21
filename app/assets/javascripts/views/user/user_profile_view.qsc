@@ -1,5 +1,5 @@
 class Dishfave.UserProfileView extends QS.View
-  @registerComponent 'df-user-profile', 'df-user-profile'
+  @registerComponent 'df-user-profile'
   init : ->
     @user = new Dishfave.User(@app.opts.data.user)
     @dishes = new Dishfave.Dish.Collection(limit: 25)

@@ -1,0 +1,3 @@
+class Dishfave.Picture extends QS.FileModel
+  init : ->
+

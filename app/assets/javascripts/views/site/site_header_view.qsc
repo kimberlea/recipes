@@ -1,5 +1,5 @@
 class Dishfave.SiteHeaderView extends QS.View
-  @registerComponent 'df-site-header', 'df-site-header'
+  @registerComponent 'df-site-header'
   init : ->
 
 <template name="df-site-header" lang="html">
@@ -55,7 +55,7 @@ class Dishfave.SiteHeaderView extends QS.View
       </a>
       {{/if }}
       {{#if : !app.is_logged_in() }}
-      <a href="#" class="navbar-link" style="" onclick="promptSignIn();">
+      <a href="#" class="navbar-link" data-bind="on.click : app.promptAuthentication()">
         <i class="fa fa-sign-in"></i>
         <span class="link-title">Sign In</span>
       </a>

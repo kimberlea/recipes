@@ -1,0 +1,168 @@
+class Dishfave.UserAccountView extends QS.View
+  @registerComponent 'df-user-account'
+  init : ->
+    @user = new Dishfave.User(@app.opts.data.user)
+    @password = ko.observable("")
+    @password_confirm = ko.observable("")
+    @notification_options = [
+      {value: 1, title: "Daily"}
+      {value: 2, title: "Weekly"}
+      {value: 3, title: "None"}
+    ]
+
+    @addComputed 'can_save_password', ->
+      @password.present() && @password() == @password_confirm()
+
+  handleAccountSaved : (resp)=>
+    if resp.success
+      @app.current_user.handleData(resp.data)
+      $.alert("Your account has been updated.")
+    else
+      $.alert(resp.error)
+
+  savePicture : =>
+    @user.save ['picture'], @handleAccountSaved
+
+  saveProfile : =>
+    @user.save ['full_name', 'email', 'bio', 'notification_frequency'], @handleAccountSaved
+
+  savePassword : =>
+    @user.save {password: @password()}, @handleAccountSaved
+
+<template name="df-user-account" lang="haml">
+.df-user-account.account-edit-container
+  .header-space
+
+  %h1 Your Profile
+  .profile-picture
+    %img.img-circle(data-bind="attr.src : user.picture_url" style="width: 70px; height: 70px;")/
+
+  .profile-name
+    %a(href="{{ user.view_path }}")
+      {{ user.full_name }}
+
+  .profile-status
+    .status-info.col-xs-4.pad-0
+      .status-info-number
+        {{ user.dishes_count }}
+      .status-info-title
+        dishes
+    .status-info.col-xs-4.pad-0
+      .status-info-number
+        {{ user.followers_count }}
+      .status-info-title
+        followers
+    .status-info.col-xs-4.pad-0
+      .status-info-number
+        {{ user.followings_count }}
+      .status-info-title
+        following
+
+  .logout
+    %a.btn.btn-inverse(href="/logout") Log Out
+
+  .personal-settings
+    %h3 Change Your Picture
+    %form.form-horizontal
+      .img-change
+        %input(name="picture" type="file" data-bind="fileupload : user.picture")
+        %button.btn.btn-success.btn-lg.btn-full(data-bind="click : savePicture")
+          %i.fa.fa-check
+          Update Picture
+
+    %h3#settings Edit Your Personal Settings
+    .form-horizontal
+      .form-group
+        %label.control-label(for="inputFirst") Full Name
+        %input.form-control.input-lg(type="text" data-bind="textInput : user.full_name")/
+      .form-group
+        %label.control-label(for="inputEmail") Email
+        %input.form-control.input-lg(type="text" data-bind="textInput : user.email")/
+      .form-group
+        %label About Me
+        %textarea.form-control.input-lg(name="bio" placeholder="Tell us about yourself." data-bind="textInput : user.bio")
+      .form-group
+        %label Notification Frequency
+        %br/
+        %select(name="notification_frequency" data-bind="options: notification_options, optionsValue : 'value', optionsText : 'title', value : user.notification_frequency")
+      %button.btn.btn-success.btn-lg.btn-full(data-bind="click : saveProfile")
+        %i.fa.fa-check
+        Save Changes
+
+    %h3 Change Password
+    .form-horizontal
+      .form-group
+        %label.control-label New Password
+        %input.form-control.input-lg(type="password" data-bind="textInput : password")/
+      .form-group
+        %label.control-label Confirm New Password
+        %input.form-control.input-lg(type="password" data-bind="textInput : password_confirm")/
+      %button.btn.btn-success.btn-lg.btn-full(data-bind="click : savePassword, disable : !can_save_password()")
+        %i.fa.fa-check
+        Update Password
+
+</template>
+
+<style lang="scss">
+.account-edit-container {
+  vertical-align: middle;
+  width: 60%;
+  margin: 0px auto;
+  text-align: center;
+
+  .img-circle {
+    border: 1px solid #ccc;
+    padding: 5px;
+  }
+
+  h1 {
+    padding: 5px;
+    font-size: 17px;
+    color: #AEB4BF;
+
+  }
+  .col-md-12 {
+    text-align:center;
+  }
+
+  .btn {
+    margin: 10px;
+    background-color: #D64541;
+    border: none;
+  }
+
+  .form-horizontal {
+    margin: 5px;
+  }
+
+  .form-horizontal .col-sm-10 {
+    width: 60%;
+  }
+
+  .profile-name {
+    font-size: 32px;
+    font-weight: bold;
+    padding: 25px;
+  }
+
+  .personal-settings {
+    padding: 20px;
+    h2, h3 {
+      border-bottom: 1px solid #d64541;
+      padding: 15px;
+      margin-bottom: 20px;
+      margin-top: 50px;
+      color: #d64541;
+    }
+  }
+
+  .logout .btn {
+    background-color: #aaa;
+    color: black;
+    border: none;
+    font-size: 16px;
+  }
+
+}
+
+</style>

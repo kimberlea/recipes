@@ -4,7 +4,7 @@ class Dishfave.DishEditorView extends QS.View
 
   saveDish : =>
     if !@app.is_logged_in()
-      @app.showModalFromURL("sign_up", "/modal/sign_up")
+      @app.promptAuthentication()
       return
 
     fields = ['title', 'description', 'is_recipe_given', 'ingredients', 'directions', 'prep_time_mins', 'is_purchasable', 'purchase_info', 'tags', 'serving_size', 'is_recipe_private', 'is_private']
