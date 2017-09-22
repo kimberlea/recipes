@@ -35,6 +35,12 @@ Nginx
 
 > sudo apt-get install nginx
 
+
+MongoDB
+=======
+
+> docker run --name mongo -v /data/db:/data/db -p 27017:27017 -d mongo:2.6.12
+
 Extras
 ======
 

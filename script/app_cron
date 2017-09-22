@@ -10,4 +10,8 @@ QuickUtils::TaskManager.run("app_cron") do |config|
     SiteNotification.send_activity
   end
 
+  config.add_task 3, :seconds do |mgr|
+    Job.process_ready_jobs(environment: config[:environment], break_if: lambda { mgr.state != :running })
+  end
+
 end

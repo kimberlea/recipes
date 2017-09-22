@@ -31,8 +31,7 @@ class Following < ActiveRecord::Base
     success = self.save
     if success && new_record
       AppEvent.publish("user.followed", actor, {user: user})
-      follower.update_meta
-      user.update_meta
+      Job.update_meta_for(follower, user)
     end
     return {success: success, data: self, error: self.error_message, new_record: new_record}
   end
@@ -43,8 +42,7 @@ class Following < ActiveRecord::Base
       return {success: false, error: "You don't have permission."}
     end
     self.destroy
-    follower.update_meta
-    user.update_meta
+    Job.update_meta_for(follower, user)
     #Job.update_meta_for(follower, user)
     return {success: true, data: self}
   end

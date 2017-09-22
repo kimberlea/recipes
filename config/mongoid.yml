@@ -1,0 +1,21 @@
+development:
+  sessions:
+    default:
+      hosts:
+        - localhost:27017
+      database: dishfave_development
+
+test:
+  sessions:
+    default:
+      hosts:
+        - localhost:27017
+      database: dishfave_test
+
+production:
+  sessions:
+    default:
+      hosts:
+        - localhost:27017
+      database: dishfave_production
+

@@ -50,8 +50,7 @@ class UserReaction < ActiveRecord::Base
     if saved
       # update dish
       if (dish = self.dish)
-        dish.update_meta
-        dish.creator.update_meta
+        Job.update_meta_for(dish, dish.creator)
         if favorited
           AppEvent.publish("dish.favorited", actor, dish: dish)
         end

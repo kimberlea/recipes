@@ -4,6 +4,7 @@ source 'https://rubygems.org'
 gem 'rails', '4.2.2'
 # Use postgresql as the database for Active Record
 gem 'pg'
+gem 'mongoid', '~> 4.0.2'
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 5.0'
 # Use Uglifier as compressor for JavaScript assets
@@ -33,6 +34,8 @@ gem 'quick_utils', github: 'agquick/quick_utils'
 
 gem 'quick_script', github: 'agquick/quick_script', ref: '4662b41'
 #gem 'quick_script', path: '~/Projects/lib/quick_script'
+
+gem 'quick_jobs', github: 'agquick/quick_jobs'
 
 gem 'ramba', github: 'agquick/ramba', branch: 'develop'
 
