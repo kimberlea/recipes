@@ -25,8 +25,7 @@ class Dishfave.DishDetailsView extends QS.View
 
   loadComments : ->
     @comments.load {with_dish_id: @dish.id()},
-      includes: ['user'],
-      enhances: ['dish_reaction'],
+      includes: ['user', 'dish_reaction'],
       sort: 'created_at DESC'
 
   showShareModal : ->

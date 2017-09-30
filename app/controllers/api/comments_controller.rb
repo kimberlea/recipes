@@ -5,9 +5,9 @@ class Api::CommentsController < ApiController
 
   def prepare_model(model)
     models = model.is_a?(Array) ? model : [model]
-    enhances = request_scope.enhances
-    if enhances.include?("dish_reaction")
-      Comment.enhance_dish_reaction(models, actor: current_user)
+    incls = request_context.includes
+    if incls.include?("dish_reaction")
+      Comment.include_dish_reaction(models, actor: current_user)
     end
   end
 

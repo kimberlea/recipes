@@ -9,9 +9,23 @@ class Dishfave.UserAccountView extends QS.View
       {value: 2, title: "Weekly"}
       {value: 3, title: "None"}
     ]
+    @location_filter = ko.observable('')
+    @locations = new Dishfave.Location.Collection()
 
     @addComputed 'can_save_password', ->
       @password.present() && @password() == @password_confirm()
+
+    @load()
+
+  load : =>
+    @updateLocations()
+
+  updateLocations : =>
+    lids = @user.location_ids()
+    if lids.length == 0
+      @locations.clear()
+      return
+    @locations.load {with_ids: lids}
 
   handleAccountSaved : (resp)=>
     if resp.success
@@ -29,6 +43,22 @@ class Dishfave.UserAccountView extends QS.View
   savePassword : =>
     @user.save {password: @password()}, @handleAccountSaved
 
+  handleLocationSelect : (loc)=>
+    lids = @user.location_ids()
+    lids.pushOnce(loc.id())
+    @user.location_ids(lids)
+    @user.save ['location_ids']
+    @location_filter("")
+    @locations.addItem(loc)
+
+  removeLocation : (loc)=>
+    lids = @user.location_ids()
+    lids.remove(loc.id())
+    @user.location_ids(lids)
+    @user.save ['location_ids']
+    @locations.removeItemById(loc.id())
+
+
 <template name="df-user-account" lang="haml">
 .df-user-account.account-edit-container
   .header-space
@@ -40,26 +70,8 @@ class Dishfave.UserAccountView extends QS.View
   .profile-name
     %a(href="{{ user.view_path }}")
       {{ user.full_name }}
-
-  .profile-status
-    .status-info.col-xs-4.pad-0
-      .status-info-number
-        {{ user.dishes_count }}
-      .status-info-title
-        dishes
-    .status-info.col-xs-4.pad-0
-      .status-info-number
-        {{ user.followers_count }}
-      .status-info-title
-        followers
-    .status-info.col-xs-4.pad-0
-      .status-info-number
-        {{ user.followings_count }}
-      .status-info-title
-        following
-
-  .logout
-    %a.btn.btn-inverse(href="/logout") Log Out
+  .profile-actions
+    %a.btn.btn-clear(href="/logout") Sign Out
 
   .personal-settings
     %h3 Change Your Picture
@@ -88,6 +100,21 @@ class Dishfave.UserAccountView extends QS.View
       %button.btn.btn-success.btn-lg.btn-full(data-bind="click : saveProfile")
         %i.fa.fa-check
         Save Changes
+
+    %h3 Edit Locations
+    %p.lead Enter the location(s) that you live in or sell goods from.
+
+    %input.form-control.input-lg(placeholder="e.g. Washington, D.C." data-bind="textInput : location_filter")
+    %df-locations-select(params="filterText : location_filter, onSelect : handleLocationSelect")
+    .locations.mt-10
+      {{#foreach : locations.items }}
+      .location.text-left
+        %i.fa.fa-map-marker.mr-5
+        %span.mr-5
+          {{ full_name }}
+        %a.small(data-bind="on.click : $view.removeLocation($data)")
+          remove
+      {{/foreach }}
 
     %h3 Change Password
     .form-horizontal
@@ -125,12 +152,6 @@ class Dishfave.UserAccountView extends QS.View
     text-align:center;
   }
 
-  .btn {
-    margin: 10px;
-    background-color: #D64541;
-    border: none;
-  }
-
   .form-horizontal {
     margin: 5px;
   }
@@ -146,7 +167,7 @@ class Dishfave.UserAccountView extends QS.View
   }
 
   .personal-settings {
-    padding: 20px;
+    padding: 0px 20px 20px 20x;
     h2, h3 {
       border-bottom: 1px solid #d64541;
       padding: 15px;

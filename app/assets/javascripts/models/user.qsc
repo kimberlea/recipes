@@ -8,6 +8,7 @@ class Dishfave.User extends QS.Model
     @addFields ['notification_frequency'], 0
     @addFields ['chefscore', 'dishes_count', 'followers_count', 'followings_count'], 0
     @addFields ['flags'], []
+    @addFields ['location_ids'], []
 
     @addSubModel 'following', Dishfave.Following, true
     @addSubModel 'picture', Dishfave.Picture, true

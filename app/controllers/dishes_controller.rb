@@ -29,9 +29,7 @@ class DishesController < ApplicationController
     # load 5 most recent dish
     #@dishes = Dish.is_visible_by(current_user).limit(8).order("created_at desc")
 
-    @dish.api_request_scope = QuickScript::SmartScope.new(actor: current_user, enhances: ["description_html", "ingredients_html", "directions_html", "purchase_info_html"])
-
-    @js_data[:dish] = @dish.to_api if @dish
+    @js_data[:dish] = @dish.to_api(actor: current_user) if @dish
   
     @page_info = {
       title: @dish.title,

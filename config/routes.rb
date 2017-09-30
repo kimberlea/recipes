@@ -47,6 +47,7 @@ Rails.application.routes.draw do
     api_resources :dishes do
       post '/dish/favorite' => 'dishes#favorite'
       post '/dishes/import_from_url' => 'dishes#import_from_url'
+      get '/dishes/search' => 'dishes#search'
     end
     api_resources :user_reactions do
       post '/user_reactions/react' => 'user_reactions#react'
@@ -54,6 +55,7 @@ Rails.application.routes.draw do
     api_resources :followings
     api_resources :comments
     api_resources :users
+    api_resources :locations
 
   end
 

@@ -28,7 +28,7 @@ class Comment < ActiveRecord::Base
     validate_length_of(:body, "body")
   end
 
-  def self.enhance_dish_reaction(comments, opts={})
+  def self.include_dish_reaction(comments, opts={})
     return comments if comments.empty?
     # get relevant user ids
     dish_id = comments.first.dish_id
@@ -66,7 +66,7 @@ class Comment < ActiveRecord::Base
     ret[:created_at] = self.created_at.to_i
     ret[:errors] = self.errors.to_hash
     if has_present_association?(:user)
-      ret[:user] = user.to_api(:embedded)
+      ret[:user] = user.to_api(embedded: true)
     end
     if dish_reaction
       ret[:dish_reaction] = dish_reaction.to_api(:embedded)

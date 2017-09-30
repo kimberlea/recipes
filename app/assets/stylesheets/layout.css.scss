@@ -27,92 +27,12 @@ cursor: pointer;
 
 h1, h2, h3, button, .btn, input, textarea, label, .checkbox label { font-weight: 100; }
 
-.navbar {
- background-color: rgba(255, 255, 255, 0.9);
- height: 52px;
-}
-
-
-.navbar .navbar-text {
- /*padding: 0px 15px;*/
-}
-
-.navbar .navbar-search input {
- background: #efefef;
-}
-
-.navbar-default .navbar-brand {
- background-color: #d64541;
- color: #fff;
- font-weight: 100;
- letter-spacing: 1px;
- height: 51px;
-}
-
-.navbar-logo {
-  margin-right: 30px;
-  padding: 5px;
-  display: inline-block;
-}
-
-.navbar-text a {
-  color: #d64541;
-}
-
-.navbar-text {
-  font-size: 15px;
-}
-
 .jconfirm-box {
   color: #555;
 }
 
 .header-space {
   height: 60px;
-}
-
-.navbar-default .navbar-link {
-  color: #fff;
-  font-size: 16px;
-  font-weight: 100;
-}
-.navbar-default {
-  .container-fluid-flex {
-    display: flex;
-    padding: 0px 10px;
-  }
-  .navbox {
-    display: flex;
-    //justify-content: center;
-    align-items: center;
-    height: 52px;
-    padding: 0px 10px;
-  }
-
-  .navbox-primary-links { flex: 1;}
-  .navbox-search {
-    color: #eee;
-    background: rgba(255,255,255,0.2);
-    input {
-      //border-radius: 5px;
-      background: transparent;
-      border: none;
-      font-weight: 200;
-      color: #eee;
-      outline: none;
-      font-size: 14px;
-      width: 130px;
-      &:active, &:focus {
-        outline: none;
-      }
-      &::-webkit-input-placeholder {
-        color: rgba(255, 255, 255, 0.5);
-      }
-      &::-moz-placeholder, {
-        color: #eee;
-      }
-    }
-  }
 }
 
 .footer {
@@ -124,15 +44,16 @@ h1, h2, h3, button, .btn, input, textarea, label, .checkbox label { font-weight:
   font-weight: 200;
 }
 
-.layout-mobile-phone {
-  .navbar-default {
-    .navbox {padding-left: 0px; padding-right: 0px;};
-    .navbar-logo { margin-right: 15px; }
-    .navbar-link { font-size: 22px; padding: 10px; }
-    .link-title { display: none; }
-    .navbox-search { display: none; }
-    .navbox-chefscore { margin-left: 0px; }
-    .navbox-primary-links { flex: 1; }
-  }
+.dropdown-menu.open {
+  display: block;
 }
 
+.body-overlay {
+  position: fixed;
+  top: 52px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  overflow: auto;
+  z-index: 1;
+}

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170921140206) do
+ActiveRecord::Schema.define(version: 20170926035634) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -59,7 +59,16 @@ ActiveRecord::Schema.define(version: 20170921140206) do
     t.string   "source_url"
     t.integer  "cached_ratings_count"
     t.decimal  "cached_ratings_avg"
+    t.datetime "processing_started_at"
+    t.string   "processing_id"
+    t.datetime "meta_graph_updated_at"
+    t.datetime "meta_updated_at"
+    t.jsonb    "meta"
   end
+
+  add_index "dishes", ["meta_graph_updated_at"], name: "index_dishes_on_meta_graph_updated_at", using: :btree
+  add_index "dishes", ["meta_updated_at"], name: "index_dishes_on_meta_updated_at", using: :btree
+  add_index "dishes", ["processing_started_at"], name: "index_dishes_on_processing_started_at", using: :btree
 
   create_table "followings", force: :cascade do |t|
     t.integer  "follower_id"
@@ -67,6 +76,23 @@ ActiveRecord::Schema.define(version: 20170921140206) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  create_table "locations", force: :cascade do |t|
+    t.integer  "place_type"
+    t.string   "city"
+    t.string   "admin"
+    t.string   "country"
+    t.string   "country_iso2"
+    t.decimal  "latitude"
+    t.decimal  "longitude"
+    t.string   "postal_code"
+    t.integer  "population"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "uuid"
+  end
+
+  add_index "locations", ["uuid"], name: "index_locations_on_uuid", using: :btree
 
   create_table "user_reactions", force: :cascade do |t|
     t.integer  "user_id"
@@ -99,6 +125,16 @@ ActiveRecord::Schema.define(version: 20170921140206) do
     t.integer  "cached_followers_count"
     t.integer  "cached_followings_count"
     t.string   "full_name"
+    t.integer  "location_ids",            default: [],    array: true
+    t.datetime "processing_started_at"
+    t.string   "processing_id"
+    t.datetime "meta_graph_updated_at"
+    t.datetime "meta_updated_at"
+    t.jsonb    "meta"
   end
+
+  add_index "users", ["meta_graph_updated_at"], name: "index_users_on_meta_graph_updated_at", using: :btree
+  add_index "users", ["meta_updated_at"], name: "index_users_on_meta_updated_at", using: :btree
+  add_index "users", ["processing_started_at"], name: "index_users_on_processing_started_at", using: :btree
 
 end

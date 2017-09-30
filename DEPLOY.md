@@ -39,7 +39,16 @@ Nginx
 MongoDB
 =======
 
-> docker run --name mongo -v /data/db:/data/db -p 27017:27017 -d mongo:2.6.12
+> docker run --name mongo -v mongodata1:/data/db -p 27017:27017 -d mongo:2.6.12
+
+ElasticSearch
+=============
+
+# development
+> sudo docker run --name elastic -v esdata1:/usr/share/elasticsearch/data -p 9200:9200 -e "discovery.type=single-node" -e "xpack.security.enabled=false" -e "ES_JAVA_OPTS=-Xms128m -Xmx128m" -d docker.elastic.co/elasticsearch/elasticsearch:5.6.2
+
+# production
+> sudo docker run --name elastic -v esdata1:/usr/share/elasticsearch/data -p 9200:9200 -e "discovery.type=single-node" -e "xpack.security.enabled=false" -e "ES_JAVA_OPTS=-Xms4g -Xmx4g" -d docker.elastic.co/elasticsearch/elasticsearch:5.6.2
 
 Extras
 ======

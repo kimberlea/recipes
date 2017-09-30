@@ -25,7 +25,7 @@
     <link id="favicon" rel="icon" type="image/png" sizes="64x64" href="/favicon.png">
 </head>
 
-<body class="<%= @body_style %>">
+<body class="<%= @body_style %>" data-bind="css : body_classes">
   <% if @show_header == true %>
   <df-site-header></df-site-header>
   <% end %>
@@ -54,7 +54,7 @@
       data: <%= jsify(js_data) %>
     };
     <% if current_user %>
-      opts.current_user = <%= jsify(current_user.to_api(:full, {actor: current_user})) %>
+      opts.current_user = <%= jsify(current_user.to_api(actor: current_user)) %>
     <% end %>
     window.App = QuickScript.initialize(opts);
   });

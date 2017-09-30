@@ -1,0 +1,10 @@
+class Dishfave.Location extends QS.Model
+  @includeCollection()
+  @includeAdapter
+    load_url: '/locations'
+    save_url: '/location'
+
+  init : =>
+    @addFields ['city', 'admin', 'full_name'], ''
+
+

@@ -53,3 +53,16 @@
 .well-slim {
   padding: 0px 10px;
 }
+
+.flex-row {
+  display: flex;
+  padding: 0px 5px;
+  align-items: center;
+
+  .row-content, .row-icon, .row-arrow {
+    padding: 10px;
+    &.fill { flex: 1; }
+  }
+  .row-icon, .row-arrow { color: #777; }
+
+}

@@ -1,6 +1,9 @@
 class User < ActiveRecord::Base
   include SchemaSync::Model
   include QuickAuth::Authentic
+  include QuickJobs::Processable
+  include Metable
+
   mount_uploader :picture, PictureUploader
 
   field :first_name, type: String
@@ -13,6 +16,7 @@ class User < ActiveRecord::Base
   field :notification_frequency, type: Integer, default: 1
   field :last_notification_at, type: Time
   field :flags, type: Integer, array: true, default: []
+  field :location_ids, type: Integer, array: true, default: []
 
   field :cached_chefscore, type: Integer
   field :cached_dishes_count, type: Integer
@@ -21,6 +25,8 @@ class User < ActiveRecord::Base
 
   timestamps!
   quick_auth_authentic!
+  processable!
+  metable!
 
   has_many :dishes, class_name: "Dish", foreign_key: :creator_id
   has_many :followings_of, class_name: "Following", foreign_key: :user_id
@@ -84,21 +90,25 @@ class User < ActiveRecord::Base
     if opts.key?(:picture)
       self.picture = opts[:picture]
     end
-
     if opts.key?(:password)
       self.password = opts[:password]
+    end
+    if opts.key?(:location_ids)
+      lids = QuickScript.parse_opts(opts[:location_ids]).collect{|id| id.to_i}.select{|id| id > 0}
+      self.location_ids = lids
     end
 
     # save and return response
     success = self.save
     if success == true
-      if new_record
-        begin
+      begin
+        if new_record
           # start following featured people
           self.follow_featured_users!
-        rescue => ex
-          Rails.logger.info ex.message
         end
+        meta_graph_updated_for(self.dishes)
+      rescue => ex
+        Rails.logger.info ex.message
       end
     else
       error = self.errors.values.flatten.first
@@ -146,6 +156,10 @@ class User < ActiveRecord::Base
       r = UserReaction.new(user_id: self.id, dish_id: dish.id)
     end
     return r
+  end
+
+  def locations
+    Location.find(location_ids || [])
   end
 
   def picture_url
@@ -208,14 +222,24 @@ class User < ActiveRecord::Base
     # followers count
     self.cached_followers_count = self.followings_of_me.count
     self.cached_followings_count = self.followings_by_me.count
+    self.meta_updated_at = Time.now
     self.save(valdate: false)
   rescue => ex
     Rails.logger.info ex.message
     Rails.logger.info ex.backtrace.join("\n\t")
   end
 
-  def to_api(lvl=:full, opts={})
+  def as_indexed_json(opts={})
+    ret = {}
+    ret['id'] = id.to_s
+    ret['full_name'] = full_name
+    ret['bio'] = bio
+    return ret
+  end
+
+  def to_api(opts={})
     actor = opts[:actor]
+    is_me = actor && actor.id == self.id
     ret = {}
     ret[:id] = self.id.to_s
     ret[:full_name] = self.full_name
@@ -230,7 +254,8 @@ class User < ActiveRecord::Base
     ret[:followers_count] = self.cached_followers_count || 0
     ret[:followings_count] = self.cached_followings_count || 0
 
-    ret[:flags] = (self.flags || [])
+    ret[:flags] = (self.flags || []) if is_me
+    ret[:location_ids] = (self.location_ids || []).collect(&:to_s)
     ret[:errors] = self.errors.to_hash if self.errors.any?
 
     if following

@@ -20,3 +20,17 @@ Dishfave.utils.getRatingExpression = (val, opts)->
 
   return {icon: icon, textSelf: textSelf, textAll: textAll}
 
+ko.bindingHandlers.onClickOutside =
+  init : (element, valueAccessor, allBindings, viewModel)->
+    fn = valueAccessor()
+    handler = (ev)->
+      QS.log "handling click"
+      $target = $(ev.target)
+      if ev.target != element && !element.contains(ev.target)
+        fn()
+      if allBindings.get('clickBubble') == false
+        ev.stopPropagation?()
+    $(document).on 'click', handler
+
+    ko.utils.domNodeDisposal.addDisposeCallback element, ->
+      $(document).off('click', handler)

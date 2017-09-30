@@ -1,69 +1,222 @@
 class Dishfave.SiteHeaderView extends QS.View
   @registerComponent 'df-site-header'
   init : ->
+    @search_query = ko.observable("")
+    @location_query = ko.observable("")
+    @locations = ko.observableArray([])
+    @selected_location = ko.observable(null)
+    @location_select_active = ko.observable(false)
+    @mobile_search_visible = ko.observable(false)
 
-<template name="df-site-header" lang="html">
-<nav class="navbar navbar-default navbar-fixed-top" style="background-color: #d64541; border: #d64541;" data-bind="withView : Dishfave.SiteHeaderView">
-  <div class="container-fluid-flex">
-    <a class="navbar-logo navbox" href="/">
-      <img src="/assets/logo_white.png" style="height: 40px;"/>
-    </a>
+    @location_query.subscribe (val)=>
+      if val.length > 0
+        @location_select_active(true)
+      else
+        @selected_location(null)
 
-    <div class="navbox navbox-search" role="search">
-      <i class="fa fa-search mr-5"></i>
-      <input type="text" class="recipe-search-input" placeholder="Search Dishes" onkeyup="handleRecipeTyping(event, this);"/>
-    </div>
+  handleLocationSelect : (loc)=>
+    @selected_location(loc)
+    @location_query(loc.full_name())
+    @location_select_active(false)
+    @searchDishes()
 
-    <div class="navbox navbox-primary-links" style="">
-    
-      <a href="/dishes" class="navbar-link" style="color: #fff">
-        <i class="fa fa-cutlery" aria-hidden="true"></i>
-        <span class="link-title">Dishes</span>
-      </a>
-      
-      <a href="/members" class="navbar-link hidden" style="margin-left: 10px; color: #fff">
-        <i class="fa fa-user-circle-o" aria-hidden="true"></i>
-        <span class="link-title">Members</span>
-      </a>
+  searchDishes : =>
+    p = {q: @search_query()}
+    sl = @selected_location()
+    if sl?
+      p.loc = "#{sl.city()}-#{sl.id()}"
+    @app.navigateTo("/dishes?#{$.param(p)}")
 
-      <a href="/activity" class="navbar-link" style="margin-left: 10px; color: #fff">
-        <i class="fa fa-comments-o" aria-hidden="true"></i>
-        <span class="link-title">Activity</span>
-      </a>
-    </div>
+  closeLocationsSelect : =>
+    @location_select_active(false)
 
-    <div class="navbox">
-      <a href="/dish/create" class="navbar-link" style="">
-        <i class="fa fa-plus-circle"></i>
-        <span class="link-title">New Dish</span>
-      </a>  
-    </div>
+  toggleMobileSearch: =>
+    @mobile_search_visible(!@mobile_search_visible())
+
+
+<template name="df-site-header" lang="haml">
+%nav.navbar.navbar-default.navbar-fixed-top(style="background-color: #d64541; border: #d64541;")
+  .container-fluid-flex
+    %a.navbar-logo.navbox(href="/")
+      %img(src="/assets/logo_white.png" style="height: 40px;")/
+
+    .navbox.navbox-search.dropdown(role="search")
+      %i.fa.fa-search.mr-5
+      %input.recipe-search-input.plain.on-dark-bg(placeholder="Search Dishes" type="text" data-bind="textInput : search_query, handleEnter : searchDishes")
+      %i.fa.fa-map-marker.mr-5
+      %input.recipe-search-input.plain.on-dark-bg(placeholder="Location (optional)" type="text" data-bind="textInput : location_query")
+
+      .dropdown-menu(data-bind="css.open : location_select_active() && locations().length > 0, onClickOutside : closeLocationsSelect")
+        %df-locations-select(params="filterText : location_query, onSelect : $view.handleLocationSelect, onLocationsChanged, onLocationsChanged : locations")
+
+    .navbox.navbox-primary-links
+      %a.navbar-link.link-search-toggle(data-bind="click : toggleMobileSearch, clickBubble : false" style="color: #fff")
+        %i.fa.fa-search
+      %a.navbar-link(href="/dishes" style="color: #fff")
+        %i.fa.fa-cutlery(aria-hidden="true")
+        %span.link-title Dishes
+      %a.navbar-link.hidden(href="/members" style="margin-left: 10px; color: #fff")
+        %i.fa.fa-user-circle-o(aria-hidden="true")
+        %span.link-title Members
+      %a.navbar-link(href="/activity" style="margin-left: 10px; color: #fff")
+        %i.fa.fa-comments-o(aria-hidden="true")
+        %span.link-title Activity
+
+    .navbox
+      %a.navbar-link(href="/dish/create" style="")
+        %i.fa.fa-plus-circle
+        %span.link-title New Dish
 
     {{#if : app.is_logged_in() }}
-    <div class="navbox navbox-chefscore">
-      <a class="navbar-link" href="/activity?filter=favorites" title="Your ChefScore is the total number of favorites you have on all your dishes. Share your dishes to get more favorites!" data-toggle="tooltip" data-placement="bottom">
-        <i class="fa fa-fire"></i>
+    .navbox.navbox-chefscore
+      %a.navbar-link(data-placement="bottom" data-toggle="tooltip" href="/activity?filter=favorites" title="Your ChefScore is the total number of favorites you have on all your dishes. Share your dishes to get more favorites!")
+        %i.fa.fa-fire
         {{ app.current_user.chefscore }}
-      </a>
-    </div>
     {{/if }}
 
-    <div class="navbox navbox-avatar">
+    .navbox.navbox-avatar
       {{#if : app.is_logged_in() }}
-      <a href="{{ app.current_user.view_path }}" class="navbar-link">
-        <img class="img-circle" style="width: 30px; height: 30px;" data-bind="attr.src : app.current_user.picture_url() "/>
-      </a>
+      %a.navbar-link(href="{{ app.current_user.view_path }}")
+        %img.img-circle(data-bind="attr.src : app.current_user.picture_url() " style="width: 30px; height: 30px;")/
       {{/if }}
       {{#if : !app.is_logged_in() }}
-      <a href="#" class="navbar-link" data-bind="on.click : app.promptAuthentication()">
-        <i class="fa fa-sign-in"></i>
-        <span class="link-title">Sign In</span>
-      </a>
+      %a.navbar-link(data-bind="on.click : app.promptAuthentication()" href="#")
+        %i.fa.fa-sign-in
+        %span.link-title Sign In
       {{/if }}
-    </div>
 
-
-
-  </div>
-</nav>
+{{#if : mobile_search_visible() }}
+{{#template : 'df-site-header-mobile-search' /}}
+{{/if }}
 </template>
+
+<template name="df-site-header-mobile-search" lang="haml">
+.df-site-header-mobile-search.body-overlay
+  .search-bar(data-bind="onClickOutside : toggleMobileSearch, clickBubble : false")
+    .flex-row
+      .row-content
+        %i.fa.fa-search.fa-fw.mr-5
+      .row-content.fill
+        %input.plain.on-dark-bg.full-width(placeholder="Search Dishes" type="text" data-bind="textInput : search_query, handleEnter : searchDishes")
+
+    .flex-row
+      .row-content
+        %i.fa.fa-map-marker.fa-fw.mr-5
+      .row-content.fill
+        %input.plain.on-dark-bg.full-width(placeholder="Location (optional)" type="text" data-bind="textInput : location_query")
+
+    .locations(data-bind="visible : locations().length > 0"style="background: #fff; color: #555;")
+      %df-locations-select(params="filterText : location_query, onSelect : $view.handleLocationSelect, onLocationsChanged, onLocationsChanged : locations")
+</template>
+
+<style lang="scss">
+.navbar {
+ background-color: rgba(255, 255, 255, 0.9);
+ height: 52px;
+}
+
+
+.navbar-default .navbar-brand {
+ background-color: #d64541;
+ color: #fff;
+ font-weight: 100;
+ letter-spacing: 1px;
+ height: 51px;
+}
+
+.navbar-logo {
+  margin-right: 30px;
+  padding: 5px;
+  display: inline-block;
+}
+
+.navbar-text a {
+  color: #d64541;
+}
+
+.navbar-text {
+  font-size: 15px;
+}
+
+.navbar-default .navbar-link {
+  color: #fff;
+  font-size: 16px;
+  font-weight: 100;
+}
+
+.navbar-default {
+  .container-fluid-flex {
+    display: flex;
+    padding: 0px 10px;
+  }
+  .navbox {
+    display: flex;
+    //justify-content: center;
+    align-items: center;
+    height: 52px;
+    padding: 0px 10px;
+  }
+
+  .navbox-primary-links { flex: 1; }
+  .navbox-search {
+    color: #eee;
+    background: rgba(255,255,255,0.2);
+    input {
+      //border-radius: 5px;
+      background: transparent;
+      border: none;
+      font-weight: 200;
+      color: #eee;
+      outline: none;
+      font-size: 14px;
+      width: 130px;
+      &:active, &:focus {
+        outline: none;
+      }
+      &::-webkit-input-placeholder {
+        color: rgba(255, 255, 255, 0.5);
+      }
+      &::-moz-placeholder, {
+        color: #eee;
+      }
+    }
+  }
+
+  .dropdown-menu {
+    color: #555;
+    width: 100%;
+  }
+}
+
+.df-site-header-mobile-search {
+  .search-bar {
+    //background: #cf736e;
+    background: #d64541;
+    padding: 0px 20px 10px 20px;
+    color: #fff;
+  }
+  input {
+    font-size: 2.2rem;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 5px 10px;
+  }
+}
+
+.layout-mobile {
+  .navbar-default {
+    .navbox {padding-left: 0px; padding-right: 0px;};
+    .navbar-logo { margin-right: 15px; }
+    .navbar-link { font-size: 22px; padding: 10px; }
+    .link-title { display: none; }
+    .navbox-search { display: none; }
+    .navbox-chefscore { margin-left: 0px; }
+    .navbox-primary-links { flex: 1; }
+  }
+}
+
+.layout-desktop {
+  .link-search-toggle { display: none; }
+}
+
+
+</style>

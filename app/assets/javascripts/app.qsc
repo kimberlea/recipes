@@ -6,6 +6,29 @@ class Dishfave.Application extends QS.Application
     @is_loaded = ko.observable(false)
     @setUser(@opts.current_user)
     @sign_in_modal = new Dishfave.SignInView("sign-in", this)
+    @addComputed 'display_info', ->
+      width = @app.window_bounds().width
+      ret = {}
+      if width < 768
+        l = 'mobile'
+        sl = 'phone'
+      else if width < 992
+        l = 'mobile'
+        sl = 'tablet'
+      else
+        l = 'desktop'
+        sl = 'desktop'
+      return {layout: l, sublayout: sl}
+    @addComputed 'display_layout_desktop', ->
+      @display_info().layout == 'desktop'
+    @addComputed 'display_layout_mobile', ->
+      @display_info().layout == 'mobile'
+    @addComputed 'body_classes', ->
+      d = @display_info()
+      l = d.layout; sl = d.sublayout
+      "layout-#{l} layout-#{l}-#{sl}"
+
+
 
   showModalFromURL : window.showModalFromURL
 

@@ -3,6 +3,9 @@ class Dish < ActiveRecord::Base
   include QuickScript::Model
   include QuickScript::Stateable
   include APIUtils::Validation
+  include QuickJobs::Processable
+  include Metable
+  include QuickScript::ElasticSearchable
 
   mount_uploader :image, DishImageUploader
 
@@ -39,6 +42,8 @@ class Dish < ActiveRecord::Base
   state :active, 1
   state :deleted, 2
   stateable!
+  processable!
+  metable!
 
   attr_accessor :user_reaction, :api_request_scope
 
@@ -80,6 +85,9 @@ class Dish < ActiveRecord::Base
   after_save :update_search_vector
   before_destroy :remove_image!
 
+  settings(ELASTIC_CONFIG[:settings])
+  mappings(&ELASTIC_CONFIG[:mappings][:dish])
+
   validate do
     # presence
     errors.add(:title, "Please enter a title for this dish.") if self.title.blank?
@@ -113,8 +121,10 @@ class Dish < ActiveRecord::Base
     validate_length_of(:purchase_info, "purchase info")
   end
 
-  def self.update_meta
-    Dish.not_deleted.find_each {|d| d.update_meta}
+  def self.search_as_action!(opts)
+    ctx = opts[:request_context]
+    sr = scope_responder(ctx, {use_elastic: true})
+    sr.result
   end
 
   def self.import_from_url_as_action!(opts)
@@ -153,14 +163,14 @@ class Dish < ActiveRecord::Base
     success = self.save
     if success && new_record
       AppEvent.publish("dish.created", actor, {dish: self})
-      self.creator.update_meta
+      meta_graph_updated_for(self, creator)
     end
     return {success: success, data: self, error: self.error_message, new_record: new_record}
   end
 
   def delete_as_action!(opts)
     self.set_state! :deleted
-    self.creator.update_meta
+    meta_graph_updated_for(self, self.creator)
     return {success: true, data: self}
   end
 
@@ -247,28 +257,45 @@ class Dish < ActiveRecord::Base
     ratings_scope = UserReaction.where(dish_id: self.id).where("rating IS NOT NULL")
     self.cached_ratings_count = ratings_scope.count
     self.cached_ratings_avg = ratings_scope.average(:rating)
+    self.meta_updated_at = Time.now
+    self.update_elastic
     self.save(validate: false)
   rescue => ex
     Rails.logger.info ex.message
     Rails.logger.info ex.backtrace.join("\n\t")
   end
 
+  def as_indexed_json(opts={})
+    ret = {}
+    ret['id'] = id.to_s
+    ret['title'] = title
+    ret['description'] = description
+    ret['tags'] = tags
+    ret['locations'] = creator.locations.collect{|l| l.as_indexed_json}
+    ret['creator'] = creator.as_indexed_json
+    ret['creator_id'] = creator_id.to_s
+    ret['state'] = state
+    ret['is_private'] = is_private
+    ret['created_at'] = created_at.iso8601
+    ret['cached_favorites_count'] = cached_favorites_count || 0
+    ret['prep_time_mins'] = prep_time_mins
+    ret['is_recipe_given'] = is_recipe_given
+    ret['is_recipe_private'] = is_recipe_private
+    ret['is_purchasable'] = is_purchasable
+    return ret
+  end
+
   def to_api(lvl=:default, opts={})
-    scope = api_request_scope
-    ens = scope ? scope.enhances : []
-    actor = scope ? scope.actor : nil
+    actor = opts[:actor]
+    emb = opts[:embedded] || false
     ret = {}
     ret[:id] = self.id.to_s
     ret[:title] = self.title
     ret[:description] = self.description
-    ret[:description_html] = self.description_html if ens.include?("description_html")
     ret[:ingredients] = self.ingredients
-    ret[:ingredients_html] = self.ingredients_html if ens.include?("ingredients_html")
     ret[:directions] = self.directions
-    ret[:directions_html] = self.directions_html if ens.include?("directions_html")
     ret[:is_purchasable] = self.is_purchasable
     ret[:purchase_info] = self.purchase_info
-    ret[:purchase_info_html] = self.purchase_info_html if ens.include?("purchase_info_html")
     ret[:tags] = self.tags
     ret[:serving_size] = self.serving_size
     ret[:prep_time_mins] = self.prep_time_mins
@@ -288,8 +315,15 @@ class Dish < ActiveRecord::Base
     ret[:ratings_avg] = self.cached_ratings_avg.present? ? cached_ratings_avg.round(2) : nil
     ret[:errors] = self.errors.to_hash if self.errors.any?
 
+    if !emb
+      ret[:description_html] = self.description_html
+      ret[:ingredients_html] = self.ingredients_html
+      ret[:directions_html] = self.directions_html
+      ret[:purchase_info_html] = self.purchase_info_html
+    end
+
     if has_present_association?(:creator)
-      ret[:creator] = creator.to_api(:embedded)
+      ret[:creator] = creator.to_api(embedded: true)
     end
 
     if user_reaction
@@ -302,5 +336,80 @@ class Dish < ActiveRecord::Base
     def base_scope
       Dish.is_visible_by(actor)
     end
+
+    def build_result
+      ctx = request_context
+      sks = ctx.scope.keys.collect(&:to_s)
+      if options[:use_elastic] == true
+        build_elastic_result
+      else
+        build_database_result
+      end
+    end
+
+    def build_elastic_result
+      ctx = request_context
+      scope = ctx.scope
+      ret = Dish.search_elastic(ctx.params) do |c|
+        c.requested_includes = ["creator"]
+        c.requested_scope = scope
+        q = c.query
+        scope = c.requested_scope
+        scope.each do |key, val|
+          case key.to_sym
+          when :with_search_term
+            q.add_simple_query_string(["title^2", "tags", "description", "creator.full_name"], val)
+          when :with_creator_id
+            q.add_term_filter("creator_id", val)
+          when :with_location_near
+            lat,lon,dist = val
+            dist ||= "300km"
+            q.add_filter("geo_distance", {
+              "distance" => dist,
+              "locations.point" => { "lat" => lat, "lon" => lon }
+            })
+          when :with_location_near_location_id
+            dist ||= "300km"
+            # find location
+            l = Location.find(val)
+            if l
+              q.add_filter("geo_distance", {
+                "distance" => dist,
+                "locations.point" => { "lat" => l.latitude.to_f, "lon" => l.longitude.to_f }
+              })
+            end
+          when :with_tag
+            q.add_term_filter("tags", val)
+          when :with_creator_in_followings_of
+            # find follower ids
+            ids = Following.where(follower_id: val).limit(1000).pluck(:user_id)
+            q.add_term_filter("creator_id", ids)
+          when :is_favorite_of
+            # find favorite dishes
+            ids = UserReaction.where(is_favorite: true, user_id: val).where("dish_id IS NOT NULL").limit(1000).pluck(:dish_id)
+            q.add_term_filter("id", ids)
+          when :with_public_recipe
+            q.add_term_filter("is_recipe_given", true)
+            q.add_term_filter("is_recipe_private", false)
+          when :is_purchasable
+            q.add_term_filter("is_purchasable", true)
+          end # end case
+        end # end scope each
+        # add required scopes in
+        q.add_term_filter("state", 1)
+        if actor.nil?
+          q.add_term_filter("is_private", false)
+        else
+          q.add_term_should("is_private", false)
+          q.add_term_should("creator_id", actor.id.to_s)
+        end
+        if ctx.sort.present?
+          q.add_sort(ctx.sort)
+        end
+      end
+      enhance_items(ret[:data]) if ret[:data].is_a?(Array)
+      return ret
+    end
   end
+
 end

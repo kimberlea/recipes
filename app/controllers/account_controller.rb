@@ -18,7 +18,7 @@ class AccountController < ApplicationController
     end
     @user = current_user
 
-    @js_data[:user] = @user.to_api
+    @js_data[:user] = @user.to_api(actor: current_user)
   end
 
   def logout

@@ -1,0 +1,44 @@
+class Dishfave.LocationsSelectView extends QS.View
+  @registerComponent 'df-locations-select'
+  init : ->
+    @locations = new Dishfave.Location.Collection(limit: 5)
+    @filter_text = ko.pureComputed =>
+      ko.unwrap(@opts.filterText)
+    @filter_text.extend(rateLimit: {method: 'notifyWhenChangesStop', timeout: 250})
+
+    @filter_text.subscribe(@loadLocations)
+
+    if @opts.onLocationsChanged?
+      @locations.items.subscribe( @opts.onLocationsChanged )
+
+  loadLocations : =>
+    filter = @filter_text()
+    if QS.utils.isBlank(filter)
+      @locations.clear()
+      return
+    @locations.load {with_name_like: filter},
+      sort: "population DESC"
+
+  selectLocation : (loc)=>
+    QS.log("made it here.")
+    @opts.onSelect?(loc)
+
+<template name="df-locations-select" lang="haml">
+.df-locations-select
+  {{#foreach : locations.items }}
+  .location(data-bind="on.click : $view.selectLocation($data)")
+    {{ full_name }}
+  {{/foreach }}
+</template>
+
+<style lang="sass">
+.df-locations-select
+  border: 1px solid #eee
+  .location
+    padding: 10px 20px
+    border-bottom: 1px solid #eee
+    text-align: left
+    cursor: pointer
+    &:hover, &:active
+      background: #eee
+</style>
