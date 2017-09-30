@@ -22,6 +22,6 @@ bundle exec unicorn -c config/unicorn.rb -E production -D
 
 echo "Restarting services"
 bundle exec script/app_cron -e production restart
-bundle exec script/app_collect -e production restart
+bundle exec script/app_listen -e production restart
 
 echo "Done"
