@@ -20,8 +20,8 @@ GIT
 
 GIT
   remote: git://github.com/agquick/quick_script.git
-  revision: 0a491d877af3f2519aaaa7102df23faff54d555b
-  ref: 0a491d8
+  revision: 166fb39440f69479db277172baf7ca9001c5417f
+  ref: 166fb39
   specs:
     quick_script (2.0.5)
       faraday
