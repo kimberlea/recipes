@@ -30,7 +30,8 @@ gem 'quick_auth', github: 'agquick/quick_auth', ref: '57aa706'
 
 gem 'quick_notify', github: 'agquick/quick_notify', ref: '02bf591'
 
-gem 'quick_utils', github: 'agquick/quick_utils'
+gem 'quick_utils', github: 'agquick/quick_utils', ref: 'e24a273'
+#gem 'quick_utils', path: '~/Projects/lib/quick_utils'
 
 gem 'quick_script', github: 'agquick/quick_script', ref: '97d8ff7'
 #gem 'quick_script', path: '~/Projects/lib/quick_script'

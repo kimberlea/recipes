@@ -29,7 +29,8 @@ GIT
 
 GIT
   remote: git://github.com/agquick/quick_utils.git
-  revision: 09826b2c8e1b2022ac58103bbe7348620c7356aa
+  revision: e24a2735df1377fd367ac7ee5820ff2f28bd2b31
+  ref: e24a273
   specs:
     quick_utils (1.1.0)
       activesupport

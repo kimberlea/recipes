@@ -5,6 +5,7 @@ require 'quick_utils'
 QuickUtils::TaskManager.run("app_listen") do |config|
   config.root_dir = Dir.pwd
   config.load_rails = true
+  config.raise_interrupt = true
 
   config.add_task 1, :second do |mgr|
     Metable.wait_for_notify_then_run(["meta_graph_updated"], {logger: mgr.logger}) do |opts|

@@ -24,6 +24,10 @@ module Metable
           str = conn.wait_for_notify(timeout)
           block.call({channel: str})
         rescue => ex
+          if ex.is_a?(Interrupt)
+            logger.info "Wait for notify interrupted, stopping."
+            break
+          end
           if logger
             logger.info e.message
             logger.info e.backtrace.join("\n\t")
