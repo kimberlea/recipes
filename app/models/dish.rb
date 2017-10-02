@@ -6,6 +6,7 @@ class Dish < ActiveRecord::Base
   include QuickJobs::Processable
   include Metable
   include QuickScript::ElasticSearchable
+  include QuickScript::PunditModel
 
   mount_uploader :image, DishImageUploader
 
@@ -140,6 +141,7 @@ class Dish < ActiveRecord::Base
       self.creator = actor
       self.state! :active
     end
+    policy_for(actor).authorize! :update?
     update_fields_from(opts, [
       :title,
       :serving_size,
@@ -154,7 +156,7 @@ class Dish < ActiveRecord::Base
       :is_recipe_given
     ])
     if opts.key?(:tags)
-      tags = JSON.parse(opts[:tags])
+      tags = QuickScript.parse_opts(opts[:tags])
       self.tags = tags.collect {|tag| tag.strip.downcase}
     end
     if opts.key?(:image)
@@ -169,6 +171,8 @@ class Dish < ActiveRecord::Base
   end
 
   def delete_as_action!(opts)
+    actor = opts[:actor]
+    policy_for(actor).authorize! :delete?
     self.set_state! :deleted
     meta_graph_updated_for(self, self.creator)
     return {success: true, data: self}
@@ -285,18 +289,19 @@ class Dish < ActiveRecord::Base
     return ret
   end
 
-  def to_api(lvl=:default, opts={})
+  def to_api(opts={})
     actor = opts[:actor]
+    #puts "The actor is #{actor.inspect}"
     emb = opts[:embedded] || false
+    view_full = policy_for(actor).view_full?
+    show_recipe = is_recipe_private != true || view_full
     ret = {}
     ret[:id] = self.id.to_s
     ret[:title] = self.title
     ret[:description] = self.description
-    ret[:ingredients] = self.ingredients
-    ret[:directions] = self.directions
     ret[:is_purchasable] = self.is_purchasable
     ret[:purchase_info] = self.purchase_info
-    ret[:tags] = self.tags
+    ret[:tags] = self.tags || []
     ret[:serving_size] = self.serving_size
     ret[:prep_time_mins] = self.prep_time_mins
     ret[:prep_time_details] = self.prep_time_details
@@ -305,6 +310,11 @@ class Dish < ActiveRecord::Base
     ret[:image_url] = self.image ? self.image.url : nil
     ret[:is_recipe_private] = self.is_recipe_private
     ret[:is_private] = self.is_private
+
+    if show_recipe
+      ret[:ingredients] = self.ingredients
+      ret[:directions] = self.directions
+    end
 
     ret[:view_path] = self.view_path
     ret[:view_url] = self.view_path(full: true)
@@ -316,9 +326,11 @@ class Dish < ActiveRecord::Base
     ret[:errors] = self.errors.to_hash if self.errors.any?
 
     if !emb
+      if show_recipe
+        ret[:ingredients_html] = self.ingredients_html
+        ret[:directions_html] = self.directions_html
+      end
       ret[:description_html] = self.description_html
-      ret[:ingredients_html] = self.ingredients_html
-      ret[:directions_html] = self.directions_html
       ret[:purchase_info_html] = self.purchase_info_html
     end
 

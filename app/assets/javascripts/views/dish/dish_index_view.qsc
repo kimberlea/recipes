@@ -1,7 +1,7 @@
 class Dishfave.DishIndexView extends QS.View
   @registerComponent 'df-dish-index'
   init : ->
-    @dishes = new Dishfave.Dish.Collection(limit: 50, adapter_endpoint: "search")
+    @dishes = new Dishfave.Dish.Collection(limit: 24, adapter_endpoint: "search")
     @location = new Dishfave.Location()
     @live_query = ko.observable("")
     @params = @app.path_params

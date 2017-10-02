@@ -29,7 +29,7 @@ class DishesController < ApplicationController
     # load 5 most recent dish
     #@dishes = Dish.is_visible_by(current_user).limit(8).order("created_at desc")
 
-    @js_data[:dish] = @dish.to_api(actor: current_user) if @dish
+    @js_data[:dish] = @dish.to_api(actor: self.current_user) if @dish
   
     @page_info = {
       title: @dish.title,
@@ -53,7 +53,7 @@ class DishesController < ApplicationController
     end
     @body_style = "bg-image"
     @title = "Edit This Dish."
-    @js_data[:dish] = @dish.to_api
+    @js_data[:dish] = @dish.to_api(actor: current_user)
     render "dishes/edit"
   end
 

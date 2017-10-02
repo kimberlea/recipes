@@ -73,7 +73,7 @@ module Metable
         model.update_attribute(:meta_graph_updated_at, t)
       end
     end
-    QuickJobs.notify_connection("meta_graph_updated")
+    Metable.notify_connection("meta_graph_updated")
   end
 
   def meta

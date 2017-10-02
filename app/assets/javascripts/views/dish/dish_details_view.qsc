@@ -148,7 +148,7 @@ class Dishfave.DishDetailsView extends QS.View
           %h2
             %span Purchase Info
           .recipe-purchase-body
-            {{{ dish.purchae_info_html }}}
+            {{{ dish.purchase_info_html }}}
         {{/if }}
 
         .recipe-tags.recipe-section

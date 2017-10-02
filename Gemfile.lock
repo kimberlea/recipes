@@ -20,8 +20,8 @@ GIT
 
 GIT
   remote: git://github.com/agquick/quick_script.git
-  revision: 166fb39440f69479db277172baf7ca9001c5417f
-  ref: 166fb39
+  revision: 97d8ff7df775b0333f0b718fa34b791b41f4da55
+  ref: 97d8ff7
   specs:
     quick_script (2.0.5)
       faraday
@@ -218,6 +218,8 @@ GEM
     optionable (0.2.0)
     origin (2.3.1)
     pg (0.19.0)
+    pundit (1.1.0)
+      activesupport (>= 3.0.0)
     rack (1.6.5)
     rack-test (0.6.3)
       rack (>= 1.0)
@@ -333,6 +335,7 @@ DEPENDENCIES
   nokogiri
   non-stupid-digest-assets
   pg
+  pundit
   quick_auth!
   quick_jobs!
   quick_notify!

@@ -12,7 +12,7 @@ class Api::AccountController < ApiController
     user = User.authenticate(email, password)
     if user
       self.current_user = user
-      res = {success: true, data: user.to_api(:full, actor: user)}
+      res = {success: true, data: user}
     else
       res = {success: false, error: "User could not be found."}
     end

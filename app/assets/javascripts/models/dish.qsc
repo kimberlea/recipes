@@ -8,7 +8,7 @@ class Dishfave.Dish extends QS.Model
       search: ['/dishes/search', 'GET']
 
   init : =>
-    @addFields ['title', 'description', 'description_html', 'ingredients', 'directions', 'purchase_info', 'image_url', 'view_path', 'view_url'], ''
+    @addFields ['title', 'description', 'description_html', 'ingredients', 'ingredients_html', 'directions', 'directions_html', 'purchase_info', 'purchase_info_html', 'image_url', 'view_path', 'view_url'], ''
     @addFields ['is_purchasable', 'is_private', 'is_recipe_private'], false
     @addFields ['is_recipe_given'], true
     @addFields ['prep_time_mins', 'serving_size'], null

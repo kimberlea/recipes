@@ -3,6 +3,7 @@ class User < ActiveRecord::Base
   include QuickAuth::Authentic
   include QuickJobs::Processable
   include Metable
+  include QuickScript::PunditModel
 
   mount_uploader :picture, PictureUploader
 
@@ -74,10 +75,12 @@ class User < ActiveRecord::Base
   ## MEMBER/INSTANCE METHODS(@user, user, single user)
 
   def update_as_action!(opts)
+    actor = opts[:actor]
     new_record = self.new_record?
     if new_record
       # things needed ONLY if it's a create
     end
+    policy_for(actor).authorize! :update?
 
     # things for create or update
     self.full_name = opts[:full_name].strip if opts[:full_name]
