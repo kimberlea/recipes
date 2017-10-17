@@ -33,8 +33,8 @@ gem 'quick_notify', github: 'agquick/quick_notify', ref: '02bf591'
 gem 'quick_utils', github: 'agquick/quick_utils', ref: 'e24a273'
 #gem 'quick_utils', path: '~/Projects/lib/quick_utils'
 
-gem 'quick_script', github: 'agquick/quick_script', ref: '97d8ff7'
-#gem 'quick_script', path: '~/Projects/lib/quick_script'
+#gem 'quick_script', github: 'agquick/quick_script', ref: '97d8ff7'
+gem 'quick_script', path: '~/Projects/lib/quick_script'
 
 gem 'quick_jobs', github: 'agquick/quick_jobs'
 
@@ -57,6 +57,8 @@ gem 'iso8601'
 gem 'elasticsearch-model'
 
 gem 'pundit'
+
+gem 'stripe'
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'

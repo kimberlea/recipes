@@ -11,14 +11,22 @@ class Dishfave.UserAccountView extends QS.View
     ]
     @location_filter = ko.observable('')
     @locations = new Dishfave.Location.Collection()
+    @invoices = new Dishfave.Invoice.Collection(limit: 5)
 
     @addComputed 'can_save_password', ->
       @password.present() && @password() == @password_confirm()
+
+    @app.handle 'user.payment_method_updated', (data)=>
+      @user.stripe_source(data)
+    @app.handle 'user.payment_method_deleted', (data)=>
+      if data.id == @user.stripe_source().id
+        @user.stripe_source(null)
 
     @load()
 
   load : =>
     @updateLocations()
+    @updateInvoices()
 
   updateLocations : =>
     lids = @user.location_ids()
@@ -26,6 +34,10 @@ class Dishfave.UserAccountView extends QS.View
       @locations.clear()
       return
     @locations.load {with_ids: lids}
+
+  updateInvoices : =>
+    @invoices.load {with_user_id: @user.id()},
+      sort: "created_at DESC"
 
   handleAccountSaved : (resp)=>
     if resp.success
@@ -58,6 +70,23 @@ class Dishfave.UserAccountView extends QS.View
     @user.save ['location_ids']
     @locations.removeItemById(loc.id())
 
+  promptPaymentMethod : =>
+    Dishfave.AccountPaymentMethodEditorView.displayModal this, {}
+
+  deletePaymentMethod : =>
+    Dishfave.AccountAdapter.delete_payment_method
+      data:
+        source_id: @user.stripe_source().id
+      callback : (resp)=>
+        if resp.success
+          @app.trigger 'user.payment_method_deleted', resp.data
+        else
+          Overlay.alert resp.error
+
+  promptDeletePaymentMethod : =>
+    Overlay.confirm "Are you sure you want to remove this payment method?",
+      yes: =>
+        @deletePaymentMethod()
 
 <template name="df-user-account" lang="haml">
 .df-user-account.account-edit-container
@@ -115,6 +144,49 @@ class Dishfave.UserAccountView extends QS.View
         %a.small(data-bind="on.click : $view.removeLocation($data)")
           remove
       {{/foreach }}
+
+
+    %h3 Payment Methods
+    {{#with : user.stripe_source() }}
+    .df-card.flex-row
+      .row-content.fill
+        %strong {{ brand }}
+      .row-content.fill
+        Ending in {{ last4 }}
+      .row-content.fill
+        Exp {{ exp_month }}/{{ exp_year }}
+      .row-content.fill
+        %a.small(data-bind="click : $view.promptDeletePaymentMethod")
+          delete
+    {{/with }}
+    {{#if : user.stripe_source() == null }}
+    %a(data-bind="click : promptPaymentMethod")
+      Add a new credit card
+    {{/if }}
+
+
+    {{#if : invoices.has_items() }}
+    %h3 Recent Invoices
+    %table.table.table-striped.text-left
+      %thead
+        %th Date
+        %th Total
+      %tbody(data-bind="foreach : invoices.items")
+        %tr
+          %td
+            {{ created_at.moment().format("ll") }} to {{ ending_at.moment().format("ll") }}
+          %td
+            {{#if : is_open() }}
+            %span.label.label-default open
+            {{/if }}
+            {{#if : !is_open() }}
+            {{ total.usd_str() }}
+            {{#if : total() > 0 && amount_due() == 0 }}
+            %span.label.label-info paid
+            {{/if }}
+            {{/if }}
+    {{/if }}
+
 
     %h3 Change Password
     .form-horizontal

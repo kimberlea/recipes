@@ -19,6 +19,8 @@ class User < ActiveRecord::Base
   field :flags, type: Integer, array: true, default: []
   field :location_ids, type: Integer, array: true, default: []
 
+  field :stripe_customer_id, type: String
+
   field :cached_chefscore, type: Integer
   field :cached_dishes_count, type: Integer
   field :cached_followers_count, type: Integer
@@ -119,6 +121,25 @@ class User < ActiveRecord::Base
     return {success: success, data: self, error: error, new_record: new_record}
   end
 
+  def update_payment_method_as_action!(opts)
+    token = opts[:token_id]
+    c = self.stripe_customer
+    if self.has_valid_payment_method?
+      return {success: false, error: "You must delete the current payment method before attaching a new one."}
+    end
+    s = c.sources.create(source: token)
+    return {success: true, data: stripe_source_to_api(s)}
+  end
+
+  def delete_payment_method_as_action!(opts)
+    card = self.stripe_source
+    if card.nil?
+      return {success: false, error: "You don't have a payment method stored."}
+    end
+    card.delete
+    return {success: true, data: {id: card.id}}
+  end
+
   def first_name
     return nil if full_name.blank?
     full_name.split(" ").first
@@ -199,6 +220,56 @@ class User < ActiveRecord::Base
     return val
   end
 
+  def has_valid_payment_method?
+    begin
+      return false if stripe_customer.nil?
+      return stripe_customer.sources.total_count > 0
+    rescue => ex
+      QuickScript.log_exception(ex)
+      return false
+    end
+  end
+
+  def stripe_customer_id(opts={})
+    if self[:stripe_customer_id].blank?
+      # try to create customer
+      c = Stripe::Customer.create(
+        description: self.full_name,
+        email: self.email,
+        metadata: {user_id: self.id}
+      )
+      self.update_attribute :stripe_customer_id, c.id
+    end
+    return self[:stripe_customer_id]
+  end
+
+  def stripe_customer
+    @stripe_customer ||= Stripe::Customer.retrieve(self.stripe_customer_id)
+  end
+
+  def stripe_source
+    if self[:stripe_customer_id].blank?
+      return nil
+    end
+    card = stripe_customer.sources.data.first
+    return card
+  end
+
+  def stripe_source_to_api(s=nil)
+    card = s || stripe_source
+    if card.nil?
+      return nil
+    end
+    ret = {}
+    ret[:id] = card.id
+    ret[:object] = card.object
+    ret[:last4] = card.last4
+    ret[:brand] = card.brand
+    ret[:exp_month] = card.exp_month
+    ret[:exp_year] = card.exp_year
+    return ret
+  end
+
   def follow_featured_users!
     return if !Rails.env.production?
     fuids = [1]
@@ -243,6 +314,8 @@ class User < ActiveRecord::Base
   def to_api(opts={})
     actor = opts[:actor]
     is_me = actor && actor.id == self.id
+    emb = opts[:embedded] == true
+    incls = opts[:includes] || {}
     ret = {}
     ret[:id] = self.id.to_s
     ret[:full_name] = self.full_name
@@ -263,6 +336,10 @@ class User < ActiveRecord::Base
 
     if following
       ret[:following] = following.to_api(:embedded)
+    end
+
+    if is_me && incls["stripe_source"]
+      ret[:stripe_source] = stripe_source_to_api
     end
 
     return ret

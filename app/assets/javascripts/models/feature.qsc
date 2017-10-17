@@ -1,0 +1,17 @@
+class Dishfave.Feature extends QS.Model
+  @includeCollection()
+  @includeAdapter
+    load_url: '/features'
+    save_url: '/feature'
+    endpoints:
+      cancel: '/feature/cancel'
+
+  init : ->
+    @addFields ['start_time', 'end_time', 'created_at'], 0
+    @addFields ['base_price'], 0
+    @addFields ['is_active'], false
+
+    @start_time.extend(date: true)
+    @end_time.extend(date: true)
+    @created_at.extend(date: true)
+    @base_price.extend(usd: true)

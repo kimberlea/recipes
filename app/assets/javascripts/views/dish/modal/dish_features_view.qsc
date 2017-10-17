@@ -1,0 +1,127 @@
+class Dishfave.DishFeaturesView extends QS.View
+  templateID: 'df-dish-modal-features'
+  init : ->
+    @dish = new Dishfave.Dish()
+    @feature = new Dishfave.Feature()
+    @features = new Dishfave.Feature.Collection(limit: 5)
+
+  load : (opts)=>
+    @dish.absorb(opts.dish)
+    @dish.reload
+      data:
+        enhances: ['is_featured']
+    @loadFeatures()
+
+  loadFeatures : =>
+    @features.load {with_dish_id: @dish.id()},
+      sort: 'created_at DESC'
+
+  confirmPurchaseFeature : =>
+    Overlay.confirm "You will be invoiced for this feature at the end of the month. If canceled, you will be charged a prorated amount. Click 'Yes' to continue.",
+      yes: =>
+        @purchaseFeature()
+
+  purchaseFeature : =>
+    Dishfave.Feature.Adapter.save
+      data:
+        is_feature_autorenewable: @dish.is_feature_autorenewable()
+        dish_id: @dish.id()
+      loading: @feature.is_saving
+      callback: (resp)=>
+        if resp.success
+          Overlay.alert "This feature has been purchased. It will take effect shortly."
+          @app.trigger 'feature.updated', resp.data
+          @hideOverlay()
+        else
+          if resp.error_type == "PaymentMethodNeeded"
+            @promptPaymentMethod()
+          else
+            Overlay.alert resp.error
+
+  promptPaymentMethod : =>
+    Dishfave.AccountPaymentMethodEditorView.displayModal this, {prompt: "You must add a payment method before you can purchase a feature."}
+
+  cancelFeature : (f)=>
+    Dishfave.Feature.Adapter.cancel
+      data:
+        id: f.id()
+      loading: f.is_saving
+      callback : (resp)=>
+        if resp.success
+          Overlay.alert 'This feature has been cancelled.'
+          @app.trigger 'feature.updated', resp.data
+        else
+          Overlay.alert resp.error
+
+<template name="df-dish-modal-features" lang="haml">
+.modal-header
+  %h3.modal-title
+    %i.fa.fa-bullhorn
+    Feature This Dish
+
+.modal-body
+  %p.lead
+    Want to boost the visibility of your dish? Purchasing a <strong>Feature</strong> will:
+
+  %ul.fa-ul.mb-20
+    %li.mb-10
+      %i.fa-li.fa.fa-check-circle
+      Place your dish in the <strong>Featured</strong> list of dishes, which is listed on the front page of dishfave.com.
+    %li.mb-10
+      %i.fa-li.fa.fa-check-circle
+      Make your dish eligible to be sent in the weekly <strong>Featured Dishes</strong> newsletter sent to <strong>all</strong> subscribing Dishfave users.
+    %li.mb-10
+      %i.fa-li.fa.fa-check-circle
+      Mark your dish with a special icon (<i class="fa fa-trophy small"></i>) and other flare to make your dish stand out amongst the others in regular search results.
+
+
+  {{#if : !dish.is_featured() }}
+  %legend Feature Details
+  %dl.dl-horizontal
+    %dt Period
+    %dd
+      1 week
+      .small
+        Now - October 10, 2017 10:15am
+    %dt Price
+    %dd $19.99
+    %dt Auto-Renew
+    %dd
+      %df-button-toggle(params="value : dish.is_feature_autorenewable")
+
+    %dd(style="padding: 10px 0px;")
+      %button.btn.btn-success.btn-lg(data-bind="click : confirmPurchaseFeature")
+        %i.fa.fa-shopping-cart
+        Purchase Feature
+  {{/if }}
+
+  {{#if : features.has_items() }}
+  %legend Recent Features
+  %table.table.table-striped.table-features(data-bind="foreach : features.items")
+    %tr
+      %td
+        %span.label.label-success(data-bind="visible : is_active()") Active
+        %span.label.label-default(data-bind="visible : !is_active() && is_cancelled()") Cancelled
+        %span.label.label-default(data-bind="visible : !is_active() && !is_cancelled()") Finished
+      %td
+        {{ start_time.moment().format("llll") }} 
+        to 
+        {{ end_time.moment().format("llll") }}
+      %td
+        {{#if : is_active() }}
+        %a(data-bind="on.click : $view.cancelFeature($data), loading : feature.is_saving")
+          cancel
+        {{/if }}
+    {{/foreach }}
+  {{/if }}
+
+
+</template>
+
+<style lang="sass">
+.df-dish-modal-features
+  dd
+    margin-bottom: 10px
+  .table-features
+    font-size: 1.4rem
+</style>

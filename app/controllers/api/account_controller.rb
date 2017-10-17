@@ -46,4 +46,15 @@ class Api::AccountController < ApiController
     render_result(success: true, data: user)
   end
 
+  def update_payment_method
+    user = current_user
+    res = user.update_payment_method_as_action!(params_with_context)
+    render_result(res)
+  end
+  def delete_payment_method
+    user = current_user
+    res = user.delete_payment_method_as_action!(params_with_context)
+    render_result(res)
+  end
+
 end

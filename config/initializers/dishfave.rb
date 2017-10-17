@@ -1,3 +1,10 @@
+df_config_file = File.join(Rails.root, 'config', 'dishfave.yml')
+df_config_template = ERB.new(File.new(df_config_file).read).result(binding)
+APP_CONFIG = YAML.load(df_config_template)[Rails.env].with_indifferent_access
+
+Stripe.api_key = APP_CONFIG[:stripe_secret_key]
+Stripe.verify_ssl_certs = false
+
 MailMaker.stylesheet = {
   "center" => "text-align: center;",
   "padded" => "padding: 20px;",

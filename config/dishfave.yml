@@ -1,0 +1,9 @@
+development:
+  stripe_pub_key: <%= ENV['STRIPE_PUB_KEY'] %>
+  stripe_secret_key: <%= ENV['STRIPE_SECRET_KEY'] %>
+test:
+  stripe_pub_key: <%= ENV['STRIPE_PUB_KEY'] %>
+  stripe_secret_key: <%= ENV['STRIPE_SECRET_KEY'] %>
+production:
+  stripe_pub_key: <%= ENV['STRIPE_PUB_KEY'] %>
+  stripe_secret_key: <%= ENV['STRIPE_SECRET_KEY'] %>

@@ -43,6 +43,8 @@ Rails.application.routes.draw do
     post '/account/login' => 'account#login'
     post '/account/update_flags' => 'account#update_flags'
     post '/account/reset_password' => 'account#reset_password'
+    post '/account/update_payment_method' => 'account#update_payment_method'
+    post '/account/delete_payment_method' => 'account#delete_payment_method'
 
     api_resources :dishes do
       post '/dish/favorite' => 'dishes#favorite'
@@ -56,6 +58,10 @@ Rails.application.routes.draw do
     api_resources :comments
     api_resources :users
     api_resources :locations
+    api_resources :features do
+      post '/feature/cancel' => 'features#cancel'
+    end
+    api_resources :invoices
 
   end
 

@@ -26,6 +26,7 @@ class Dish < ActiveRecord::Base
   field :is_private, type: :boolean, default: false
   field :is_recipe_private, type: :boolean, default: false
   field :is_recipe_given, type: :boolean, default: true
+  field :is_feature_autorenewable, type: :boolean, default: true
 
   field :search_vector, type: :tsvector
 
@@ -34,8 +35,10 @@ class Dish < ActiveRecord::Base
   field :cached_ratings_avg, type: Float
 
   field :creator_id, type: Integer
+  field :feature_id, type: Integer
 
   belongs_to :creator, class_name: "User"
+  belongs_to :feature
 
   has_many :user_reactions
 
@@ -83,7 +86,7 @@ class Dish < ActiveRecord::Base
     where(is_purchasable: val)
   }
 
-  after_save :update_search_vector
+  #after_save :update_search_vector
   before_destroy :remove_image!
 
   settings(ELASTIC_CONFIG[:settings])
@@ -254,6 +257,16 @@ class Dish < ActiveRecord::Base
     conn.execute(sql)
   end
 
+  def is_featured?(opts={})
+    if opts[:reload] == true
+      self.feature = Feature.with_dish_id(self.id).is_active.first
+      if opts[:do_save] != false
+        self.save(validate: false)
+      end
+    end
+    feature_id.present?
+  end
+
   def update_meta
     # compute likes count
     self.cached_favorites_count = self.favorites_count
@@ -261,6 +274,11 @@ class Dish < ActiveRecord::Base
     ratings_scope = UserReaction.where(dish_id: self.id).where("rating IS NOT NULL")
     self.cached_ratings_count = ratings_scope.count
     self.cached_ratings_avg = ratings_scope.average(:rating)
+
+    # feature
+    self.is_featured?(reload: true, do_save: false)
+
+    # save and index
     self.meta_updated_at = Time.now
     self.update_elastic
     self.save(validate: false)
@@ -286,6 +304,7 @@ class Dish < ActiveRecord::Base
     ret['is_recipe_given'] = is_recipe_given
     ret['is_recipe_private'] = is_recipe_private
     ret['is_purchasable'] = is_purchasable
+    ret['is_featured'] = is_featured?
     return ret
   end
 
@@ -310,6 +329,7 @@ class Dish < ActiveRecord::Base
     ret[:image_url] = self.image ? self.image.url : nil
     ret[:is_recipe_private] = self.is_recipe_private
     ret[:is_private] = self.is_private
+    ret[:is_featured] = self.is_featured?
 
     if show_recipe
       ret[:ingredients] = self.ingredients
@@ -416,12 +436,24 @@ class Dish < ActiveRecord::Base
           q.add_term_should("creator_id", actor.id.to_s)
         end
         if ctx.sort.present?
-          q.add_sort(ctx.sort)
+          ctx.sort.split(",").each do |s|
+            q.add_sort(s.strip)
+          end
         end
       end
       enhance_items(ret[:data]) if ret[:data].is_a?(Array)
       return ret
     end
+
+    def enhance_items(models)
+      ctx = request_context
+      models = [models] if !models.is_a?(Array)
+      ens = ctx.enhances
+      if ens.include?("is_featured")
+        models.each {|m| m.is_featured?(reload: true)}
+      end
+    end
+
   end
 
 end

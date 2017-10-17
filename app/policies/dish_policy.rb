@@ -16,4 +16,8 @@ class DishPolicy < QuickScript::PunditPolicy
     update?
   end
 
+  def manage_features?
+    update?
+  end
+
 end

@@ -18,7 +18,7 @@ class AccountController < ApplicationController
     end
     @user = current_user
 
-    @js_data[:user] = @user.to_api(actor: current_user)
+    @js_data[:user] = @user.to_api(actor: current_user, includes: {'stripe_source' => true})
   end
 
   def logout
