@@ -21,7 +21,7 @@ class Dishfave.DishesLoadMoreView extends QS.View
 
 
 <template name="view-dish-panel-tile" lang="haml">
-%a.recipe-tile(href="{{ dish.view_path }}")
+%a.recipe-tile(href="{{ dish.view_path }}" data-bind="css.featured : dish.is_featured()")
 
   .recipe-tile-image.pos-rel
     %img(data-bind="attr.src : dish.image_url")
@@ -33,8 +33,12 @@ class Dishfave.DishesLoadMoreView extends QS.View
         %i.fa.fa-fire
         {{ dish.creator.chefscore }}
     {{#if : dish.is_purchasable() }}
-    .recipe-tile-purchasable(data-bind="tip: {content: 'Great! This dish is available for purchase pre-made.', container: 'body'}")
+    .tile-marker.tile-marker-purchasable(data-bind="tip: {content: 'Great! This dish is available for purchase pre-made.', container: 'body'}")
       %i.fa.fa-shopping-cart
+    {{/if }}
+    {{#if : dish.is_featured() }}
+    .tile-marker.tile-marker-featured(data-bind="tip: {content: 'This is a featured dish!', container: 'body'}")
+      %i.fa.fa-trophy
     {{/if }}
 
   .recipe-tile-content
@@ -174,16 +178,28 @@ class Dishfave.DishesLoadMoreView extends QS.View
   border-radius: 3px;
   overflow:hidden;
 
-  .recipe-tile-purchasable {
-    position: absolute;
-    top: 2px;
-    right: 2px;
+  &.featured {
+    border: 1px solid gold;
+  }
+
+  .tile-marker {
     padding: 3px 10px;
-    background: #27ae60;
     color: #eee;
     font-size: 14px;
     opacity: 0.9;
     border-radius: 3px;
+  }
+  .tile-marker-purchasable {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    background: #27ae60;
+  }
+  .tile-marker-featured {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    background: gold;
   }
 }
 

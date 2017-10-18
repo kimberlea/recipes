@@ -33,7 +33,7 @@ class Dishfave.DishIndexView extends QS.View
       return 'all' if QS.utils.isBlank(t)
       return t
     @addComputed 'order', ->
-      @params().order || 'newest'
+      @params().order || 'featured'
     @addComputed 'creator', ->
       @params().creator || 'all'
     @addComputed 'favorite', ->
@@ -85,6 +85,8 @@ class Dishfave.DishIndexView extends QS.View
         sort = "cached_favorites_count desc"
       when "quickest"
         sort = "prep_time_mins asc"
+      when "featured"
+        sort = "is_featured desc, created_at desc"
       else
         sort = "created_at desc"
     if QS.utils.isPresent(tag) && tag != 'all'
@@ -141,6 +143,8 @@ class Dishfave.DishIndexView extends QS.View
         {{/if }}
 
         %span.text-muted •
+        %a(data-bind="on.click : updateFilter({order: 'featured'}), css.active : order()== 'featured'")
+          Featured
         %a(data-bind="on.click : updateFilter({order: 'newest'}), css.active : order()== 'newest'")
           Newest
         %a(data-bind="on.click : updateFilter({order: 'popular'}), css.active : order() == 'popular'")
@@ -163,6 +167,7 @@ class Dishfave.DishIndexView extends QS.View
 
               .dropdown-section-header Order By
               .dropdown-section-body
+                %a.menu-option(data-bind="on.click : updateFilter({order: 'featured'}), css.active : order() == 'featured'") Featured
                 %a.menu-option(data-bind="on.click : updateFilter({order: 'newest'}), css.active : order() == 'newest'") Newest
                 %a.menu-option(data-bind="on.click : updateFilter({order: 'popular'}), css.active : order() == 'popular'") Popular
                 %a.menu-option(data-bind="on.click : updateFilter({order: 'quickest'}), css.active : order() == 'quickest'") Quickest

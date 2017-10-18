@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170926035634) do
+ActiveRecord::Schema.define(version: 20170930041722) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -40,21 +40,21 @@ ActiveRecord::Schema.define(version: 20170926035634) do
     t.string   "description"
     t.string   "ingredients"
     t.string   "directions"
-    t.string   "tags",                                   array: true
+    t.string   "tags",                                     array: true
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "serving_size"
     t.string   "image"
     t.integer  "creator_id"
     t.integer  "prep_time_mins"
-    t.boolean  "is_private",             default: false
+    t.boolean  "is_private",               default: false
     t.tsvector "search_vector"
     t.integer  "cached_favorites_count"
     t.string   "purchase_info"
-    t.boolean  "is_recipe_private",      default: false
-    t.boolean  "is_purchasable",         default: false
-    t.boolean  "is_recipe_given",        default: true
-    t.integer  "state",                  default: 1
+    t.boolean  "is_recipe_private",        default: false
+    t.boolean  "is_purchasable",           default: false
+    t.boolean  "is_recipe_given",          default: true
+    t.integer  "state",                    default: 1
     t.datetime "state_changed_at"
     t.string   "source_url"
     t.integer  "cached_ratings_count"
@@ -64,11 +64,32 @@ ActiveRecord::Schema.define(version: 20170926035634) do
     t.datetime "meta_graph_updated_at"
     t.datetime "meta_updated_at"
     t.jsonb    "meta"
+    t.boolean  "is_feature_autorenewable", default: true
+    t.integer  "feature_id"
   end
 
   add_index "dishes", ["meta_graph_updated_at"], name: "index_dishes_on_meta_graph_updated_at", using: :btree
   add_index "dishes", ["meta_updated_at"], name: "index_dishes_on_meta_updated_at", using: :btree
   add_index "dishes", ["processing_started_at"], name: "index_dishes_on_processing_started_at", using: :btree
+
+  create_table "features", force: :cascade do |t|
+    t.datetime "start_time"
+    t.datetime "end_time"
+    t.integer  "base_price"
+    t.integer  "billable_amount"
+    t.boolean  "is_cancelled"
+    t.datetime "cancelled_at"
+    t.datetime "finalized_at"
+    t.integer  "dish_id"
+    t.integer  "invoice_id"
+    t.integer  "creator_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.datetime "processing_started_at"
+    t.string   "processing_id"
+  end
+
+  add_index "features", ["processing_started_at"], name: "index_features_on_processing_started_at", using: :btree
 
   create_table "followings", force: :cascade do |t|
     t.integer  "follower_id"
@@ -76,6 +97,23 @@ ActiveRecord::Schema.define(version: 20170926035634) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  create_table "invoices", force: :cascade do |t|
+    t.datetime "ending_at"
+    t.integer  "total"
+    t.integer  "amount_due"
+    t.string   "stripe_charge_ids",     array: true
+    t.datetime "charged_at"
+    t.integer  "user_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "amount_paid"
+    t.datetime "finalized_at"
+    t.datetime "processing_started_at"
+    t.string   "processing_id"
+  end
+
+  add_index "invoices", ["processing_started_at"], name: "index_invoices_on_processing_started_at", using: :btree
 
   create_table "locations", force: :cascade do |t|
     t.integer  "place_type"
@@ -131,6 +169,7 @@ ActiveRecord::Schema.define(version: 20170926035634) do
     t.datetime "meta_graph_updated_at"
     t.datetime "meta_updated_at"
     t.jsonb    "meta"
+    t.string   "stripe_customer_id"
   end
 
   add_index "users", ["meta_graph_updated_at"], name: "index_users_on_meta_graph_updated_at", using: :btree

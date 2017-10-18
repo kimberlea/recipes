@@ -43,21 +43,11 @@ Rails.application.routes.draw do
     post '/account/login' => 'account#login'
     post '/account/update_flags' => 'account#update_flags'
     post '/account/reset_password' => 'account#reset_password'
-
-    api_resources :dishes do
-      post '/dish/favorite' => 'dishes#favorite'
-      post '/dishes/import_from_url' => 'dishes#import_from_url'
-      get '/dishes/search' => 'dishes#search'
-    end
-    api_resources :user_reactions do
-      post '/user_reactions/react' => 'user_reactions#react'
-    end
-    api_resources :followings
-    api_resources :comments
-    api_resources :users
-    api_resources :locations
+    post '/account/update_payment_method' => 'account#update_payment_method'
+    post '/account/delete_payment_method' => 'account#delete_payment_method'
 
   end
+  mount_api_endpoints("/api")
 
   root 'dishes#index'
 

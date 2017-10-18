@@ -1,5 +1,5 @@
 class ApiController < ApplicationController
-  include QuickScript::Interaction
+  include QuickScript::ApiEndpoints
 
   rescue_from StandardError do |e|
     if Rails.env.test?

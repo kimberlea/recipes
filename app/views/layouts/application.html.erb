@@ -13,6 +13,7 @@
 
     <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://js.stripe.com/v3/"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.0.1/jquery-confirm.min.js"></script>
     <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
     <%= csrf_meta_tags %>
@@ -49,9 +50,10 @@
     var opts = {
       app_class: Dishfave.Application,
       account_model: Dishfave.User,
-      environment: '<%= Rails.env %>',
+      environment: "<%= Rails.env %>",
       build_number: <%= 0 %>,
-      data: <%= jsify(js_data) %>
+      data: <%= jsify(js_data) %>,
+      stripe_pub_key: "<%= APP_CONFIG[:stripe_pub_key] %>"
     };
     <% if current_user %>
       opts.current_user = <%= jsify(current_user.to_api(actor: current_user)) %>

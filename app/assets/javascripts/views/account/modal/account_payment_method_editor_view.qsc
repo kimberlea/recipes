@@ -1,0 +1,71 @@
+class Dishfave.AccountPaymentMethodEditorView extends QS.View
+  templateID: 'df-account-modal-payment-method'
+  init : ->
+    @prompt = ko.observable(@opts.prompt)
+    @error = ko.observable('')
+    @stripe = Stripe(@app.opts.stripe_pub_key)
+    @cardStyle =
+      base:
+        lineHeight: '24px'
+        fontWeight: 300
+        fontFamily: '"Helvetica Neue", Helvetica, sans-serif'
+        fontSize: '20px'
+        '::placeholder':
+          color: '#8898AA'
+
+  onElementBound : (name, el)=>
+    if name == 'card_element'
+      @prepareStripeElements(element: el)
+
+  prepareStripeElements : (opts)=>
+    el = opts.element
+    elements = @stripe.elements()
+    @card = elements.create('card', style: @cardStyle)
+    @card.mount(el)
+
+    @card.addEventListener 'change', (event)=>
+      if event.error
+        @error(event.error.message)
+      else
+        @error("")
+
+  updateUserPaymentToken : (opts)=>
+    Dishfave.AccountAdapter.update_payment_method
+      data:
+        token_id: opts.token.id
+      loading: @is_saving
+      callback: (resp)=>
+        if resp.success
+          @app.trigger 'user.payment_method_updated', resp.data
+          @hideOverlay()
+        else
+          Overlay.alert resp.error
+
+  savePaymentMethod : =>
+    @is_saving(true)
+    @stripe.createToken(@card).then (result)=>
+      @is_saving(false)
+      if result.error
+        @error(result.error.message)
+      else
+        @updateUserPaymentToken(token: result.token)
+
+
+
+<template name="df-account-modal-payment-method" lang="haml">
+.modal-header
+  %h3.modal-title
+    %i.fa.fa-credit-card
+    Add Payment Method
+
+.modal-body
+  %p.lead(data-bind="visibleWithText : prompt")
+  .payment-form.df-card
+    .card-element(data-bind="bindelem : 'card_element'")
+    .card-errors.alert.alert-warning.mt-10(data-bind="visibleWithText : error")
+
+.modal-footer
+  %button.btn.btn-success(data-bind="click : savePaymentMethod, loading : is_saving, disable : error.present()")
+    %i.fa.fa-check
+    Add Card
+</template>

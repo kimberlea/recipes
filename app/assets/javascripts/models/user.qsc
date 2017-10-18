@@ -9,6 +9,7 @@ class Dishfave.User extends QS.Model
     @addFields ['chefscore', 'dishes_count', 'followers_count', 'followings_count'], 0
     @addFields ['flags'], []
     @addFields ['location_ids'], []
+    @addFields ['stripe_source'], null
 
     @addSubModel 'following', Dishfave.Following, true
     @addSubModel 'picture', Dishfave.Picture, true

@@ -9,8 +9,8 @@ class Dishfave.Dish extends QS.Model
 
   init : =>
     @addFields ['title', 'description', 'description_html', 'ingredients', 'ingredients_html', 'directions', 'directions_html', 'purchase_info', 'purchase_info_html', 'image_url', 'view_path', 'view_url'], ''
-    @addFields ['is_purchasable', 'is_private', 'is_recipe_private'], false
-    @addFields ['is_recipe_given'], true
+    @addFields ['is_purchasable', 'is_private', 'is_recipe_private', 'is_featured'], false
+    @addFields ['is_recipe_given', 'is_feature_autorenewable'], true
     @addFields ['prep_time_mins', 'serving_size'], null
     @addFields ['tags'], []
     @addFields ['favorites_count', 'ratings_count', 'ratings_avg'], 0

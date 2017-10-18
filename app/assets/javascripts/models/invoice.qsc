@@ -1,0 +1,16 @@
+class Dishfave.Invoice extends QS.Model
+  @includeCollection()
+  @includeAdapter
+    load_url: '/invoices'
+
+  init : ->
+    @addFields ['created_at', 'ending_at'], 0
+    @addFields ['total', 'amount_due', 'amount_paid'], 0
+    @addFields ['is_open'], false
+
+    @created_at.extend(date: true)
+    @ending_at.extend(date: true)
+    @total.extend(usd: true)
+    @amount_due.extend(usd: true)
+    @amount_paid.extend(usd: true)
+

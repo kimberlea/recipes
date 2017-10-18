@@ -11,6 +11,10 @@ class Dishfave.DishDetailsView extends QS.View
     @addComputed 'is_mine', ->
       @creator.id() == @app.current_user.id()
 
+    @app.handle 'feature.updated', =>
+      @dish.reload
+        data: {enhances: ['is_featured']}
+
     @load()
 
   load : ->
@@ -53,14 +57,19 @@ class Dishfave.DishDetailsView extends QS.View
       else
         $.alert(resp.error)
 
+  displayFeatures : =>
+    Dishfave.DishFeaturesView.displayModal this, dish: @dish
+
 <template name="df-dish-details" lang="haml">
 .recipe-container
+  -# backdrop
   .recipe-image-backdrop
     %img(data-bind="attr.src : dish.image_url")
   .header-space
 
   .row(style="margin: 0px;")
     .col-md-9
+      -# image
       %a.recipe-image(data-lightbox="recipe-image-full" data-bind="attr : {'data-title' : dish.title() , 'href' : dish.image_url()}")
         %img.df-card.pad-0(data-bind="attr.src : dish.image_url")/
         .expand.text-center
@@ -70,9 +79,10 @@ class Dishfave.DishDetailsView extends QS.View
           %i.fa.fa-chevron-down(style="margin-right: 5px;")
           Scroll down for details
 
+      -# content
       .recipe-content.df-card
         .recipe-title
-          %h1 {{ dish.title }}
+          %h1.title {{ dish.title }}
 
         .recipe-meta.row(style="max-width: 700px; margin: 0px auto; padding-bottom: 10px;")
           .col-xs-3
@@ -106,14 +116,28 @@ class Dishfave.DishDetailsView extends QS.View
               {{#if : is_mine() }}
               •
               %a(href="{{ dish.view_path }}/edit") Edit Dish
+              •
+              %a(data-bind="on.click : displayFeatures()") Feature Dish
               {{/if }}
 
+        -# sharing
         / Go to www.addthis.com/dashboard to customize your tools
         .addthis_inline_share_toolbox(data-media="{{ dish.image_url }}" data-title="{{ dish.title }}" data-url="{{ dish.view_url }}" style="margin: 5px; text-align: center;")
 
+        -# description
         .recipe-description.recipe-section.text-center
           {{{ dish.description_html }}}
 
+        -# featured
+        {{#if : dish.is_featured() }}
+        .alert.alert-featured.text-center
+          %strong
+            %i.fa.fa-trophy
+            Featured Dish!
+          This dish is featured for this week.
+        {{/if }}
+
+        -# info
         .recipe-info.recipe-section.row
           .col-sm-6
             %h5 Serving Size
@@ -197,7 +221,13 @@ class Dishfave.DishDetailsView extends QS.View
 
 </template>
 
-<style lang="css">
+<style lang="scss">
+
+.alert-featured {
+  color: #8a6d3b;
+  background-color: #fcf8e3;
+  border-color: #faebcc;
+}
 .comments-content {
   padding: 30px;
   background: #fafafa;

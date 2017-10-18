@@ -1,0 +1,12 @@
+class Dishfave.ButtonToggleView extends QS.View
+  @registerComponent 'df-button-toggle'
+  init : ->
+    @value = @opts.value
+
+<template name="df-button-toggle" lang="haml">
+.btn-group
+  %button.btn(data-bind="css : {'btn-success active' : value()}, on.click : value(true)")
+    Yes
+  %button.btn(data-bind="css : {'btn-danger active' : !value()}, on.click : value(false)")
+    No
+</template>

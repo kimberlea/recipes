@@ -20,8 +20,8 @@ GIT
 
 GIT
   remote: git://github.com/agquick/quick_script.git
-  revision: 97d8ff7df775b0333f0b718fa34b791b41f4da55
-  ref: 97d8ff7
+  revision: 4869a9042412dd4e584787ab0ceb3a08e3fc16ed
+  ref: 4869a90
   specs:
     quick_script (2.0.5)
       faraday
@@ -290,6 +290,8 @@ GEM
       actionpack (>= 4.0)
       activesupport (>= 4.0)
       sprockets (>= 3.0.0)
+    stripe (3.3.2)
+      faraday (~> 0.9)
     subexec (0.2.3)
     temple (0.8.0)
     therubyracer (0.12.2)
@@ -349,6 +351,7 @@ DEPENDENCIES
   sass-rails (~> 5.0)
   schema_sync!
   sdoc (~> 0.4.0)
+  stripe
   therubyracer
   turbolinks
   uglifier (>= 1.3.0)
