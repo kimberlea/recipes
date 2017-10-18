@@ -19,6 +19,15 @@ GIT
     quick_notify (1.3.0)
 
 GIT
+  remote: git://github.com/agquick/quick_script.git
+  revision: 4869a9042412dd4e584787ab0ceb3a08e3fc16ed
+  ref: 4869a90
+  specs:
+    quick_script (2.0.5)
+      faraday
+      haml-rails
+
+GIT
   remote: git://github.com/agquick/quick_utils.git
   revision: e24a2735df1377fd367ac7ee5820ff2f28bd2b31
   ref: e24a273
@@ -41,13 +50,6 @@ GIT
   revision: 7ec06b3a4c95fe4fac9b8bb13af09b539933b38e
   specs:
     schema_sync (0.1.0)
-
-PATH
-  remote: ~/Projects/lib/quick_script
-  specs:
-    quick_script (2.0.5)
-      faraday
-      haml-rails
 
 GEM
   remote: https://rubygems.org/
