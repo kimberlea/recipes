@@ -28,6 +28,5 @@ class Dishfave.DishRatingIconView extends QS.View
 <style lang="sass">
 df-dish-rating-icon
   i
-    color: #d64541
     margin-top: 2px
 </style>

@@ -33,6 +33,7 @@ class Dish < ActiveRecord::Base
   field :cached_favorites_count, type: Integer
   field :cached_ratings_count, type: Integer
   field :cached_ratings_avg, type: Float
+  field :cached_comments_count, type: Integer
 
   field :creator_id, type: Integer
   field :feature_id, type: Integer
@@ -274,6 +275,7 @@ class Dish < ActiveRecord::Base
     ratings_scope = UserReaction.where(dish_id: self.id).where("rating IS NOT NULL")
     self.cached_ratings_count = ratings_scope.count
     self.cached_ratings_avg = ratings_scope.average(:rating)
+    self.cached_comments_count = Comment.with_dish_id(self.id).count
 
     # feature
     self.is_featured?(reload: true, do_save: false)
@@ -341,6 +343,7 @@ class Dish < ActiveRecord::Base
     ret[:created_at] = self.created_at.to_i
 
     ret[:favorites_count] = self.cached_favorites_count
+    ret[:comments_count] = self.cached_comments_count
     ret[:ratings_count] = self.cached_ratings_count
     ret[:ratings_avg] = self.cached_ratings_avg.present? ? cached_ratings_avg.round(2) : nil
     ret[:errors] = self.errors.to_hash if self.errors.any?

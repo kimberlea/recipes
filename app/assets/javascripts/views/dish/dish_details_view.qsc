@@ -69,66 +69,53 @@ class Dishfave.DishDetailsView extends QS.View
 
   .row(style="margin: 0px;")
     .col-md-9
-      -# image
-      %a.recipe-image(data-lightbox="recipe-image-full" data-bind="attr : {'data-title' : dish.title() , 'href' : dish.image_url()}")
-        %img.df-card.pad-0(data-bind="attr.src : dish.image_url")/
-        .expand.text-center
-          %i.fa.fa-camera(style="margin-right: 5px;")
-          Click to expand photo
-          %span(style="margin: 0px 5px; color: #777;") •
-          %i.fa.fa-chevron-down(style="margin-right: 5px;")
-          Scroll down for details
 
-      -# content
       .recipe-content.df-card
-        .recipe-title
-          %h1.title {{ dish.title }}
-
-        .recipe-meta.row(style="max-width: 700px; margin: 0px auto; padding-bottom: 10px;")
-          .col-xs-3
-            %img.img-circle(data-bind="attr.src : dish.creator.picture_url()" style="width: 80px; height: 80px;")/
-
-          .col-xs-9.text-left
-            .recipe-meta-name(style="color: #555;")
-              %a(href="{{ dish.creator.view_path }}") {{ dish.creator.full_name }}
-              %span.badge.chefscore-badge(data-toggle="tooltip" title="ChefScore is the total number of favorites on all dishes")
-                %i.fa.fa-fire
-                {{ creator.chefscore }}
-
-            .recipe-meta-reactions
-              %button.btn.btn-clear(data-bind="on.click : toggleFollowing()")
-                {{ creator.following.id.present() ? 'Unfollow' : 'Follow' }}
-
-              %button.btn.btn-clear(data-bind="on.click : toggleFavorite()")
-                {{ dish.user_reaction.is_favorite() ? 'Unfavorite' : 'Favorite' }}
-
-              %df-dish-rating-button(params="dish : dish, userReaction : dish.user_reaction")
-
-            .recipe-meta-info
+        -# // COVER
+        .recipe-cover
+          .recipe-cover-backdrop(data-bind="cropImage : [dish.image_url(), '100%', '100%']")
+          .recipe-title
+            {{ dish.title }}
+          .recipe-meta
+            %span
               %i.fa.fa-heart
               {{ dish.favorites_count }}
-              •
-              {{#if : dish.has_ratings() }}
-              %df-dish-rating-icon(params="rating : dish.ratings_avg(), count : dish.ratings_count()")
-              •
-              {{/if }}
-              {{ dish.created_at.moment().format("MMMM D, YYYY") }}
-              {{#if : is_mine() }}
-              •
-              %a(href="{{ dish.view_path }}/edit") Edit Dish
-              •
-              %a(data-bind="on.click : displayFeatures()") Feature Dish
-              {{/if }}
+            •
+            %span
+              %i.fa.fa-comment
+              {{ dish.comments_count() || 0 }}
+            {{#if : dish.has_ratings() }}
+            •
+            %df-dish-rating-icon(params="rating : dish.ratings_avg(), count : dish.ratings_count()")
+            {{/if }}
+            {{#if : is_mine() }}
+            •
+            %a(href="{{ dish.view_path }}/edit") Edit
+            •
+            %a(data-bind="on.click : displayFeatures()") Feature
+            {{/if }}
 
-        -# sharing
+          .recipe-actions
+            %button.btn.btn-clear(data-bind="on.click : toggleFavorite()")
+              %i.fa(data-bind="css : {'fa-heart' : dish.user_reaction.is_favorite(), 'fa-heart-o' : !dish.user_reaction.is_favorite()}")
+
+            %df-dish-rating-button(params="dish : dish, userReaction : dish.user_reaction")
+
+          .recipe-creator
+            %a.creator-name.no-underline(href="{{ dish.creator.view_path }}")
+              {{ dish.creator.full_name }}
+            %img.creator-image.img-circle.clickable(data-bind="attr.src : dish.creator.picture_url(), on.click : app.navigateTo(dish.creator.view_path())" style="width: 80px; height: 80px;")/
+
+
+        -# // SHARING
         / Go to www.addthis.com/dashboard to customize your tools
-        .addthis_inline_share_toolbox(data-media="{{ dish.image_url }}" data-title="{{ dish.title }}" data-url="{{ dish.view_url }}" style="margin: 5px; text-align: center;")
+        .addthis_inline_share_toolbox(data-media="{{ dish.image_url }}" data-title="{{ dish.title }}" data-url="{{ dish.view_url }}" style="margin: 5px; text-align: right;")
 
-        -# description
-        .recipe-description.recipe-section.text-center
+        -# // DESCRIPTION
+        .recipe-description.recipe-section
           {{{ dish.description_html }}}
 
-        -# featured
+        -# // FEATURED
         {{#if : dish.is_featured() }}
         .alert.alert-featured.text-center
           %strong
@@ -137,7 +124,7 @@ class Dishfave.DishDetailsView extends QS.View
           This dish is featured for this week.
         {{/if }}
 
-        -# info
+        -# // INFO
         .recipe-info.recipe-section.row
           .col-sm-6
             %h5 Serving Size
@@ -197,7 +184,7 @@ class Dishfave.DishDetailsView extends QS.View
           {{#foreach : comments.items }}
           .comment
             .comment-image
-              %img.img-circle(data-bind="attr.src : user.picture_url" style="width: 40px; height: 40px;")/
+              %img.img-circle(data-bind="attr.src : user.picture_url" style="width: 40px; height: 40px;")
             .comment-body
               .comment-creator
                 %a.mr-5(href="{{ user.view_path }}")
@@ -220,6 +207,67 @@ class Dishfave.DishDetailsView extends QS.View
           %df-dish-tile-grid(params="dishes : dishes")
 
 </template>
+
+<style lang="sass">
+.recipe-cover
+  position: relative
+  height: 450px
+  margin-bottom: 15px
+  margin-top: -15px
+  margin-left: -15px
+  margin-right: -15px
+  text-shadow: 0px 0px 8px #000
+  color: #fff
+  a
+    color: #fff
+  .dropdown-menu
+    text-shadow: none
+
+  .btn.btn-clear
+    color: #fff
+    border-color: #fff
+
+  .recipe-title
+    position: absolute
+    bottom: 100px
+    left: 20px
+    font-size: 4.0rem
+    text-align: left
+    font-weight: 200
+    letter-spacing: 1px
+
+  .recipe-meta
+    position: absolute
+    bottom: 75px
+    left: 20px
+    font-size: 1.7rem
+    color: #ddd
+    a
+      color: inherit
+
+  .recipe-actions
+    position: absolute
+    bottom: 10px
+    left: 20px
+    .btn
+      font-size: 2.0rem
+      padding: 5px 10px
+      margin-right: 15px
+      
+
+  .recipe-creator
+    position: absolute
+    bottom: -20px
+    right: 20px
+    text-align: right
+    font-size: 2.5rem
+    .creator-name
+      vertical-align: middle
+    .creator-image
+      border: 2px solid rgba(255, 255, 255, 0.9)
+      margin-left: 10px
+      vertical-align: middle
+</style>
 
 <style lang="scss">
 

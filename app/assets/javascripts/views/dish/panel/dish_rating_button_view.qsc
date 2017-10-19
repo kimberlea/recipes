@@ -35,7 +35,6 @@ class Dishfave.DishRatingButtonView extends QS.View
 .dropdown.inline
   %button.btn.btn-clear(data-toggle="dropdown")
     %i(data-bind="attr.class : selected_info().icon")
-    {{ selected_info().text }}
     %span.caret
   %ul.dropdown-menu
     %li

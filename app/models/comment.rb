@@ -2,6 +2,7 @@ class Comment < ActiveRecord::Base
   include SchemaSync::Model
   include QuickScript::Model
   include APIUtils::Validation
+  include Metable
 
   field :user_id, type: Integer 
   field :body, type: String
@@ -53,6 +54,7 @@ class Comment < ActiveRecord::Base
 
     saved = self.save
     if saved && new_record
+      meta_graph_updated_for(dish)
       AppEvent.publish("dish.commented", actor, {comment: self, dish: self.dish})
     end
     return {success: saved, data: self, error: error_message, new_record: new_record}

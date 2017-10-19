@@ -45,33 +45,7 @@
 
   .recipe-content {
     background: #fff;
-    border-radius: 3px;
-  }
-
-  .recipe-content .recipe-title {
-    text-align: center;
-    padding: 14px;
-    color: #414244;
-    margin: 5px;
-  }
-
-  .recipe-content .recipe-meta {
-      text-align: center;
-      font-size: 20px;
-      padding: 30px;
-      color: #ccc;
-      font-weight: 300;
-
-      .recipe-meta-name {
-        font-size: 24px;
-        span, a, i {
-          vertical-align: middle;
-        }
-      }
-      .chefscore-badge {
-        font-size: 20px;
-        padding: 5px 10px;
-      }
+    //border-radius: 3px;
   }
 
   .recipes-content .user-reaction {
@@ -123,7 +97,7 @@
   }
 
   .sidebar-panel {
-    border-radius: 3px;
+    //border-radius: 3px;
     background-color: #fafafa;
     .sidebar-title {
       text-transform: uppercase;

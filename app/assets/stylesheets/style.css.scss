@@ -9,13 +9,11 @@ h2 {
   }
 }
 
-hr.clear { 
-  border-color: transparent;
-}
+hr.clear { border-color: transparent; }
 
-a.no-underline:hover {
-  text-decoration: none;
-}
+a.no-underline:hover { text-decoration: none; }
+a { color: #d64541; }
+.clickable { cursor: pointer; }
 
 .backdrop-tint {
   position: fixed;
@@ -94,6 +92,7 @@ a.no-underline:hover {
 .mb-10 { margin-bottom: 10px; }
 .mb-20 { margin-bottom: 20px; }
 .full-width { width: 100%; }
+.text-red { color: red; }
 
 .help-block {
   color: #aaa;

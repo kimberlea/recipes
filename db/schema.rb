@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170930041722) do
+ActiveRecord::Schema.define(version: 20171016213017) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -66,6 +66,7 @@ ActiveRecord::Schema.define(version: 20170930041722) do
     t.jsonb    "meta"
     t.boolean  "is_feature_autorenewable", default: true
     t.integer  "feature_id"
+    t.integer  "cached_comments_count"
   end
 
   add_index "dishes", ["meta_graph_updated_at"], name: "index_dishes_on_meta_graph_updated_at", using: :btree

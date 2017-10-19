@@ -109,7 +109,7 @@ class Dishfave.DishFeaturesView extends QS.View
         {{ end_time.moment().format("llll") }}
       %td
         {{#if : is_active() }}
-        %a(data-bind="on.click : $view.cancelFeature($data), loading : feature.is_saving")
+        %a(data-bind="on.click : $view.cancelFeature($data), loading : is_saving")
           cancel
         {{/if }}
     {{/foreach }}
