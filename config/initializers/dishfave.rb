@@ -32,4 +32,5 @@ QuickScript::ApiEndpoints.configure("/api") do
     post '/feature/cancel', action: 'cancel_as_action!'
   end
   model_endpoints_for "Invoice"
+  model_endpoints_for "Photo"
 end

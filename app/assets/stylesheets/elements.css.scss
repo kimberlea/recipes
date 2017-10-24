@@ -66,3 +66,54 @@
   .row-icon, .row-arrow { color: #777; }
 
 }
+
+.grid-panel {
+  display: flex;
+  flex-wrap: wrap;
+  .grid-item {
+    text-align: center;
+    position: relative;
+    &.square {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      &:after {
+        content: "";
+        display: block;
+        margin-top: 100%;
+      }
+      &.flex-col {
+        flex-direction: column;
+      }
+    }
+    &.grid-item-add {
+      border: 1px dashed #ccc;
+      color: #aaa;
+      font-size: 2.4rem;
+    }
+    .grid-item-top-right {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+    }
+    .grid-item-bottom-right {
+      position: absolute;
+      bottom: 5px;
+      right: 5px;
+    }
+  }
+
+  &.grid-panel-2 {
+    .grid-item {
+      width: 49.5%;
+      margin: 0.25%;
+    }
+  }
+  &.grid-panel-3 {
+    .grid-item {
+      width: 32.83%;
+      margin: 0.25%;
+    }
+  }
+}
+

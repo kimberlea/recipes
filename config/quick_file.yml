@@ -1,0 +1,41 @@
+development:
+  cache:
+    local_root: '/tmp'
+    directory: 'dishfave-development'
+  connections:
+  - name: amazon
+    provider: :s3
+    access_key_id: <%= ENV['S3_ACCESS_KEY'] %>
+    secret_access_key: <%= ENV['S3_SECRET_KEY'] %>
+    portal_url: 'https://kim-recipe-development.s3.amazonaws.com/'
+    directory: kim-recipe-development
+    public: true
+    primary: true 
+
+test:
+  cache:
+    local_root: '/tmp'
+    directory: 'dishfave-test-cache'
+  connections:
+  - name: local
+    provider: :local
+    portal_url: 'http://media.dishfave.com/'
+    local_root: '/tmp'
+    directory: 'dishfave-test'
+    public: true
+    primary: true 
+
+production:
+  cache:
+    local_root: '/tmp'
+    directory: 'dishfave-production'
+  connections:
+  - name: amazon
+    provider: :s3
+    access_key_id: <%= ENV['S3_ACCESS_KEY'] %>
+    secret_access_key: <%= ENV['S3_SECRET_KEY'] %>
+    portal_url: 'https://kim-recipe-production.s3.amazonaws.com/'
+    directory: kim-recipe-production
+    public: true
+    primary: true 
+

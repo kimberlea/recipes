@@ -1,8 +1,9 @@
 class Dishfave.DishDetailsView extends QS.View
-  @registerComponent 'df-dish-details', 'df-dish-details'
+  @registerComponent 'df-dish-details'
   init : ->
     @dish = new Dishfave.Dish(@app.opts.data.dish)
     @creator = @dish.creator
+    @photos = new Dishfave.Photo.Collection()
     @dishes = new Dishfave.Dish.Collection(limit: 8)
     @comments = new Dishfave.Comment.Collection()
     @new_comment = new Dishfave.Comment()
@@ -20,7 +21,11 @@ class Dishfave.DishDetailsView extends QS.View
   load : ->
     @loadRecentDishes()
     @loadComments()
+    @loadPhotos()
     @showShareModal()
+
+  loadPhotos : =>
+    @photos.load {with_dish_id: @dish.id()}
 
   loadRecentDishes : ->
     @dishes.load {not_deleted: []},
@@ -61,7 +66,7 @@ class Dishfave.DishDetailsView extends QS.View
     Dishfave.DishFeaturesView.displayModal this, dish: @dish
 
 <template name="df-dish-details" lang="haml">
-.recipe-container
+.recipe-container.df-dish-details
   -# backdrop
   .recipe-image-backdrop
     %img(data-bind="attr.src : dish.image_url")
@@ -73,7 +78,7 @@ class Dishfave.DishDetailsView extends QS.View
       .recipe-content.df-card
         -# // COVER
         .recipe-cover
-          .recipe-cover-backdrop(data-bind="cropImage : [dish.image_url(), '100%', '100%']")
+          %a.recipe-cover-backdrop(data-bind="cropImage : [dish.image_url(), '100%', '100%'], attr.href : dish.image_url()" data-lightbox="recipe-photos" data-title="{{ dish.title }}")
           .recipe-title
             {{ dish.title }}
           .recipe-meta
@@ -106,10 +111,19 @@ class Dishfave.DishDetailsView extends QS.View
               {{ dish.creator.full_name }}
             %img.creator-image.img-circle.clickable(data-bind="attr.src : dish.creator.picture_url(), on.click : app.navigateTo(dish.creator.view_path())" style="width: 80px; height: 80px;")/
 
+        -# // PHOTOS
+        {{#if : photos.length() > 1 }}
+        .recipe-photos
+          .grid-panel.grid-panel-3
+            {{#foreach : photos.items }}
+            .grid-item.square
+              %a.photo-image(data-bind="cropImage : [image.url().thumb, '100%', '100%'], attr.href : image.url().original" data-lightbox="recipe-photos" data-title="{{ $view.dish.title }}")
+            {{/foreach }}
+        {{/if }}
 
         -# // SHARING
         / Go to www.addthis.com/dashboard to customize your tools
-        .addthis_inline_share_toolbox(data-media="{{ dish.image_url }}" data-title="{{ dish.title }}" data-url="{{ dish.view_url }}" style="margin: 5px; text-align: right;")
+        .addthis_inline_share_toolbox(data-media="{{ dish.image_url }}" data-title="{{ dish.title }}" data-url="{{ dish.view_url }}" style="margin: 5px; text-align: center;")
 
         -# // DESCRIPTION
         .recipe-description.recipe-section
@@ -209,64 +223,69 @@ class Dishfave.DishDetailsView extends QS.View
 </template>
 
 <style lang="sass">
-.recipe-cover
-  position: relative
-  height: 450px
-  margin-bottom: 15px
-  margin-top: -15px
-  margin-left: -15px
-  margin-right: -15px
-  text-shadow: 0px 0px 8px #000
-  color: #fff
-  a
+.df-dish-details
+  .recipe-cover
+    position: relative
+    height: 450px
+    margin-bottom: 15px
+    margin-top: -15px
+    margin-left: -15px
+    margin-right: -15px
+    text-shadow: 0px 0px 8px #000
     color: #fff
-  .dropdown-menu
-    text-shadow: none
-
-  .btn.btn-clear
-    color: #fff
-    border-color: #fff
-
-  .recipe-title
-    position: absolute
-    bottom: 100px
-    left: 20px
-    font-size: 4.0rem
-    text-align: left
-    font-weight: 200
-    letter-spacing: 1px
-
-  .recipe-meta
-    position: absolute
-    bottom: 75px
-    left: 20px
-    font-size: 1.7rem
-    color: #ddd
     a
-      color: inherit
+      color: #fff
+    .dropdown-menu
+      text-shadow: none
 
-  .recipe-actions
-    position: absolute
-    bottom: 10px
-    left: 20px
-    .btn
-      font-size: 2.0rem
-      padding: 5px 10px
-      margin-right: 15px
-      
+    .btn.btn-clear
+      color: #fff
+      border-color: #fff
 
-  .recipe-creator
-    position: absolute
-    bottom: -20px
-    right: 20px
-    text-align: right
-    font-size: 2.5rem
-    .creator-name
-      vertical-align: middle
-    .creator-image
-      border: 2px solid rgba(255, 255, 255, 0.9)
-      margin-left: 10px
-      vertical-align: middle
+    .recipe-title
+      position: absolute
+      bottom: 100px
+      left: 20px
+      font-size: 4.0rem
+      text-align: left
+      font-weight: 200
+      letter-spacing: 1px
+
+    .recipe-meta
+      position: absolute
+      bottom: 75px
+      left: 20px
+      font-size: 1.7rem
+      color: #ddd
+      a
+        color: inherit
+
+    .recipe-actions
+      position: absolute
+      bottom: 10px
+      left: 20px
+      .btn
+        font-size: 2.0rem
+        padding: 5px 10px
+        margin-right: 15px
+        
+
+    .recipe-creator
+      position: absolute
+      bottom: -20px
+      right: 20px
+      text-align: right
+      font-size: 2.5rem
+      .creator-name
+        vertical-align: middle
+      .creator-image
+        border: 2px solid rgba(255, 255, 255, 0.9)
+        margin-left: 10px
+        vertical-align: middle
+
+  .recipe-photos
+    margin: -15px -15px 0px -15px
+
 </style>
 
 <style lang="scss">

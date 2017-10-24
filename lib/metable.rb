@@ -62,7 +62,7 @@ module Metable
 
     def meta_graph_updated(scope = nil)
       scope ||= self.all
-      scope.update_all(meta_graph_updated: Time.now)
+      scope.update_all(meta_graph_updated_at: Time.now)
     end
 
   end ## END CLASS METHODS

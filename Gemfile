@@ -40,6 +40,9 @@ gem 'quick_jobs', github: 'agquick/quick_jobs'
 
 gem 'ramba', github: 'agquick/ramba', branch: 'develop'
 
+gem 'quick_file', github: 'agquick/quick_file', ref: 'ded4ae2'
+#gem 'quick_file', path: '~/Projects/lib/quick_file'
+
 gem 'carrierwave', '~> 1.0'
 
 gem 'mini_magick'

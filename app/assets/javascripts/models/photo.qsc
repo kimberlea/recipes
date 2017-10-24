@@ -1,0 +1,10 @@
+class Dishfave.Photo extends QS.Model
+  @includeCollection()
+  @includeAdapter
+    load_url: '/photos'
+    save_url: '/photo'
+
+  init : ->
+    @addFields ['dish_id', 'comment_id'], ''
+
+    @addSubModel 'image', Dishfave.ImageUpload

@@ -69,4 +69,32 @@ module DBRepair
     end
   end
 
+  def self.import_photos
+    Dish.find_each do |dish|
+      dimg = dish.image
+      p = Photo.new
+      p.dish = dish
+      upl = Common::ImageUpload.new
+      upl.state = 5
+      upl.original_filename = File.basename(dimg.path)
+      upl.styles['original'] = {
+        'ct' => dimg.content_type,
+        'sz' => dimg.size,
+        'stg' => 'amazon',
+        'path' => dimg.path
+      }
+      upl.styles['thumb'] = {
+        'ct' => dimg.thumb.content_type,
+        'sz' => dimg.thumb.size,
+        'stg' => 'amazon',
+        'path' => dimg.thumb.path
+      }
+      upl.file_category = QuickFile::FILE_CATEGORIES[:image]
+      upl.style_type = 20
+      upl.attributes['is_from_dish'] = true
+      p.image = upl
+      p.save
+    end
+  end
+
 end

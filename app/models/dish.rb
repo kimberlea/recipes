@@ -37,11 +37,14 @@ class Dish < ActiveRecord::Base
 
   field :creator_id, type: Integer
   field :feature_id, type: Integer
+  field :primary_photo_id, type: Integer
 
   belongs_to :creator, class_name: "User"
   belongs_to :feature
+  belongs_to :primary_photo, class_name: "Photo"
 
   has_many :user_reactions
+  has_many :photos
 
   timestamps!
   state :active, 1
@@ -51,6 +54,8 @@ class Dish < ActiveRecord::Base
   metable!
 
   attr_accessor :user_reaction, :api_request_scope
+
+  DEFAULT_IMAGE_URL = "/assets/dish_default.jpg"
 
   scope :serves_count, lambda {|count|
     where("serving_size > ?", count)
@@ -163,8 +168,8 @@ class Dish < ActiveRecord::Base
       tags = QuickScript.parse_opts(opts[:tags])
       self.tags = tags.collect {|tag| tag.strip.downcase}
     end
-    if opts.key?(:image)
-      self.image = opts[:image]
+    if opts.key?(:primary_photo_id)
+      self.primary_photo = Photo.find(opts[:primary_photo_id])
     end
     success = self.save
     if success && new_record
@@ -191,6 +196,13 @@ class Dish < ActiveRecord::Base
       str = "https://dishfave.com#{str}"
     end
     return str
+  end
+
+  def image_url
+    primary_photo ? primary_photo.image.url : DEFAULT_IMAGE_URL
+  end
+  def thumb_url
+    primary_photo ? primary_photo.image.url(:thumb) : DEFAULT_IMAGE_URL
   end
 
   def tags_to_str
@@ -280,6 +292,11 @@ class Dish < ActiveRecord::Base
     # feature
     self.is_featured?(reload: true, do_save: false)
 
+    # primary photo
+    if self.primary_photo.nil?
+      self.primary_photo = Photo.with_dish_id(self.id).first
+    end
+
     # save and index
     self.meta_updated_at = Time.now
     self.update_elastic
@@ -328,10 +345,12 @@ class Dish < ActiveRecord::Base
     ret[:prep_time_details] = self.prep_time_details
     ret[:is_private] = self.is_private
     ret[:is_recipe_given] = self.is_recipe_given
-    ret[:image_url] = self.image ? self.image.url : nil
+    ret[:image_url] = self.image_url
+    ret[:thumb_url] = self.thumb_url
     ret[:is_recipe_private] = self.is_recipe_private
     ret[:is_private] = self.is_private
     ret[:is_featured] = self.is_featured?
+    ret[:primary_photo_id] = self.primary_photo_id.to_s
 
     if show_recipe
       ret[:ingredients] = self.ingredients
@@ -360,6 +379,9 @@ class Dish < ActiveRecord::Base
     if has_present_association?(:creator)
       ret[:creator] = creator.to_api(embedded: true)
     end
+    if has_present_association?(:primary_photo)
+      ret[:primary_photo] = primary_photo.to_api(embedded: true)
+    end
 
     if user_reaction
       ret[:user_reaction] = user_reaction.to_api(:embedded)
@@ -369,7 +391,7 @@ class Dish < ActiveRecord::Base
 
   class ScopeResponder < QuickScript::ModelScopeResponder
     def base_scope
-      Dish.is_visible_by(actor)
+      Dish.is_visible_by(actor).includes(["primary_photo"])
     end
 
     def build_result

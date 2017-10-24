@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171016213017) do
+ActiveRecord::Schema.define(version: 20171017021321) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -67,6 +67,7 @@ ActiveRecord::Schema.define(version: 20171016213017) do
     t.boolean  "is_feature_autorenewable", default: true
     t.integer  "feature_id"
     t.integer  "cached_comments_count"
+    t.integer  "primary_photo_id"
   end
 
   add_index "dishes", ["meta_graph_updated_at"], name: "index_dishes_on_meta_graph_updated_at", using: :btree
@@ -132,6 +133,14 @@ ActiveRecord::Schema.define(version: 20171016213017) do
   end
 
   add_index "locations", ["uuid"], name: "index_locations_on_uuid", using: :btree
+
+  create_table "photos", force: :cascade do |t|
+    t.integer  "dish_id"
+    t.integer  "comment_id"
+    t.jsonb    "image"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "user_reactions", force: :cascade do |t|
     t.integer  "user_id"

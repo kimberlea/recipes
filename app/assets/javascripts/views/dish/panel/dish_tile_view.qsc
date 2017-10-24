@@ -24,7 +24,7 @@ class Dishfave.DishesLoadMoreView extends QS.View
 %a.recipe-tile(href="{{ dish.view_path }}" data-bind="css.featured : dish.is_featured()")
 
   .recipe-tile-image.pos-rel
-    %img(data-bind="attr.src : dish.image_url")
+    %img(data-bind="attr.src : dish.thumb_url")
     .recipe-tile-image-meta
       %img.img-circle(data-bind="attr.src : dish.creator.picture_url" style="width: 20px; height: 20px;")
       %span.recipe-tile-image-meta-name

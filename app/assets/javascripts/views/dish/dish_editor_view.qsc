@@ -1,19 +1,58 @@
 class Dishfave.DishEditorView extends QS.View
+  @registerComponent 'df-dish-editor'
   init : ->
     @dish = new Dishfave.Dish(@app.opts.data.dish)
+    @photos = new Dishfave.Photo.Collection()
+    @photo = new Dishfave.Photo()
 
-  saveDish : =>
+    @addComputed 'title', ->
+      if @dish.is_new() then "Create New Dish." else "Edit This Dish."
+
+    @app.handle 'photo.updated', => @photos.update()
+    @app.handle 'photo.deleted', => @photos.update()
+
+    @photo.image.input.file.subscribe (val)=>
+      if val?
+        @saveAndAddPhoto()
+
+    @load()
+
+  load : =>
+    if !@dish.is_new()
+      @photos.load {with_dish_id: @dish.id()}
+
+  saveDish : (opts={})=>
     if !@app.is_logged_in()
       @app.promptAuthentication()
       return
 
     fields = ['title', 'description', 'is_recipe_given', 'ingredients', 'directions', 'prep_time_mins', 'is_purchasable', 'purchase_info', 'tags', 'serving_size', 'is_recipe_private', 'is_private']
-    fields.push('image') if @dish.image.input.present()
     @dish.save fields, (resp)=>
       if resp.success
-        @app.navigateTo(@dish.view_path())
+        if opts.callback?
+          opts.callback()
+        else
+          @app.navigateTo(@dish.view_path())
       else
         $.alert(resp.error)
+
+  setPhotoAsPrimary : (photo)=>
+    @dish.primary_photo_id(photo.id())
+    @dish.save ['primary_photo_id'], (resp)=>
+      @app.trigger 'dish.updated', resp.data
+
+  saveAndAddPhoto : =>
+    @saveDish
+      callback: @addPhoto
+
+  addPhoto : =>
+    @photo.dish_id(@dish.id())
+    @photo.save ['image', 'dish_id'], (resp)=>
+      if resp.success
+        @app.trigger 'photo.updated', resp.data
+      else
+        $.alert(resp.error)
+      @photo.reset()
 
   deleteDish : =>
     @dish.delete ['id'], (resp)=>
@@ -28,3 +67,159 @@ class Dishfave.DishEditorView extends QS.View
         confirm: =>
           @deleteDish()
         cancel: =>
+
+  promptDeletePhoto : (photo)=>
+    Overlay.confirm "Are you sure you want to delete this photo?",
+      yes: =>
+        photo.delete ['id'], (resp)=>
+          @app.trigger 'photo.deleted', resp.data
+
+
+<template name="df-dish-editor" lang="haml">
+.container.df-dish-editor(style="padding: 0px 15px;")
+  .header-space
+  .recipe-edit-container.df-card.df-col
+    .page-header
+      %h1 {{ title }}
+      {{#if : dish.is_new() }}
+      %p.lead(style="color: #777;")
+        A dish can be anything, including an entree, dessert, or even a drink!
+      .tips.lead
+        .tip.row
+          .col-xs-1
+            %i.fa.fa-check-circle
+          .col-xs-11
+            You can promote your dishes for sale globally across all our members (great for cookies, cakes, and other pre-made dishes)
+        .tip.row
+          .col-xs-1
+            %i.fa.fa-check-circle
+          .col-xs-11
+            You can store all your recipes for later and share with friends and family, or keep for yourself
+      {{/if }}
+    .form
+      .form-group
+        %label Title
+        %input.form-control.input-lg(data-bind="textInput : dish.title" name="title" placeholder="Enter title here." type="text")/
+      .form-group
+        %label Description
+        %textarea.form-control.input-lg(data-bind="textInput : dish.description" name="description" placeholder="Enter description here." rows="5")
+      %hr.clear/
+      %h2
+        %i.fa.fa-list-ol>
+        How to Make
+      .well.well-slim
+        .checkbox
+          %label(style="font-weight: 200;")
+            %input(data-bind="checked : dish.is_recipe_not_given" name="is_recipe_not_given" type="checkbox")
+            I don&#39;t have the directions, or would prefer not to enter.
+        .help-block.small.text-muted(style="font-weight: 200;")
+          %i.fa.fa-question-circle
+          You can make the recipe private in the
+          %strong Privacy
+          section at the bottom.
+      .howtomake-fields(data-bind="visible : dish.is_recipe_given()")
+        .form-group
+          %label Ingredients
+          %textarea.form-control.input-lg(data-bind="textInput : dish.ingredients" name="ingredients" placeholder="Butter\r\nEggs\r\nFlour\r\n. . ." rows="10")
+          .help-block.small.text-muted
+            %i.fa.fa-question-circle
+            Enter each ingredient on a new line.
+        .form-group
+          %label Directions
+          %textarea.form-control.input-lg(data-bind="textInput : dish.directions" name="directions" placeholder="1. Preheat oven to 350.\r\n2. And then . . ." rows="10")
+          .help-block.small.text-muted
+            %i.fa.fa-question-circle
+            Enter each step on a new line with a number in front.
+        .form-group
+          %label Preparation Time
+          .row
+            .col-xs-6.col-sm-4
+              .input-group.input-group-lg
+                %input.form-control(data-bind="textInput : dish.prep_time_mins" name="prep_time_minutes" placeholder="30" type="number")/
+                %span.input-group-addon minutes
+      %hr.clear/
+      %h2
+        %i.fa.fa-shopping-cart>
+        Purchase Info
+      .form-group
+        .checkbox
+          %label
+            %input(data-bind="checked : dish.is_purchasable" name="is_purchasable" type="checkbox")/
+            This dish is available for sale pre-made.
+        %textarea.form-control.input-lg.purchase-info(data-bind="textInput : dish.purchase_info, visible : dish.is_purchasable()" name="purchase_info" placeholder="(Optional) Website links, store names, and locations are all helpful." rows="5")
+      %hr.clear/
+      %h2
+        %i.fa.fa-info-circle>
+        More Info
+      .row
+        .col-xs-6.col-sm-4
+          .form-group
+            %label Serving Size
+            .input-group.input-group-lg
+              %input.form-control(data-bind="textInput : dish.serving_size" name="serving_size" placeholder="8" type="text")/
+              %span.input-group-addon servings
+      .form-group
+        %label Dish Tags
+        %textarea.form-control.input-lg(data-bind="value : dish.tags_str" name="tags" placeholder="dinner, italian, healthy, ...")
+        .help-block.small.text-muted
+          %i.fa.fa-question-circle
+          Enter tags separated by a comma, like: dinner, italian, healthy.
+
+      %hr.clear/
+      %h2
+        %i.fa.fa-camera>
+        Image Upload
+
+      .input(style="width: 0px; height: 0px; overflow: hidden;")
+        %input(style="opacity: 0;" data-bind="fileupload : photo.image" type="file")
+      .grid-panel.grid-panel-3
+        {{#foreach : photos.items }}
+        .grid-item.square
+          .photo-image(data-bind="cropImage : [image.url().thumb, '100%', '100%']")
+          .grid-item-top-right
+            %a(data-bind="on.click : $view.promptDeletePhoto($data)")
+              %i.fa.fa-times
+          .grid-item-bottom-right
+            %a(data-bind="visible : $view.dish.primary_photo_id() != id(), on.click : $view.setPhotoAsPrimary($data)")
+              %i.fa.fa-check
+            %a(data-bind="visible : $view.dish.primary_photo_id() == id()")
+              %i.fa.fa-check-circle
+        {{/foreach }}
+        .grid-item.square.grid-item-add(data-bind="on.click : photo.image.selectFile()")
+          %i.fa.fa-plus(data-bind="visible : photo.is_ready()")
+          %i.fa.fa-circle-o-notch.fa-spin(data-bind="visible : photo.is_saving()")
+
+      {{#if : !photos.has_items() }}
+      .help-block.small.text-muted
+        %i.fa.fa-question-circle
+        Don&#39;t have an image yet? Find a good one on
+        %a(href="https://images.google.com" target="_blank") Google Images
+        for now.
+      {{/if }}
+      %hr.clear/
+
+      %h2
+        %i.fa.fa-eye>
+        Privacy
+      .form-group
+        .checkbox
+          %label
+            %input(data-bind="checked : dish.is_recipe_private" name="is_recipe_private" type="checkbox")>/
+            Hide the ingredients and directions, so only I can see it.
+        .checkbox
+          %label
+            %input(data-bind="checked : dish.is_private" name="is_private" type="checkbox")/
+            Make this entire dish private, so only I can see it.
+      %hr.clear/
+      .form-group
+        %button.btn.btn-success.btn-lg(data-bind="click : saveDish, loading : dish.is_saving" type="button")
+          %i.fa.fa-check
+          Save Dish
+        {{#if : dish.id.present() }}
+        %button.btn.btn-danger.btn-lg.pull-right(data-bind="click : promptDeleteDish, loading : dish.is_saving")
+          %i.fa.fa-trash
+          Delete
+        {{/if }}
+
+</template>
+
