@@ -2,7 +2,7 @@
 
 #package "jquery", github: "jquery/jquery", tag: "2.1.0", module: "shared"
 
-#package "modulr", github: "agquick/modulr.js", tag: "master", module: "shared"
+package "modulr", github: "agquick/modulr.js", tag: "master", module: "shared"
 #package "modulr", path: "~/Projects/lib/modulr.js", path_mode: :link, module: "main"
 
 #package "bootstrap", javascript: "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js", stylesheet: "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css", module: "shared"

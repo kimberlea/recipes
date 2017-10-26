@@ -1,0 +1,77 @@
+class Dishfave.SummernoteEditorView extends QS.View
+  @registerComponent 'df-summernote-editor'
+  init : ->
+    @value = @opts.value
+    @editor_options = @opts.options
+    @modules_loaded = ko.observable(false)
+    @height = @opts.height || 300
+    @internally_updating = false
+
+    Modulr.load
+      modules: ['summernote'],
+      callback: (success)=>
+        if success
+          @modules_loaded(true)
+
+  onElementBound : (name, el)=>
+    if name == 'editor_element'
+      @initEditor(el)
+
+  dispose : =>
+    @super()
+    $(@editor_element).summernote('destroy')
+
+  initEditor : (el)->
+    QS.log "Initializing summernote."
+    $el = $(el)
+    $el.summernote
+      height: @height
+      toolbar: [
+        ['style', ['bold', 'italic', 'underline', 'clear']]
+        ['para', ['ul', 'ol', 'para']]
+        ['parastyle', ['style']]
+        ['insert', ['link', 'hr']]
+        ['misc', ['undo', 'redo', 'fullscreen']]
+      ]
+      disableDragAndDrop: true
+      placeholder: @opts.placeholder
+      callbacks :
+        onInit : =>
+          sub = ko.computed =>
+            val = ko.unwrap(@value)
+            return if @internally_updating == true
+            @internally_updating = true
+            QS.log "Setting html to " + val
+            $el.summernote('code', val)
+            @internally_updating = false
+          @disposeLater(sub)
+        onChange : (contents)=>
+          return if @internally_updating == true
+          @internally_updating = true
+          @value(contents)
+          @internally_updating = false
+
+
+<template name="df-summernote-editor" lang="haml">
+{{#if : modules_loaded() }}
+.editor(data-bind="bindelem : 'editor_element'")
+{{/if }}
+{{#if : !modules_loaded() }}
+.placeholder.text-center
+  Editor is loading...
+{{/if }}
+</template>
+
+<style lang="sass">
+df-summernote-editor
+  display: block
+  background: #fff
+  color: #555
+  .note-editor.note-frame .note-editing-area .note-editable
+    color: #555
+  .btn.btn-default
+    background: #fff
+    color: #333
+    border: 1px solid #ccc
+</style>
+

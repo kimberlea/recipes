@@ -13,6 +13,18 @@ module APIUtils
     end
   end
 
+  def self.sanitize_html(html)
+    return nil if html.nil?
+    ActionView::Base.full_sanitizer.sanitize(html)
+  end
+
+  def self.markdown_render(text)
+    return "" if text.blank?
+    renderer = Redcarpet::Render::HTML.new(hard_wrap: true)
+    markdown = Redcarpet::Markdown.new(renderer, autolink: true, tables: true)
+    markdown.render(text)
+  end
+
   def self.import_big_oven_recipe(url, opts={})
     if opts[:all]
       urls = self.find_all_big_oven_links(url)
@@ -40,8 +52,11 @@ module APIUtils
     json = xml.css("script[type='application/ld+json']").first.text
     r = YAML.load(json)
     d.title = r['name']
-    d.description = r['description']
-    d.description = r['name'] if d.description.blank?
+    if r['description'].present?
+      d.description_html = markdown_render(r['description'])
+    else
+      d.description_html = markdown_render(r['name'])
+    end
     d.serving_size = r['recipeYield'].to_i || 1
     d.ingredients = r['recipeIngredient'].collect{|l| l.strip}.join("\n")
     d.directions = r['recipeInstructions'].join("\n")

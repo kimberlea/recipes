@@ -63,6 +63,7 @@ module Metable
     def meta_graph_updated(scope = nil)
       scope ||= self.all
       scope.update_all(meta_graph_updated_at: Time.now)
+      Metable.notify_connection("meta_graph_updated")
     end
 
   end ## END CLASS METHODS

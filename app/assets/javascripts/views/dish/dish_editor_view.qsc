@@ -26,7 +26,7 @@ class Dishfave.DishEditorView extends QS.View
       @app.promptAuthentication()
       return
 
-    fields = ['title', 'description', 'is_recipe_given', 'ingredients', 'directions', 'prep_time_mins', 'is_purchasable', 'purchase_info', 'tags', 'serving_size', 'is_recipe_private', 'is_private']
+    fields = ['title', 'description_html', 'is_recipe_given', 'ingredients', 'directions_html', 'prep_time_mins', 'is_purchasable', 'purchase_info_html', 'tags', 'serving_size', 'is_recipe_private', 'is_private']
     @dish.save fields, (resp)=>
       if resp.success
         if opts.callback?
@@ -102,7 +102,8 @@ class Dishfave.DishEditorView extends QS.View
         %input.form-control.input-lg(data-bind="textInput : dish.title" name="title" placeholder="Enter title here." type="text")/
       .form-group
         %label Description
-        %textarea.form-control.input-lg(data-bind="textInput : dish.description" name="description" placeholder="Enter description here." rows="5")
+        %df-summernote-editor(params="value : dish.description_html, height: 400")
+        -# %textarea.form-control.input-lg(data-bind="textInput : dish.description" name="description" placeholder="Enter description here." rows="5")
       %hr.clear/
       %h2
         %i.fa.fa-list-ol>
@@ -126,7 +127,8 @@ class Dishfave.DishEditorView extends QS.View
             Enter each ingredient on a new line.
         .form-group
           %label Directions
-          %textarea.form-control.input-lg(data-bind="textInput : dish.directions" name="directions" placeholder="1. Preheat oven to 350.\r\n2. And then . . ." rows="10")
+          %df-summernote-editor(params="value : dish.directions_html, height: 400")
+          -#%textarea.form-control.input-lg(data-bind="textInput : dish.directions" name="directions" placeholder="1. Preheat oven to 350.\r\n2. And then . . ." rows="10")
           .help-block.small.text-muted
             %i.fa.fa-question-circle
             Enter each step on a new line with a number in front.
@@ -146,7 +148,8 @@ class Dishfave.DishEditorView extends QS.View
           %label
             %input(data-bind="checked : dish.is_purchasable" name="is_purchasable" type="checkbox")/
             This dish is available for sale pre-made.
-        %textarea.form-control.input-lg.purchase-info(data-bind="textInput : dish.purchase_info, visible : dish.is_purchasable()" name="purchase_info" placeholder="(Optional) Website links, store names, and locations are all helpful." rows="5")
+        %df-summernote-editor(params="value : dish.purchase_info_html, placeholder: '(Optional) Website links, store names, and locations are all helpful.', height: 300" data-bind="visible : dish.is_purchasable()")
+        -#%textarea.form-control.input-lg.purchase-info(data-bind="textInput : dish.purchase_info, visible : dish.is_purchasable()" name="purchase_info" placeholder="(Optional) Website links, store names, and locations are all helpful." rows="5")
       %hr.clear/
       %h2
         %i.fa.fa-info-circle>
@@ -168,7 +171,7 @@ class Dishfave.DishEditorView extends QS.View
       %hr.clear/
       %h2
         %i.fa.fa-camera>
-        Image Upload
+        Photos
 
       .input(style="width: 0px; height: 0px; overflow: hidden;")
         %input(style="opacity: 0;" data-bind="fileupload : photo.image" type="file")

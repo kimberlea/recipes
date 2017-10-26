@@ -97,4 +97,13 @@ module DBRepair
     end
   end
 
+  def self.fix_dish_html
+    Dish.find_each do |d|
+      d.description_html = d.description_to_html
+      d.directions_html = d.directions_to_html
+      d.purchase_info_html = d.purchase_info_to_html
+      d.save(validate: false)
+    end
+  end
+
 end

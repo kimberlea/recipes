@@ -6,6 +6,8 @@ class Dishfave.Application extends QS.Application
     @is_loaded = ko.observable(false)
     @setUser(@opts.current_user)
     @sign_in_modal = new Dishfave.SignInView("sign-in", this)
+    @loaded_modules = ko.observable({})
+
     @addComputed 'display_info', ->
       width = @app.window_bounds().width
       ret = {}
@@ -29,6 +31,13 @@ class Dishfave.Application extends QS.Application
       "layout-#{l} layout-#{l}-#{sl}"
 
 
+  loadModule : (name)=>
+    Modulr.load
+      modules: [name],
+      callback: (success)=>
+        if success
+          @loaded_modules()[name] = true
+          @loaded_modules.valueHasMutated()
 
   showModalFromURL : window.showModalFromURL
 

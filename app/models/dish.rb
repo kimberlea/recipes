@@ -13,9 +13,12 @@ class Dish < ActiveRecord::Base
   field :title, type: String
   field :serving_size, type: Integer, rename_from: :serving_size
   field :description, type: String
+  field :description_html, type: String
   field :ingredients, type: String
   field :directions, type: String
+  field :directions_html, type: String
   field :purchase_info, type: String
+  field :purchase_info_html, type: String
   field :tags, type: String, array: true
   #field :prep_time, type: String
   field :prep_time_mins, type: Integer
@@ -101,15 +104,15 @@ class Dish < ActiveRecord::Base
   validate do
     # presence
     errors.add(:title, "Please enter a title for this dish.") if self.title.blank?
-    errors.add(:description, "Please enter a description for this dish.") if self.description.blank?
-    if self.is_private != true && self.is_recipe_private == true && self.purchase_info.blank?
-      errors.add(:purchase_info, "You must enter purchase info if you hide the recipe for a public dish. If it's not available for purchase, just make the entire dish private.")
+    errors.add(:description_html, "Please enter a description for this dish.") if self.description_html.blank?
+    if self.is_private != true && self.is_recipe_private == true && self.purchase_info_html.blank?
+      errors.add(:purchase_info_html, "You must enter purchase info if you hide the recipe for a public dish. If it's not available for purchase, just make the entire dish private.")
     end
-    if self.purchase_info.blank? && self.directions.blank?
-      errors.add(:purchase_info, "You must at least enter purchase info if you don't enter directions.")
-      errors.add(:directions, "You must enter directions if you don't enter how to purchase.")
+    if self.purchase_info_html.blank? && self.directions_html.blank?
+      errors.add(:purchase_info_html, "You must at least enter purchase info if you don't enter directions.")
+      errors.add(:directions_html, "You must enter directions if you don't enter how to purchase.")
     end
-    if self.directions.present?
+    if self.directions_html.present?
       errors.add(:ingredients, "Enter recipe ingredients.") if self.ingredients.blank?
       errors.add(:prep_time_mins, "Enter how long this recipe takes.") if self.prep_time_mins.blank?
     end
@@ -120,15 +123,15 @@ class Dish < ActiveRecord::Base
     end
 
     if is_purchasable == true
-      errors.add(:purchase_info, "Please enter purchase info.") if purchase_info.blank?
+      errors.add(:purchase_info_html, "Please enter purchase info.") if purchase_info_html.blank?
     end
 
     # lengths
     validate_length_of(:title, "title", 1, 1000)
-    validate_length_of(:description, "description")
-    validate_length_of(:directions, "directions")
+    validate_length_of(:description_html, "description")
+    validate_length_of(:directions_html, "directions")
     validate_length_of(:ingredients, "ingredients")
-    validate_length_of(:purchase_info, "purchase info")
+    validate_length_of(:purchase_info_html, "purchase info")
   end
 
   def self.search_as_action!(opts)
@@ -154,10 +157,10 @@ class Dish < ActiveRecord::Base
     update_fields_from(opts, [
       :title,
       :serving_size,
-      :description,
+      :description_html,
       :ingredients,
-      :directions,
-      :purchase_info,
+      :directions_html,
+      :purchase_info_html,
       :prep_time_mins,
       :is_purchasable,
       :is_private,
@@ -210,28 +213,30 @@ class Dish < ActiveRecord::Base
     tags.join(", ")
   end
 
-  def markdown_render(text)
-    return "" if text.blank?
-    renderer = Redcarpet::Render::HTML.new(hard_wrap: true)
-    markdown = Redcarpet::Markdown.new(renderer, autolink: true, tables: true)
-    markdown.render(text)
+  def description
+    self[:description] || APIUtils.sanitize_html(description_html)
   end
-
-  def description_html
-    return markdown_render(self.description)
+  def description_to_html
+    return APIUtils.markdown_render(self[:description])
   end
 
   def ingredients_html
     str = self.ingredients
-    return markdown_render(str)
+    return APIUtils.markdown_render(str)
   end
 
-  def directions_html
-    return markdown_render(self.directions)
+  def directions
+    self[:directions] || APIUtils.sanitize_html(directions_html)
+  end
+  def directions_to_html
+    return APIUtils.markdown_render(self[:directions])
   end
 
-  def purchase_info_html
-    return markdown_render(self.purchase_info)
+  def purchase_info
+    self[:purchase_info] || APIUtils.sanitize_html(purchase_info_html)
+  end
+  def purchase_info_to_html
+    return APIUtils.markdown_render(self[:purchase_info])
   end
 
   def favorites_count
@@ -247,11 +252,11 @@ class Dish < ActiveRecord::Base
   end
 
   def has_directions?
-    self.directions.present?
+    self.directions_html.present?
   end
 
   def has_purchase_info?
-    self.purchase_info.present?
+    self.purchase_info_html.present?
   end
 
   def has_prep_time?

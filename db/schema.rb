@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171017021321) do
+ActiveRecord::Schema.define(version: 20171024231115) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -68,6 +68,9 @@ ActiveRecord::Schema.define(version: 20171017021321) do
     t.integer  "feature_id"
     t.integer  "cached_comments_count"
     t.integer  "primary_photo_id"
+    t.string   "description_html"
+    t.string   "directions_html"
+    t.string   "purchase_info_html"
   end
 
   add_index "dishes", ["meta_graph_updated_at"], name: "index_dishes_on_meta_graph_updated_at", using: :btree
