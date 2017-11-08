@@ -6,6 +6,7 @@ class Dishfave.SummernoteEditorView extends QS.View
     @modules_loaded = ko.observable(false)
     @height = @opts.height || 300
     @internally_updating = false
+    @photos = @opts.photos
 
     Modulr.load
       modules: ['summernote'],
@@ -21,16 +22,19 @@ class Dishfave.SummernoteEditorView extends QS.View
     @super()
     $(@editor_element).summernote('destroy')
 
-  initEditor : (el)->
+  initEditor : (el)=>
     QS.log "Initializing summernote."
     $el = $(el)
     $el.summernote
+      view: this
       height: @height
+      buttons:
+        customimage: Dishfave.SummernoteImageButton
       toolbar: [
         ['style', ['bold', 'italic', 'underline', 'clear']]
         ['para', ['ul', 'ol', 'para']]
         ['parastyle', ['style']]
-        ['insert', ['link', 'hr']]
+        ['insert', ['link', 'hr', 'customimage']]
         ['misc', ['undo', 'redo', 'fullscreen']]
       ]
       disableDragAndDrop: true
@@ -45,11 +49,19 @@ class Dishfave.SummernoteEditorView extends QS.View
             $el.summernote('code', val)
             @internally_updating = false
           @disposeLater(sub)
+          @summernote = $el.summernote.bind($el)
         onChange : (contents)=>
           return if @internally_updating == true
           @internally_updating = true
           @value(contents)
           @internally_updating = false
+
+  addImage : (url)=>
+    @summernote 'restoreRange'
+    @summernote 'focus'
+    @summernote 'insertImage', url, ($image)->
+      if $image.width() > 150
+        $image.css('width', 150)
 
 
 <template name="df-summernote-editor" lang="haml">
@@ -75,3 +87,65 @@ df-summernote-editor
     border: 1px solid #ccc
 </style>
 
+
+class Dishfave.SummernoteImageEditorView extends QS.View
+  templateID: 'df-summernote-image-editor'
+
+  init : ->
+    @photos = @opts.photos
+    @url = ko.observable("")
+    @selected_photo_url = ko.observable("")
+
+  load : (opts)=>
+
+  addImage : (url)=>
+    url = url || @url()
+    @opts.onImageSelect(url)
+    @hideOverlay()
+
+  selectPhoto : (photo)=>
+    @addImage(photo.image.url().original)
+
+
+
+<template name="df-summernote-image-editor" lang="haml">
+.modal-header
+  %h3.modal-title
+    %i.fa.fa-picture-o.fa-fw
+    Add Image
+
+.modal-body
+  {{#if : photos }}
+  %h4 Select Photo
+  .grid-panel.grid-panel-3
+    {{#foreach : photos.items }}
+    .grid-item.square.clickable(data-bind="on.click : $view.selectPhoto($data)")
+      .photo-image(data-bind="cropImage : [image.url().thumb, '100%', '100%']")
+    {{/foreach }}
+  .placeholder(data-bind="visible : !photos.has_items()")
+    No photos added yet.
+  {{/if }}
+
+  %h4 Enter URL
+  .form-group
+    %input.form-control(data-bind="textInput : url" placeholder="https://")
+  .form-group
+    %button.btn.btn-default(data-bind="click : addImage")
+      Add Image
+</template>
+
+Dishfave.SummernoteImageButton = (context)->
+  ui = $.summernote.ui
+  view = context.options.view
+  button = ui.button
+    contents: "<i class='note-icon-picture'></i>"
+    tooltip: "Insert Image"
+    click : ->
+      context.invoke 'editor.saveRange'
+      Dishfave.SummernoteImageEditorView.displayModal view,
+        context: context
+        photos: view.photos
+        onImageSelect : (url)->
+          view.addImage(url)
+
+  return button.render()
