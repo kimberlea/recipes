@@ -121,14 +121,13 @@ class Dishfave.DishEditorView extends QS.View
       .howtomake-fields(data-bind="visible : dish.is_recipe_given()")
         .form-group
           %label Ingredients
-          %textarea.form-control.input-lg(data-bind="textInput : dish.ingredients" name="ingredients" placeholder="Butter\r\nEggs\r\nFlour\r\n. . ." rows="10")
+          %textarea.form-control.input-lg(data-bind="textInput : dish.ingredients" name="ingredients" placeholder="Enter each ingredient on a new line" rows="10")
           .help-block.small.text-muted
             %i.fa.fa-question-circle
             Enter each ingredient on a new line.
         .form-group
           %label Directions
           %df-summernote-editor(params="value : dish.directions_html, height: 400")
-          -#%textarea.form-control.input-lg(data-bind="textInput : dish.directions" name="directions" placeholder="1. Preheat oven to 350.\r\n2. And then . . ." rows="10")
           .help-block.small.text-muted
             %i.fa.fa-question-circle
             Enter each step on a new line with a number in front.

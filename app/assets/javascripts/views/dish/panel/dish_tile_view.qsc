@@ -38,7 +38,7 @@ class Dishfave.DishesLoadMoreView extends QS.View
     {{/if }}
     {{#if : dish.is_featured() }}
     .tile-marker.tile-marker-featured(data-bind="tip: {content: 'This is a featured dish!', container: 'body'}")
-      %i.fa.fa-trophy
+      %i.fa.fa-star
     {{/if }}
 
   .recipe-tile-content

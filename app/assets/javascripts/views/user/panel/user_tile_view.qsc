@@ -17,7 +17,7 @@ class Dishfave.UserTileGridView extends QS.View
     .user-name-section
       {{ user.full_name }}
     .user-bio-section
-      {{ user.bio }}
+      {{ user.bio() | fit : 50 }}
   .user-tile-footer
     .user-stats-section
       .title Dishes

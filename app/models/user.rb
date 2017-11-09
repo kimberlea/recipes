@@ -1,5 +1,6 @@
 class User < ActiveRecord::Base
   include SchemaSync::Model
+  include QuickScript::Model
   include QuickAuth::Authentic
   include QuickJobs::Processable
   include Metable

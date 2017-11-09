@@ -56,7 +56,7 @@ class Dishfave.DishFeaturesView extends QS.View
 <template name="df-dish-modal-features" lang="haml">
 .modal-header
   %h3.modal-title
-    %i.fa.fa-bullhorn
+    %i.fa.fa-star.fa-fw
     Feature This Dish
 
 .modal-body
@@ -72,7 +72,7 @@ class Dishfave.DishFeaturesView extends QS.View
       Make your dish eligible to be sent in the weekly <strong>Featured Dishes</strong> newsletter sent to <strong>all</strong> subscribing Dishfave users.
     %li.mb-10
       %i.fa-li.fa.fa-check-circle
-      Mark your dish with a special icon (<i class="fa fa-trophy small"></i>) and other flare to make your dish stand out amongst the others in regular search results.
+      Mark your dish with a special icon (<i class="fa fa-star small"></i>) and other flare to make your dish stand out amongst the others in regular search results.
 
 
   {{#if : !dish.is_featured() }}

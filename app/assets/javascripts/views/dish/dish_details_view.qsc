@@ -19,7 +19,7 @@ class Dishfave.DishDetailsView extends QS.View
     @load()
 
   load : ->
-    @loadRecentDishes()
+    @loadRelatedDishes()
     @loadComments()
     @loadPhotos()
     @showShareModal()
@@ -27,8 +27,8 @@ class Dishfave.DishDetailsView extends QS.View
   loadPhotos : =>
     @photos.load {with_dish_id: @dish.id()}
 
-  loadRecentDishes : ->
-    @dishes.load {not_deleted: []},
+  loadRelatedDishes : ->
+    @dishes.load {not_deleted: [], with_creator_id: @creator.id()},
       includes: ['creator']
       sort: 'created_at DESC'
 
@@ -125,18 +125,18 @@ class Dishfave.DishDetailsView extends QS.View
         / Go to www.addthis.com/dashboard to customize your tools
         .addthis_inline_share_toolbox(data-media="{{ dish.image_url }}" data-title="{{ dish.title }}" data-url="{{ dish.view_url }}" style="margin: 5px; text-align: center;")
 
-        -# // DESCRIPTION
-        .recipe-description.recipe-section
-          {{{ dish.description_html }}}
-
         -# // FEATURED
         {{#if : dish.is_featured() }}
         .alert.alert-featured.text-center
           %strong
-            %i.fa.fa-trophy
+            %i.fa.fa-star
             Featured Dish!
           This dish is featured for this week.
         {{/if }}
+
+        -# // DESCRIPTION
+        .recipe-description.recipe-section
+          {{{ dish.description_html }}}
 
         -# // INFO
         .recipe-info.recipe-section.row
@@ -190,7 +190,7 @@ class Dishfave.DishDetailsView extends QS.View
           .new-comment-image
             %img.img-circle(data-bind="attr.src : app.current_user.picture_url()" style="width: 40px; height: 40px;")/
           .new-comment-text
-            %textarea(name="body" placeholder="Add a comment." rows="3" data-bind="textInput : new_comment.body")
+            %textarea(name="body" placeholder="Say something..." rows="3" data-bind="textInput : new_comment.body")
           .new-comment-submit(style="padding: 20px 10px;")
             %button.btn.btn-default(data-bind="click : submitComment, loading : new_comment.is_saving") Submit
         {{/if }}
@@ -216,7 +216,7 @@ class Dishfave.DishDetailsView extends QS.View
     .col-md-3
       .sidebar-panel.df-card
         .sidebar-title
-          Recent Dishes
+          Related Dishes
         .sidebar-body
           %df-dish-tile-grid(params="dishes : dishes")
 
@@ -237,6 +237,8 @@ class Dishfave.DishDetailsView extends QS.View
       color: #fff
     .dropdown-menu
       text-shadow: none
+      a
+        color: #333
 
     .btn.btn-clear
       color: #fff
@@ -285,6 +287,9 @@ class Dishfave.DishDetailsView extends QS.View
 
   .recipe-photos
     margin: -15px -15px 0px -15px
+
+  .sidebar-panel .sidebar-body .recipe-tile
+    margin: 12px 2px
 
 </style>
 
