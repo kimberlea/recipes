@@ -2,7 +2,7 @@ class Dishfave.UserProfileView extends QS.View
   @registerComponent 'df-user-profile'
   init : ->
     @user = new Dishfave.User(@app.opts.data.user)
-    @dishes = new Dishfave.Dish.Collection(limit: 25)
+    @dishes = new Dishfave.Dish.Collection(limit: 12)
 
     @addComputed 'is_me', ->
       @user.id() == @app.current_user.id()
@@ -33,100 +33,127 @@ class Dishfave.UserProfileView extends QS.View
       includes: ['creator']
       sort: 'created_at DESC'
 
-  loadMoreDishes : =>
+  toggleFollowing : ->
+    if !@app.is_logged_in()
+      @app.promptAuthentication()
+      return
+    @app.user_service.toggleFollowing(@user)
 
 
 
 <template name="df-user-profile" lang="haml">
-.df-user-profile.profile-page.container
+.df-user-profile.profile-page
   .header-space
 
-  %df-user-profile-header(params="user: user")
+  .df-card.profile-cover
+    %span.backdrop.pos-abs-full(data-bind="cropImage : ['/assets/user_backdrop_default.jpg', '100%', '100%']")
+    %span.backdrop-tint.pos-abs-full
+    .cover-content
+      .user-image
+        %img.img-circle(data-bind="attr.src : user.picture_url" style="width: 80px; height: 80px;")
+      .user-name
+        {{ user.full_name }}
+      .user-bio(data-bind="visible : user.bio.present()")
+        {{ user.bio }}
+      .user-actions
+        {{#if : !is_me() }}
+        %button.btn.btn-clear.btn-clear-white.mr-5(data-bind="on.click : toggleFollowing()")
+          %i.fa.fa-share-alt
+          {{ user.following.id.present() ? 'Unfollow' : 'Follow' }}
+        {{/if }}
+        {{#if : is_me() }}
+        %a.btn.btn-clear.btn-clear-white.mr-5(href="/account" style="margin-right: 5px;")
+          %i.fa.fa-cog.fa-fw(aria-hidden="true")
+          Settings
+        %a.btn.btn-clear.btn-clear-white(href="/logout")
+          %i.fa.fa-sign-out.fa-fw(aria-hidden="true")
+          Sign Out
+        {{/if }}
 
-  .page-tabs.row(style="border-top: 1px solid #ccc;")
-    .col-xs-6.page-tab(data-bind="css.active : section() == 'added'")
-      %a(path="?s=added")
-        %i.fa.fa-list
-        My Dishes
-    .col-xs-6.page-tab(data-bind="css.active : section() == 'favorited'")
-      %a(path="?s=favorited")
-        %i.fa.fa-heart
-        Favorite Dishes
+      .user-stats
+        .status-info
+          .status-info-number
+            %i.fa.fa-fire
+            {{ user.chefscore() || 0 }}
+          .status-info-title
+            ChefScore
+        .status-info
+          .status-info-number
+            {{ user.dishes_count() || 0 }}
+          .status-info-title
+            Dishes
 
-  %df-dish-tile-grid(params="dishes : dishes")
+        .status-info
+          .status-info-number
+            {{ user.followers_count() || 0 }}
+          .status-info-title
+            Followers
+        .status-info
+          .status-info-number
+            {{ user.followings_count() || 0 }}
+          .status-info-title
+            Following
 
-  %df-dishes-load-more(params="dishes : dishes")
+  .df-card.profile-cover
+    .card-header
+      .card-title My Dishes
+    %df-dish-tile-grid(params="dishes : dishes")
+    %df-dishes-load-more(params="dishes : dishes")
+
+</template>
+
+<template name="old-temp" lang="haml">
+%df-user-profile-header(params="user: user")
+
+.page-tabs.row(style="border-top: 1px solid #ccc;")
+  .col-xs-6.page-tab(data-bind="css.active : section() == 'added'")
+    %a(path="?s=added")
+      %i.fa.fa-list
+      My Dishes
+  .col-xs-6.page-tab(data-bind="css.active : section() == 'favorited'")
+    %a(path="?s=favorited")
+      %i.fa.fa-heart
+      Favorite Dishes
+
+%df-dish-tile-grid(params="dishes : dishes")
+
+%df-dishes-load-more(params="dishes : dishes")
 </template>
 
 
-<style lang="scss">
-.df-user-profile {
-  .page-tabs {
-    background-color: #f7f7f7;
-    .page-tab {
-      text-align: center;
-      padding: 10px 0px;
-      border-right: 1px solid #ccc;
-      &:last-child {
-        border-right: none;
-      }
-      &.active {
-        color: #555;
-        border-bottom: 2px solid #376ED2;
-        i { 
-          color: #376ED2;
-        }
-      }
-      a {
-        color: #aaa;
-        padding: 0px 10px;
-      }
-    }
-
-  }
-
-  .btn-success {
-    margin: 10px;
-    
-  }
-
-  .status-info {
-    text-align: center;
-  }
-
-  .status-info-title {
-    font: oblique;
-  }
-}
-.profile-page {
-  background-color: #FFFFFF;
-
-  .profile-content {
-    border: 1px solid #CFCCC4;
-  }
-
-  .profile-name {
-   
-  }
-
-}
-
-.status-info {
-  display: inline-block;
-
-  .status-info-number {
-    color: #D64541;
-  }
-}
-
-
-
-.my-recipes {
-  border: 1px solid #CFCCC4;
-}
-
-.favorite-recipes {
-  border: 1px solid #CFCCC4;
-
-}
+<style lang="sass">
+.df-user-profile
+  padding: 0px 15px
+  .profile-cover
+    position: relative
+    .backdrop, .backdrop-tint
+      z-index: -1
+    .backdrop-tint
+      background-color: rgba(0, 0, 0, 0.5)
+    .cover-content
+      text-align: center
+      margin-top: 50px
+      margin-bottom: 0px
+      color: #fff
+      text-shadow: 0px 0px 8px #000
+    .user-image
+      padding: 15px
+      img
+        border: 2px solid #fff
+    .user-name
+      font-size: 3.8rem
+    .user-bio
+      font-size: 2.2rem
+      padding: 20px
+      color: #ccc
+    .user-actions
+      padding: 10px
+    .user-stats
+      padding: 10px
+      .status-info
+        .status-info-number
+          color: #fff
+        .status-info-title
+          color: #ccc
+      
 </style>

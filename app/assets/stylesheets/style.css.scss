@@ -44,12 +44,23 @@ a { color: #d64541; }
 .pos-rel {
   position: relative;
 }
+.pos-abs-full {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  bottom: 0px;
+  right: 0px;
+}
 
 .btn-clear {
   color: #d64541;
   background-color: transparent;
   border: 1px solid #d64541;
   padding: 3px 5px;
+}
+.btn-clear-white {
+  color: #fff;
+  border-color: #fff;
 }
 
 .btn.btn-default {
@@ -84,6 +95,7 @@ a { color: #d64541; }
 }
 
 .pad-0 { padding: 0px; }
+.pad-15 { padding: 15px; }
 .mt-0 { margin-top: 0px; }
 .mt-10 { margin-top: 10px; }
 .mr-5 { margin-right: 5px; }
