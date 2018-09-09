@@ -12,6 +12,7 @@ class Dishfave.DishEditorView extends QS.View
     @app.handle 'photo.deleted', => @photos.update()
 
     @photo.image.input.file.subscribe (val)=>
+      QS.log "Photo changed."
       if val?
         @saveAndAddPhoto()
 
@@ -29,12 +30,11 @@ class Dishfave.DishEditorView extends QS.View
     fields = ['title', 'description_html', 'is_recipe_given', 'ingredients', 'directions_html', 'prep_time_mins', 'is_purchasable', 'purchase_info_html', 'tags', 'serving_size', 'is_recipe_private', 'is_private']
     @dish.save fields, (resp)=>
       if resp.success
-        if opts.callback?
-          opts.callback()
-        else
+        if opts.redirect != false
           @app.navigateTo(@dish.view_path())
       else
         $.alert(resp.error)
+      opts.callback?(resp)
 
   setPhotoAsPrimary : (photo)=>
     @dish.primary_photo_id(photo.id())
@@ -43,7 +43,13 @@ class Dishfave.DishEditorView extends QS.View
 
   saveAndAddPhoto : =>
     @saveDish
-      callback: @addPhoto
+      redirect: false
+      callback: (resp)=>
+        if resp.success
+          @addPhoto()
+        else
+          QS.log "Clearing image."
+          @photo_input_element.value = null
 
   addPhoto : =>
     @photo.dish_id(@dish.id())
@@ -173,7 +179,7 @@ class Dishfave.DishEditorView extends QS.View
         Photos
 
       .input(style="width: 0px; height: 0px; overflow: hidden;")
-        %input(style="opacity: 0;" data-bind="fileupload : photo.image" type="file")
+        %input(style="opacity: 0;" data-bind="fileupload : photo.image, bindelem: 'photo_input_element'" type="file")
       .grid-panel.grid-panel-3
         {{#foreach : photos.items }}
         .grid-item.square

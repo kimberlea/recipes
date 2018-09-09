@@ -118,9 +118,6 @@ class Dish < ActiveRecord::Base
     end
     errors.add(:serving_size, "Enter serving size.") if self.serving_size.blank?
     errors.add(:creator, "Enter who created this dish.") if self.creator_id.blank?
-    if !Rails.env.test?
-      errors.add(:image, "Please add a image for your dish.") if self.image.blank? || self.image.url.blank?
-    end
 
     if is_purchasable == true
       errors.add(:purchase_info_html, "Please enter purchase info.") if purchase_info_html.blank?

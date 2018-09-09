@@ -44,15 +44,21 @@ class Photo < ActiveRecord::Base
       self.image = upl = res[:data]
     end
 
-    success = self.save
-    if success
-      begin
-        meta_graph_updated_for(dish, comment)
-      rescue => ex
-        QuickScript.log_exception(ex)
+    Photo.transaction do
+      # save photo
+      self.save!
+      if dish.present? && comment.blank? && dish.primary_photo_id.blank?
+        dish.primary_photo_id = self.id
+        dish.save!
       end
     end
-    raise error_message if !success
+
+    # photo saved
+    begin
+      meta_graph_updated_for(dish, comment)
+    rescue => ex
+      QuickScript.log_exception(ex)
+    end
     return {success: true, data: self, new_record: new_record}
   rescue => ex
     error = ex.message
@@ -63,7 +69,13 @@ class Photo < ActiveRecord::Base
 
   def delete_as_action!(opts)
     self.image.delete_files if image
-    self.destroy
+    Photo.transaction do
+      self.destroy!
+      if dish.present? && dish.primary_photo_id == self.id
+        dish.primary_photo_id = nil
+        dish.save!
+      end
+    end
     meta_graph_updated_for(dish, comment)
     return {success: true, data: self}
   end
