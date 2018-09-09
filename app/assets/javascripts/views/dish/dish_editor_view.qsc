@@ -8,8 +8,8 @@ class Dishfave.DishEditorView extends QS.View
     @addComputed 'title', ->
       if @dish.is_new() then "Create New Dish." else "Edit This Dish."
 
-    @app.handle 'photo.updated', => @photos.update()
-    @app.handle 'photo.deleted', => @photos.update()
+    @app.handle 'photo.updated', => @loadPhotos(update: true)
+    @app.handle 'photo.deleted', => @loadPhotos(update: true)
 
     @photo.image.input.file.subscribe (val)=>
       QS.log "Photo changed."
@@ -19,6 +19,9 @@ class Dishfave.DishEditorView extends QS.View
     @load()
 
   load : =>
+    @loadPhotos()
+
+  loadPhotos : (opts={})=>
     if !@dish.is_new()
       @photos.load {with_dish_id: @dish.id()}
 
